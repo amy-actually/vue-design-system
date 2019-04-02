@@ -1,13 +1,13 @@
 {
-  "name": "vue-design-system",
-  "version": "3.5.7",
-  "description": "Vue Design System is an open-source tool for building Design Systems with Vue.js",
-  "author": "viljamis <me@viljamis.com>",
+  "name": "feathers-design-system",
+  "version": "0.21.0",
+  "description": "Feathers Design System - Fontana Regional Library - Design System with Vue.js",
+  "author": "amy-actually <amybwest@gmail.com>",
   "main": "dist/system/system.js",
   "files": [
     "dist/system"
   ],
-  "homepage": "https://vueds.com",
+  "homepage": "http://fontanalib.org",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/viljamis/vue-design-system.git"
+    "url": "git+https://github.com/amy-actually/vue-design-system.git"
   },
   "keywords": [
     "vue design system",
