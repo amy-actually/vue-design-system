@@ -22,14 +22,17 @@
     "lint": "eslint '**/*.{js,vue}' --cache",
     "node:build": "node ./build/build.js",
     "node:build:system": "node ./build/build-system.js",
-    "release:minor": "npm run build:system && release-it minor",
-    "release:major": "npm run build:system && release-it major",
-    "release:patch": "npm run build:system && release-it patch",
-    "styleguide": "vue-styleguidist server --config ./config/docs.config.js",
+    "release": "npm run build:system && release-it",
+    "styleguide": "vue-styleguidist server --open --config ./config/docs.config.js",
     "styleguide:build": "vue-styleguidist build --config ./config/docs.config.js",
     "theo": "theo ./src/tokens/tokens.yml --transform web --format map.scss,scss,raw.json,json --dest ./src/assets/tokens",
     "theo:onchange": "onchange \"./src/tokens/*.yml\" -- npm run theo",
     "test": "npm-run-all theo unit"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   },
   "repository": {
     "type": "git",
@@ -45,25 +48,23 @@
   ],
   "babel": {
     "presets": [
-      [
-        "env",
-        {
-          "modules": "commonjs"
-        }
-      ],
-      "stage-2"
+      "@babel/preset-env"
     ],
     "plugins": [
-      "transform-runtime"
+      "@babel/plugin-syntax-dynamic-import",
+      "@babel/plugin-proposal-class-properties",
+      "@babel/plugin-proposal-object-rest-spread",
+      "@babel/plugin-transform-runtime"
     ],
     "env": {
       "test": {
         "presets": [
-          "env",
-          "stage-2"
+          "@babel/preset-env"
         ],
         "plugins": [
-          "istanbul"
+          "@babel/plugin-syntax-dynamic-import",
+          "@babel/plugin-proposal-class-properties",
+          "@babel/plugin-proposal-object-rest-spread"
         ]
       }
     }
@@ -82,8 +83,7 @@
       "sourceType": "module",
       "ecmaVersion": 8,
       "ecmaFeatures": {
-        "jsx": true,
-        "experimentalObjectRestSpread": true
+        "jsx": true
       }
     }
   },
@@ -101,19 +101,13 @@
     "vue-router": "^3.0.2",
     "vuex": "^3.0.1",
     "webfontloader": "^1.6.28",
-    "@fortawesome/fontawesome-svg-core": "^1.2.0",
-    "@fortawesome/free-solid-svg-icons": "^5.1.0",
     "axios": "^0.18.0",
-    "bootstrap": "^4.1.1",
-    "conventional-changelog-cli": "^2.0.5",
-    "flatpickr": "^4.5.1",
+    "bootstrap": "^4.3.1",
+    "conventional-changelog-cli": "^2.0.12",
+    "flatpickr": "^4.5.7",
     "vue-add-to-calendar": "^1.0.4",
     "vue-clickaway": "^2.2.2",
-    "vue-element-queries": "^0.3.0",
-    "vue-fontawesome": "0.0.2",
-    "vue-link": "^1.3.0",
-    "vue-moment": "^4.0.0",
-    "vue-responsive-components": "^0.2.3"
+    "vue-moment": "^4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
@@ -179,7 +173,7 @@
     "webpack-merge-and-include-globally": "^2.1.7",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
-    "release-it": "^7.6.0"
+    "release-it": "^10.4.0"
   },
   "engines": {
     "node": ">= 8.6.0",
