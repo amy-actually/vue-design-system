@@ -1,6 +1,8 @@
 const path = require("path")
 const baseConfig = require("../build/webpack.base.conf.js")
 const merge = require("webpack-merge")
+const packageConfig = require("../package.json")
+const chalk = require("chalk")
 
 module.exports = {
   /**
@@ -8,12 +10,9 @@ module.exports = {
    */
   title: "Vue Design System",
   /**
-   * Enabling the following option splits sections into separate views.
-   */
-  navigation: true,
-  /**
    * Most of the styles are defined in /docs/docs.styles.scss
    */
+  version: packageConfig.version,
   theme: {
     maxWidth: "100%",
     sidebarWidth: 240,
@@ -22,6 +21,7 @@ module.exports = {
       monospace: ["Consolas", "'Liberation Mono'", "Menlo", "monospace"],
     },
   },
+  renderRootJsx: path.join(__dirname, "../docs/components/Preview.js"),
   /**
    * Define a custom code highlighting theme.
    */
@@ -32,16 +32,21 @@ module.exports = {
    * Path to static assets directory
    */
   assetsDir: path.join(__dirname, "../src/assets"),
-  showCode: true,
-  showUsage: true,
   /**
-   * Enabling the below option will break things in Vue Desing System!
+   * Enabling the below option will break things in Vue Design System!
    */
   skipComponentsWithoutExample: false,
   /**
    * We’re defining below JS and SCSS requires for the documentation.
    */
-  require: [path.join(__dirname, "../docs/docs.helper.js"), path.join(__dirname, "../docs/docs.styles.scss")],
+  require: [
+    path.join(__dirname, "../docs/docs.helper.js"),
+    path.join(__dirname, "../docs/docs.styles.scss"),
+  ],
+  /**
+   * Enabling the following option splits sections into separate views.
+   */
+  pagePerSection: true,
   sections: [
     {
       name: "Getting Started",
@@ -49,18 +54,30 @@ module.exports = {
       // Needs to be loaded in somewhere as this is also shown in
       // element, Pattern & Template overviews.
       components: "../docs/components/status/**/[A-Z]*.vue",
+      sectionDepth: 1,
+      exampleMode: "hide",
+      usageMode: "hide",
     },
     {
       name: "Design Principles",
       content: "../docs/principles.md",
+      sectionDepth: 1,
+      exampleMode: "hide",
+      usageMode: "hide",
     },
     {
       name: "Voice & Tone",
       content: "../docs/voice-and-tone.md",
+      sectionDepth: 1,
+      exampleMode: "hide",
+      usageMode: "hide",
     },
     {
       name: "Design Tokens",
       content: "../docs/tokens.md",
+      sectionDepth: 1,
+      exampleMode: "hide",
+      usageMode: "hide",
       components: () => [
         "../docs/components/tokens/Color.vue",
         "../docs/components/tokens/FontSize.vue",
@@ -72,24 +89,39 @@ module.exports = {
       name: "Elements",
       content: "../docs/elements.md",
       components: "../src/elements/**/[A-Z]*.vue",
+      exampleMode: "expand",
+      usageMode: "expand",
+      sectionDepth: 2,
     },
     {
       name: "Patterns",
       content: "../docs/patterns.md",
       components: "../src/patterns/**/[A-Z]*.vue",
+      exampleMode: "expand",
+      usageMode: "expand",
+      sectionDepth: 2,
     },
     {
       name: "Templates",
       content: "../docs/templates.md",
       components: "../src/templates/**/[A-Z]*.vue",
+      exampleMode: "expand",
+      usageMode: "expand",
+      sectionDepth: 2,
     },
     {
       name: "Downloads",
       content: "../docs/downloads.md",
+      exampleMode: "hide",
+      usageMode: "hide",
+      sectionDepth: 1,
     },
     {
       name: "FAQ",
       content: "../docs/faq.md",
+      exampleMode: "hide",
+      usageMode: "hide",
+      sectionDepth: 1,
     },
     {
       /**
@@ -98,6 +130,8 @@ module.exports = {
        * their own section, which then gets hidden in docs/docs.styles.scss
        */
       name: "Private Components",
+      exampleMode: "hide",
+      usageMode: "hide",
       components: "../src/**/[_]*.vue",
     },
   ],
@@ -137,10 +171,11 @@ module.exports = {
     module: {
       rules: [
         {
-          test: /\.(css?|scss)(\?.*)?$/,
+          test: /\.(css?|scss|sass)(\?.*)?$/,
           use: [
             "style-loader",
             "css-loader",
+            "postcss-loader",
             "sass-loader",
             {
               loader: "sass-resources-loader",
@@ -158,6 +193,17 @@ module.exports = {
     },
   }),
   styleguideDir: "../dist/docs",
+  printServerInstructions() {},
+  printBuildInstructions(config) {
+    console.log(chalk.cyan("\n  Design System Docs build finished succesfully!\n"))
+    console.log(
+      chalk.yellow(
+        "  Tip: You can now deploy the docs as a static website.\n" +
+          "  Copy the build files from " +
+          `${config.styleguideDir}\n`
+      )
+    )
+  },
   /**
    * Configure docs server to redirect asset queries
    */
