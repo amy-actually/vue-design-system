@@ -1,14 +1,3 @@
 node_modules/*
 dist/*
-test/*
-src/utils/*
-src/system.js
-src/main.js
-src/router/*
-src/ExampleComponent.vue
-docs/*
-config/*
-build/*
-src/elements/FormInput.vue
-src/elements/SvgIcon.vue
-src/elements/TextStyle.vue
+test/unit/coverage/*
