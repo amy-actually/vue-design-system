@@ -79,6 +79,7 @@ export default {
     <svg-icon name="review" fill="rgb(255, 186, 10)" size="24px" />
     <svg-icon name="deprecated" fill="rgb(235, 59, 36)" size="24px" />
     <svg-icon name="prototype" fill="rgb(37, 138, 239)" size="24px" />
+    <svg-icon name="search" fill="rgb(2, 23, 45)" size="24px" />
   </div>
   ```
 </docs>
