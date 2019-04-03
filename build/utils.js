@@ -6,7 +6,9 @@ const packageConfig = require("../package.json")
 
 exports.assetsPath = function(_path) {
   const assetsSubDirectory =
-    process.env.NODE_ENV === "production" ? config.build.assetsSubDirectory : config.dev.assetsSubDirectory
+    process.env.NODE_ENV === "production"
+      ? config.build.assetsSubDirectory
+      : config.dev.assetsSubDirectory
   return path.posix.join(assetsSubDirectory, _path)
 }
 
@@ -76,11 +78,13 @@ exports.cssLoaders = function(options) {
     outputStyle: "compressed",
   }
 
-  // https://vue-loader.vuejs.org/en/configurations/extract-css.html
+  // https://vue-loader.vuejs.org/guide/extract-css.html
   return {
     css: generateLoaders(),
     postcss: generateLoaders(),
-    sass: generateLoaders("sass", Object.assign({ indentedSyntax: true }, sassOptions)).concat(sassResourcesConfig),
+    sass: generateLoaders("sass", Object.assign({ indentedSyntax: true }, sassOptions)).concat(
+      sassResourcesConfig
+    ),
     scss: generateLoaders("sass", sassOptions).concat(sassResourcesConfig),
   }
 }
