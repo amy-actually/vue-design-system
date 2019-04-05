@@ -1,16 +1,18 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Channel from "../templates/Channel.vue";
-import Collection from '../templates/Collection.vue';
-import Event from "../templates/Event.vue";
-import Events from "../templates/Events.vue";
-import Index from "../templates/Index.vue";
-import NotFound from "../templates/NotFound.vue";
-import SearchResults from "../templates/SearchResults.vue";
-import Service from '../templates/Service.vue';
-import Services from "../templates/Services.vue";
+import Vue from "vue"
+import Router from "vue-router"
+import Channel from "../templates/Channel.vue"
+import Collection from "../templates/Collection.vue"
+import Event from "../templates/Event.vue"
+import Events from "../templates/Events.vue"
+import Index from "../templates/Index.vue"
+import NotFound from "../templates/NotFound.vue"
+import SearchResults from "../templates/SearchResults.vue"
+import Service from "../templates/Service.vue"
+import Services from "../templates/Services.vue"
+//--------------
+import routes from "./routes"
 
-Vue.use(Router);
+Vue.use(Router)
 
 const router = new Router({
   mode: "history",
@@ -19,12 +21,12 @@ const router = new Router({
     {
       component: Channel,
       meta: {
-        title: 'Blog',
+        title: "Blog",
       },
-      name: 'Blog',
-      path: '/blog',
+      name: "Blog",
+      path: "/blog",
       props: route => ({
-        channelTitle: 'Shelf Life in the Mountains',
+        channelTitle: "Shelf Life in the Mountains",
         channelDescription: `
           This is the blog for the Fontana Regional Library system, 
           serving Jackson, Macon, and Swain counties in western North Carolina.
@@ -32,20 +34,20 @@ const router = new Router({
           vast array of topics including historical and current events, technology, 
           cats and much more, as well as related books suggestions!
         `,
-        network: 'blog',
-        slug: 'any',
+        network: "blog",
+        slug: "any",
       }),
     },
 
     {
       component: Collection,
       meta: {
-        title: 'Collection',
+        title: "Collection",
       },
-      name: 'Collection',
-      path: '/collection',
+      name: "Collection",
+      path: "/collection",
       props: route => ({
-        channelTitle: 'Collection',
+        channelTitle: "Collection",
         location: route.query.location,
         slug: any,
       }),
@@ -54,25 +56,25 @@ const router = new Router({
     {
       component: Index,
       meta: {
-        title: "Home"
+        title: "Home",
       },
       name: "Index",
       path: "/",
       props: route => ({
-        location: route.query.location
-      })
+        location: route.query.location,
+      }),
     },
 
     {
       component: Events,
       meta: {
-        title: "Events"
+        title: "Events",
       },
       name: "Events",
       path: "/events",
       props: route => ({
         filter: route.query.filter,
-        location: route.query.location
+        location: route.query.location,
       }),
     },
 
@@ -90,8 +92,8 @@ const router = new Router({
       path: "/search",
       props: route => ({
         filter: route.query.filter,
-        location: route.query.location
-      })
+        location: route.query.location,
+      }),
     },
 
     {
@@ -100,8 +102,8 @@ const router = new Router({
       path: "/services",
       props: route => ({
         filter: route.query.filter,
-        location: route.query.location
-      })
+        location: route.query.location,
+      }),
     },
     {
       component: Service,
@@ -114,28 +116,28 @@ const router = new Router({
     {
       path: "*",
       name: "NotFound",
-      component: NotFound
-    }
+      component: NotFound,
+    },
   ],
 
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     }
-    return { x: 0, y: 0 };
-  }
-});
+    return { x: 0, y: 0 }
+  },
+})
 
 router.beforeEach((to, from, next) => {
-  if(!hasLocationQueryParameter(to) && hasLocationQueryParameter(from)){
-    next({name: to.name, query: from.query});
+  if (!hasLocationQueryParameter(to) && hasLocationQueryParameter(from)) {
+    next({ name: to.name, query: from.query })
   } else {
-    next();
+    next()
   }
-});
+})
 
 function hasLocationQueryParameter(route) {
-  return !!route.query.location;
+  return !!route.query.location
 }
 
-export default router;
+export default router

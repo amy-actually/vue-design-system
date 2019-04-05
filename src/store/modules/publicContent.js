@@ -13,28 +13,28 @@ export default {
     articles: [],
     resources: [],
     alerts: [],
-    currentLocation: "all",
+    services: [],
   },
 
   mutations: {
-    addContentToState(state, data) {
-      if (!state[data.type] || state[data.type].length == 0) {
-        state[data.type] = data.data
-      } else if (state[data.type].find(item => item.id === data.data.id) !== undefined) {
-        state[data.type].push(data.data)
-      }
+    setCurrentLocation(state, location) {
+      state.currentLocation = location
     },
   },
 
   getters: {},
 
   actions: {
-    async getServices({ commit }, page = 1) {
-      return bigKahuna.get(`/services?per_page=100&page=${page}`).then(response => {
-        commit("addContentToState", { type: "services", data: response.data })
+    async getUpcomingEvents({ commit }, page = 1) {
+      return bigKahuna.get(`/events?per_page=100&page=${page}`).then(response => {
+        commit("addContentToState", ["events", response.data])
       })
     },
-
+    async getContentBySlug({ commit }, { type, slug }) {
+      return bigKahuna.get(`/${type}?slug=${slug}`).then(response => {
+        commit("addContentToState", ["events", response.data])
+      })
+    },
     /* getHomePageContent({ commit, dispatch }){
       let response
       try {
