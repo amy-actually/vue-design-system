@@ -74,14 +74,14 @@ export default {
   },
 
   mutations: {
-    addItem(state, data) {
+    addItem(state, { type, data }) {
       //Check is exists, if not then push
-      if (state[data.type].find(item => item.id === data.data.id) == undefined) {
-        state[data.type].push(data.data)
+      if (state[type].find(item => item.id === data.id) == undefined) {
+        state[type].push(data)
       }
     },
-    addAllItems(state, data) {
-      state[data.type] = data.data
+    addAllItems(state, { type, data }) {
+      state[type] = data
     },
   },
 }

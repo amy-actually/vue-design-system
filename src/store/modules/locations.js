@@ -22,13 +22,5 @@ export default {
     },
   },
 
-  getters: {
-    getRelatedContent(state, getters, rootState) {
-      // let content = rootState.publicContent
-      /**
-       * Access Public Content State and find all content
-       * that matches state.currentLocation
-       */
-    },
-  },
+  getters: {},
 }

@@ -4,6 +4,9 @@ import axios from "axios"
 import router from "@/router"
 
 Vue.use(Vuex)
+const bigKahuna = axios.create({
+  baseURL: `https://fontana.librarians.design/wp-json/wp/v2/`,
+})
 
 export default new Vuex.Store({
   // Making sure that we're doing
@@ -14,26 +17,8 @@ export default new Vuex.Store({
     publicContent,
   },
   state: {
-    menu: [],
     locations: [],
     loggedin: false,
-  },
-  mutations: {
-    addContentToState(state, { type, data }) {
-      if (Array.isArray(data) && (!state[type] || state[type].length == 0)) {
-        state[type] = data
-      } else if (data.id && state[type].find(item => item.id === data.id) == undefined) {
-        state[type].push(data)
-      } else if (Array.isArray(data)) {
-        data.forEach(content => {
-          if (state[type].find(item => item.id === content.id) == undefined) {
-            state[type].push(content)
-          }
-        })
-      }
-    },
-    setValue(state, value) {
-      state.currentService = location
-    },
+    menu: [],
   },
 })
