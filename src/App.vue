@@ -19,7 +19,7 @@
 
     <router-view class="view" />
 
-    <app-footer />
+    <app-footer :menuItems="footerMenu" :locations="currentLocation" />
   </div>
 </template>
 
@@ -40,7 +40,10 @@ export default {
     Search,
   },
   computed: {
-    ...mapState(["currentLocation", "locations"]),
+    ...mapState(["currentLocation", "locations", "menus"]),
+  },
+  footerMenu() {
+    return menus[0]
   },
 }
 </script>
