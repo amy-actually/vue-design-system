@@ -15,7 +15,7 @@
       />
     </header>
 
-    <Search :search-action="$route.name" />
+    <Search :search-action="$route.name ? $route.name : 'everything'" />
 
     <router-view class="view" />
 
