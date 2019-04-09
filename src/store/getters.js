@@ -146,4 +146,7 @@ export default {
 
     return relatedContent
   },
+  getItemBySlug: state => (contentType, slug) => {
+    return state[contentType].find(item => item.slug === slug)
+  },
 }

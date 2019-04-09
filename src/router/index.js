@@ -82,7 +82,7 @@ const router = new Router({
       component: Event,
       path: "/events/:slug",
       props: route => ({
-        eventObject: router.app.$store.getters.getEventBySlug(route.params.slug),
+        eventObject: router.app.$store.getters.getItemBySlug("events", route.params.slug),
       }),
     },
 
@@ -109,7 +109,7 @@ const router = new Router({
       component: Service,
       path: "/services/:slug",
       props: route => ({
-        serviceObject: router.app.$store.getters.getServiceBySlug(route.params.slug),
+        serviceObject: router.app.$store.getters.getItemBySlug("services", route.params.slug),
         location: route.query.location,
       }),
     },
