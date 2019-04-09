@@ -1,23 +1,26 @@
 <template>
-    <component class="dropdown" :is="element" v-on-clickaway="closeDropdown">
-        <span :aria-expanded="isOpen"
-                aria-haspopup="true"
-                class="dropdown__toggle dropdown-toggle"
-                :class="buttonClass"
-                href="#"
-                v-on:click="toggleMenu"
-                role="button">
-
-            <span class="dropdown__label"
-                  :class="labelClass">
-                <slot name="label">Hello</slot>
-            </span>
-
-        </span>
-        <div class="dropdown__menu dropdown-menu" :class="[{show: isOpen}, dropdownMenuClass]">
-            <slot name="items"></slot>
-        </div>
-    </component>
+  <component class="dropdown" :is="element" v-on-clickaway="closeDropdown">
+    <span
+      :aria-expanded="isOpen"
+      aria-haspopup="true"
+      class="dropdown__toggle dropdown-toggle"
+      :class="buttonClass"
+      href="#"
+      v-on:click="toggleMenu"
+      role="button"
+    >
+      <span class="dropdown__label" :class="labelClass">
+        <slot name="label">Hello</slot>
+      </span>
+    </span>
+    <div
+      class="dropdown__menu dropdown-menu"
+      :class="[{ show: isOpen }, dropdownMenuClass]"
+      @click="toggleMenu"
+    >
+      <slot name="items"></slot>
+    </div>
+  </component>
 </template>
 
 <script>

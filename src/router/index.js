@@ -10,7 +10,7 @@ import SearchResults from "../templates/SearchResults.vue"
 import Service from "../templates/Service.vue"
 import Services from "../templates/Services.vue"
 //--------------
-import routes from "./routes"
+//import routes from "./routes"
 
 Vue.use(Router)
 

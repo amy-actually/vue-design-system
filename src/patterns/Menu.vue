@@ -68,17 +68,18 @@
       dropdown-menu-class="text--nowrap text--right"
       label-class="menu__item__label"
     >
-      <template slot="label">{{ currentLocation }}</template>
+      <template slot="label">{{ selectedLocation }}</template>
       <template slot="items">
-        <vue-link :to="setLocationInQueryParameter('all')">All Libraries</vue-link>
-        <vue-link
+        <a href="#">All Libraries</a>
+        <a
+          v-for="location in locations"
           class="d-block dropdown__menu__item link link--undecorated mb-1 mt-1 text--underlined"
           :key="location.id"
-          :to="setLocationInQueryParameter(`${location.slug}`)"
-          v-for="location in locations"
+          href="#"
+          @click="setLocationInQueryParameter(`${location.slug}`)"
         >
           {{ location.name }}
-        </vue-link>
+        </a>
       </template>
     </Dropdown>
   </nav>
@@ -88,7 +89,6 @@
 import Dropdown from "../elements/Dropdown.vue"
 import VueLink from "vue-link"
 import Icon from "../elements/Icon.vue"
-import { mapState } from "vuex"
 
 export default {
   name: "Menu",
@@ -97,18 +97,37 @@ export default {
     Dropdown,
     VueLink,
   },
-
-  computed: {
-    ...mapState(["locations", "currentLocation"]),
+  data() {
+    return {
+      selectedLocation: "",
+    }
   },
-
   methods: {
     setLocationInQueryParameter(locationSlug) {
-      this.$store.commit("setCurrentLocation", locationSlug)
+      this.$store.commit("SET_LOCATION", locationSlug)
       return {
         query: Object.assign({}, this.$route.query, { location: `${locationSlug}` }),
       }
     },
+    getName() {
+      return this.currentLocation === "all"
+        ? "All Libraries"
+        : undefined !=
+          (val = this.locations.find(location => location.slug === this.currentLocation))
+        ? val.name
+        : "All"
+    },
+  },
+  props: {
+    currentLocation: {
+      type: String,
+    },
+    locations: {
+      type: Array,
+    },
+  },
+  created() {
+    this.selectedLocation = this.getName()
   },
 }
 </script>
