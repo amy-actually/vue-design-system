@@ -1,7 +1,6 @@
 @import "~bootstrap/scss/nav";
 
 .menu {
-
   &--header {
     background-color: $color-blue-alternate;
     bottom: 0;
@@ -74,4 +73,8 @@
       text-transform: uppercase;
     }
   }
+}
+.dropdown__menu__item,
+.drop__menu__selected {
+  cursor: pointer;
 }

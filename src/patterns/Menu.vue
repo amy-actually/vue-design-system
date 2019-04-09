@@ -70,8 +70,8 @@
     >
       <template slot="label">{{ selectedLocation }}</template>
       <template slot="items">
-        <a href="#">All Libraries</a>
-        <a
+        <div class="dropdown__menu__selected">All Libraries</div>
+        <div
           v-for="location in locations"
           class="d-block dropdown__menu__item link link--undecorated mb-1 mt-1 text--underlined"
           :key="location.id"
@@ -79,7 +79,7 @@
           @click="setLocationInQueryParameter(`${location.slug}`)"
         >
           {{ location.name }}
-        </a>
+        </div>
       </template>
     </Dropdown>
   </nav>
@@ -105,11 +105,10 @@ export default {
   methods: {
     setLocationInQueryParameter(locationSlug) {
       this.$store.commit("SET_LOCATION", locationSlug)
-      return {
-        query: Object.assign({}, this.$route.query, { location: `${locationSlug}` }),
-      }
+      this.$router.push({ query: { location: `${locationSlug}` } })
     },
     getName() {
+      let val
       return this.currentLocation === "all"
         ? "All Libraries"
         : undefined !=
