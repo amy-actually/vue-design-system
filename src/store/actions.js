@@ -80,13 +80,13 @@ export default {
     }
   },
 
-  async fetchMenus({ commit }, { type, perPage = 100, pg = 1 }) {
+  async fetchMenus({ commit }) {
     return fontana.get(`/menus`).then(response => {
       //commit("ADD_CONTENT", [type, response.data])
       response.data.forEach(menu => {
-        const items = api.fetchMenu(menu.slug).then(results => {
-          menu.menu = results.data
-          commit("ADD_CONTENT_SLUG", ["menus", [menu]])
+        const items = fontana.get(`/menus/${menu.slug}`).then(results => {
+          console.log(results)
+          commit("ADD_CONTENT_SLUG", { type: "menus", data: results.data })
         })
         resolve()
       })
