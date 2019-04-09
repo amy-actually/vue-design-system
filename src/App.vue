@@ -19,7 +19,7 @@
 
     <router-view class="view" />
 
-    <app-footer :menuItems="footerMenu" :locations="currentLocation" />
+    <app-footer :menuItems="footerMenu" :location="location" />
   </div>
 </template>
 
@@ -41,9 +41,15 @@ export default {
   },
   computed: {
     ...mapState(["currentLocation", "locations", "menus"]),
-  },
-  footerMenu() {
-    return menus[0]
+    location() {
+      return this.currentLocation === "all"
+        ? this.locations.find(location => location.slug === "headquarters")
+        : this.locations.find(location => location.slug === this.currentLocation)
+    },
+    footerMenu() {
+      const footer = this.menus.find(menu => menu.slug === "footer-menu")
+      return !footer ? [] : footer.items
+    },
   },
 }
 </script>

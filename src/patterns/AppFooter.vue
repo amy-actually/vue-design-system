@@ -9,8 +9,11 @@
         v-if="location"
       >
         <template slot="copy">
-          828-586-2016 County Librarian: Tracy Fitzmaurice location_on310 Keener Street Sylva, NC
-          28779 Fax: 828-631-2943 Hours and address will be here if location / phone number
+          {{ location.acf.phone }} <br /><br />
+          {{ location.acf.librarian }} <br />
+          {{ location.acf.address }} <br />
+          {{ location.acf.city }}, {{ location.acf.state }} {{ location.acf.zip }} <br /><br />
+          Fax: {{ location.acf.fax }}
         </template>
       </card>
 
@@ -19,14 +22,14 @@
 
     <nav class="col-md d-xl-flex flex-wrap menu menu--footer p-0 p-md-3" role="navigation">
       <div class="col-xl-4 p-0 pl-xl-2 pr-xl-2" v-for="item in menuItems">
-        <router-link
+        <vue-link
           class="background--blue-alternate d-block link link--undecorated mb-3 p-4 menu__item"
           :to="item.url"
         >
           <span class="menu__item__label text--white">
             {{ item.title }}
           </span>
-        </router-link>
+        </vue-link>
       </div>
     </nav>
   </footer>
@@ -35,6 +38,7 @@
 <script>
 import Card from "./Card.vue"
 import Search from "./Search.vue"
+import VueLink from "vue-link"
 
 export default {
   name: "AppFooter",
@@ -42,6 +46,7 @@ export default {
   components: {
     Card,
     Search,
+    VueLink,
   },
 
   props: {
