@@ -22,17 +22,17 @@
         <label for="" class="form__label text--white text--small text--bold">
           Search
           <Dropdown element="span" label-class="text--underlined--dotted text--uppercase">
-            <template slot="label" v-if="isEventSearch"
-              >Events</template
+            <template slot="label" v-if="isEventSearch">
+              Events</template
             >
-            <template slot="label" v-else-if="isCatalogSearch"
-              >the Catalog</template
+            <template slot="label" v-else-if="isCatalogSearch">
+              the Catalog</template
             >
-            <template slot="label" v-else-if="isServicesSearch"
-              >Services</template
+            <template slot="label" v-else-if="isServicesSearch">
+              Services</template
             >
-            <template slot="label" v-else-if="isEverythingSearch"
-              >Everything (beta)</template
+            <template slot="label" v-else-if="isEverythingSearch">
+              Everything (beta)</template
             >
 
             <template slot="items">
@@ -105,7 +105,6 @@
     </div>
   </form>
 </template>
-
 <script>
 import CButton from "../elements/Button.vue"
 import Dropdown from "../elements/Dropdown.vue"
@@ -151,11 +150,6 @@ export default {
   },
 
   methods: {
-    /* resetSearchAction() {
-      const routeName = this.$route.name.toLowerCase();
-      this.searchAction = routeName;
-    }, */
-
     search() {
       if (this.isCatalogSearch) {
         return this.searchCatalog()
@@ -221,15 +215,6 @@ export default {
     },
   },
 
-  mounted() {
-    /**
-     * As soon as the `search` component renders for the first time,
-     * let's make sure it sets itself to an appropriate default, so that
-     * it's as useful as possible.
-     */
-    /* this.resetSearchAction(); */
-  },
-
   props: {
     containerClass: {
       default: "col-lg-6",
@@ -240,16 +225,6 @@ export default {
       default: "catalog",
       type: String,
     },
-  },
-
-  watch: {
-    /**
-     * We want to make sure that the search is always as relevant as possible,
-     * so, when the route changes, we can try to set a sane default.
-     */
-    /* $route() {
-      this.resetSearchAction();
-    }, */
   },
 }
 </script>

@@ -1,160 +1,158 @@
 <template>
+  <component class="card" :class="{ 'card--deck': isDeck }" :is="element">
+    <div :class="contentContainerClass">
+      <div :class="{ 'card__content col-sm-10 col-md-5 mb-4 pb-4 pl-md-0 pr-md-0': isDeck }">
+        <template v-if="contentType">
+          <div
+            aria-hidden="true"
+            class="card__color-code mb-1"
+            :class="`card__color-code--${contentType}`"
+            v-if="contentType"
+          ></div>
 
-    <component class="card"
-               :class="{'card--deck': isDeck }"
-               :is="element">
+          <div class="align-items-center card__badge d-flex justify-content-between">
+            <div
+              class="align-self-start card__badge__label text--bold text--extra-small text--uppercase"
+              v-html="badgeLabel ? badgeLabel : contentType"
+            ></div>
 
-        <div :class="contentContainerClass">
+            <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
+              {{ decodeHtml(explainer) }}
+              <br />
 
-         <div :class="{'card__content col-sm-10 col-md-5 mb-4 pb-4 pl-md-0 pr-md-0': isDeck}">
+              <div class="card__badge__sub-explainer" v-if="subExplainer">
+                {{ decodeHtml(subExplainer) }}
+              </div>
+            </div>
+          </div>
+        </template>
 
-            <template v-if="contentType">
+        <heading
+          :class="[{ 'text--serif': isDeck }, headingClass ? headingClass : 'card__heading']"
+          :level="headingLevel"
+          v-if="heading"
+          v-html="heading"
+        >
+        </heading>
 
-                <div aria-hidden="true"
-                     class="card__color-code mb-1"
-                     :class="`card__color-code--${contentType}`" v-if="contentType">
-                </div>
+        <heading
+          :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
+          :level="subheadingLevel"
+          v-if="subheading"
+        >
+          {{ decodeHtml(subheading) }}
+        </heading>
 
-                <div class="align-items-center card__badge d-flex justify-content-between">
+        <div class="card__heading__separator" v-if="isDeck"></div>
 
-                    <div class="align-self-start card__badge__label text--bold text--extra-small text--uppercase">
-                        {{ badgeLabel ? badgeLabel : contentType }}
-                    </div>
+        <p class="card__copy">
+          <slot name="copy">{{ decodeHtml(copy) }}</slot>
+        </p>
 
-                    <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
-                        {{ explainer }} <br>
+        <slot name="action"></slot>
+      </div>
+    </div>
 
-                        <div class="card__badge__sub-explainer" v-if="subExplainer">{{ subExplainer }}</div>
-                    </div>
-
-                </div>
-
-            </template>
-
-            <heading :class="[{'text--serif': isDeck}, headingClass ? headingClass : 'card__heading']"
-                     :level="headingLevel"
-                     v-if="heading" v-html="heading">
-            </heading>
-
-             <heading :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
-                      :level="subheadingLevel"
-                      v-if="subheading">
-                 {{ subheading }}
-             </heading>
-
-            <div class="card__heading__separator" v-if="isDeck"></div>
-
-            <p class="card__copy">
-                <slot name="copy">{{decodeHtml(copy)}}</slot>
-            </p>
-
-            <slot name="action"></slot>
-
-        </div>
-
-        </div>
-
-        <div class="card__image img-fluid" v-if="image && !isDeck">
-            <img :src="image" alt="">
-        </div>
-
-    </component>
+    <div class="card__image img-fluid" v-if="image && !isDeck">
+      <img :src="image" alt="" />
+    </div>
+  </component>
 </template>
 
 <script>
-import Heading from "../elements/Heading.vue";
+import Heading from "../elements/Heading.vue"
 
 export default {
   name: "Card",
 
   components: {
-    Heading
+    Heading,
   },
 
   computed: {
     isDeck() {
-      return this.type === "deck";
-    }
+      return this.type === "deck"
+    },
   },
-  methods:{
-    decodeHtml: function (html) {
-        if(html){
-      var txt = document.createElement("textarea");
-      txt.innerHTML = html;
-      return txt.value;
-        }
-      },
+  methods: {
+    decodeHtml: function(html) {
+      if (html) {
+        var txt = document.createElement("textarea")
+        txt.innerHTML = html
+        return txt.value
+      }
+    },
   },
 
   props: {
     badgeLabel: {
-      type: String
+      type: String,
     },
 
     copy: {
-      type: String
+      type: String,
     },
 
     contentContainerClass: {
       default: "p-4",
-      type: String
+      type: String,
     },
 
     contentType: {
       type: String,
-      validator: value => value.match(/(event|blog|collection|service)/)
+      //validator: value => value.match(/(event|blog|collection|service)/)
     },
 
     element: {
       default: "div",
-      type: String
+      type: String,
     },
 
     explainer: {
-      type: String
+      type: String,
     },
 
     heading: {
-      type: String
+      type: String,
     },
 
     headingLevel: {
       default: "h2",
-      type: String
+      type: String,
     },
 
     headingClass: {
-      type: String
+      type: String,
     },
 
     image: {
-      type: String
+      type: String,
     },
 
     subExplainer: {
-      type: String
+      type: String,
     },
 
     subheading: {
-      type: String
+      type: String,
     },
 
     subheadingClass: {
-      type: String
+      type: String,
     },
 
     subheadingLevel: {
       default: "h3",
-      type: String
+      type: String,
     },
 
     type: {
       default: "default",
       type: String,
-      validator: value => value.match(/(default|deck)/)
-    }
-  }
-};
+      validator: value => value.match(/(default|deck)/),
+    },
+  },
+}
 </script>
 
 <style lang="scss">
