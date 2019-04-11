@@ -50,45 +50,23 @@ export default {
           )
         : relatedContent
 
-    relatedContent.sort(function(a, b) {
-      let date1 = !a.type
-        ? 0
-        : a.type === "event"
-        ? new Date(a.start_date)
-        : a.type === "collection-item"
-        ? new Date(a.acf.record_creation_date)
-        : new Date(a.date)
-      let date2 = !b.type
-        ? 0
-        : b.type === "event"
-        ? new Date(b.start_date)
-        : b.type === "collection-item"
-        ? new Date(b.acf.record_creation_date)
-        : new Date(b.date)
-      return date1.getTime() - date2.getTime()
-    })
-
     return relatedContent
   },
 
-  getContentBy: state => (contentType, locationName = null) => {
-    console.log(contentType)
-    if (!state[contentType] || state[contentType].length == 0) {
-      return null
-    }
+  getContentBy: state => (contentType, locationName = "all", serviceName = "any") => {
     const content = state[contentType]
 
     let relatedContent
 
     relatedContent =
-      locationName && locationName !== "all"
+      locationName !== "all"
         ? content.filter(
             page =>
               page.acf &&
               page.acf.location &&
               page.acf.location.some(location => location.slug === locationName)
           )
-        : !locationName && state.currentLocation !== "all"
+        : rootState.locations.currentLocation !== "all"
         ? content.filter(
             page =>
               page.acf &&
@@ -100,6 +78,16 @@ export default {
         : content
 
     relatedContent =
+      serviceName !== "any" && relatedContent.length > 0
+        ? relatedContent.filter(
+            page =>
+              page.acf &&
+              page.acf.services &&
+              page.acf.services.some(service => service.slug === rootState.services.currentService)
+          )
+        : relatedContent
+
+    relatedContent =
       !relatedContent || relatedContent.length < 1
         ? content.filter(
             page =>
@@ -109,43 +97,50 @@ export default {
           )
         : relatedContent
 
+    return relatedContent
+  },
+
+  getCtaByCategory: state => (slug, index = 1) => {
+    if (!state.callsToAction || state.callsToAction.length == 0) {
+      return null
+    }
+    const content = state.callsToAction
+
+    let relatedContent
+
+    relatedContent = content.filter(
+      cta =>
+        cta.acf && cta.acf.category && cta.acf.category.some(category => category.slug === slug)
+    )
     relatedContent =
-      rootState.services.currentService !== "any" && relatedContent.length > 0
-        ? relatedContent.filter(
-            page =>
-              page.acf &&
-              page.acf.services &&
-              page.acf.services.some(service => service.slug === rootState.services.currentService)
+      !relatedContent || relatedContent.length < 1
+        ? content.filter(
+            cta =>
+              cta.acf &&
+              cta.acf.location &&
+              cta.acf.location.some(location => location.slug === slug)
           )
-        : rootState.services.currentService && rootState.services.currentService !== "any"
+        : relatedContent
+    relatedContent =
+      !relatedContent || relatedContent.length < 1
+        ? content.filter(
+            cta =>
+              cta.acf && cta.acf.services && cta.acf.services.some(service => service.slug === slug)
+          )
+        : relatedContent
+    relatedContent =
+      !relatedContent || relatedContent.length < 1
         ? content.filter(
             page =>
-              page.acf &&
-              page.acf.services &&
-              page.acf.services.some(service => service.slug === rootState.services.currentService)
+              !page.acf ||
+              !page.acf.location ||
+              page.acf.location.some(location => location.slug === "headquarters")
           )
         : relatedContent
 
-    relatedContent.sort(function(a, b) {
-      let date1 = !a.type
-        ? 0
-        : a.type === "event"
-        ? new Date(a.start_date)
-        : a.type === "collection-item"
-        ? new Date(a.acf.record_creation_date)
-        : new Date(a.date)
-      let date2 = !b.type
-        ? 0
-        : b.type === "event"
-        ? new Date(b.start_date)
-        : b.type === "collection-item"
-        ? new Date(b.acf.record_creation_date)
-        : new Date(b.date)
-      return date1.getTime() - date2.getTime()
-    })
-
-    return relatedContent
+    return relatedContent[index]
   },
+
   getItemBySlug: state => (contentType, slug) => {
     return state[contentType].find(item => item.slug === slug)
   },

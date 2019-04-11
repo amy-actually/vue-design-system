@@ -15,7 +15,6 @@ export default {
       let page = 1
       let pages
       let organizers = []
-
       do {
         let results = await dispatch("getOrganizers", page)
         organizers.push(results.data.organizers)

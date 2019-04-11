@@ -1,9 +1,9 @@
 export default {
   namespaced: true,
   state: {
+    audience: [],
     featuredCollections: [],
     genres: [],
-    audience: [],
     subjects: [],
     taxonomies: [],
   },
