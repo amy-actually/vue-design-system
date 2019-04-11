@@ -57,7 +57,29 @@
         </div>
         <!-- end .showcase__wrap-->
 
-        <router-link class="link" :to="collectionLink" v-if="collectionLink">
+        <router-link
+          class="link"
+          :to="{
+            name: 'collection-type-slug',
+            params: { channel: heading, type: collectionType, userLocation: location },
+          }"
+          v-if="collectionLink && collectionType"
+        >
+          {{ collectionLinkLabel }}
+        </router-link>
+        <router-link
+          class="link"
+          :to="{
+            name: 'collection-type',
+            params: {
+              slug: collectionLink,
+              channel: heading,
+              type: collectionType,
+              userLocation: location,
+            },
+          }"
+          v-else-if="!collectionLink && collectionType"
+        >
           {{ collectionLinkLabel }}
         </router-link>
       </div>
@@ -134,6 +156,12 @@ export default {
     jumpDistance: {
       type: Number,
       default: 2,
+    },
+    collectionType: {
+      type: String,
+    },
+    location: {
+      type: String,
     },
   },
 }
