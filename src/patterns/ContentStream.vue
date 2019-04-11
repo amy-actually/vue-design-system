@@ -250,8 +250,6 @@ export default {
     },
     taxonomies() {
       let taxo = this.$state.taxonomies.taxonomies.map(tax => tax.slug)
-      console.log("CONTENT STREAM : TAXONOMIES")
-      console.log(taxo)
       return this.$state.taxonomies.taxonomies.map(tax => tax.slug)
     },
   },

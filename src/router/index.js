@@ -9,6 +9,7 @@ import NotFound from "../templates/NotFound.vue"
 import SearchResults from "../templates/SearchResults.vue"
 import Service from "../templates/Service.vue"
 import Services from "../templates/Services.vue"
+import Blog from "../templates/Blog.vue"
 //--------------
 //import routes from "./routes"
 
@@ -36,6 +37,13 @@ const router = new Router({
         `,
         network: "blog",
         slug: "any",
+      }),
+    },
+    {
+      component: Blog,
+      path: "/blog/:slug",
+      props: route => ({
+        page: router.app.$store.getters.getItemBySlug("blogs", route.params.slug),
       }),
     },
 

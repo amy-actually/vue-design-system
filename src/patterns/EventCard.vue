@@ -1,5 +1,5 @@
 <template>
-  <vue-link class="d-block event link link--undecorated" :to="'events/' + event.slug">
+  <vue-link class="d-block event link link--undecorated" :to="'/events/' + event.slug">
     <card
       class="mb-3"
       content-type="event"
@@ -19,17 +19,17 @@
 <script>
 import Vue from "vue"
 import VueMoment from "vue-moment"
-import VueLink from "vue-link"
 
 import Card from "./Card.vue"
 import Heading from "../elements/Heading.vue"
+import VueLink from "vue-link"
 
 Vue.use(VueMoment)
 
 export default {
   name: "EventCard",
 
-  component: {
+  components: {
     Card,
     Heading,
     VueLink,

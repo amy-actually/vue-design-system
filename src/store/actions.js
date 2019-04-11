@@ -7,7 +7,7 @@ const endpoint = {
   pages: { type: "bigKahuna", slug: "pages" },
   posts: { type: "bigKahuna", slug: "posts" },
   resources: { type: "bigKahuna", slug: "notices" },
-  services: { type: "bigKahuna", slug: "notices" },
+  services: { type: "bigKahuna", slug: "services" },
   blogs: { type: "shelfLife", slug: "posts" },
 }
 
@@ -24,25 +24,25 @@ const shelfLife = axios.create({
 
 export default {
   async loadHome({ commit, dispatch }) {
-    console.log("LOADHOME")
     dispatch("fetchContent", { type: "locations" })
     dispatch("fetchMenus")
+    dispatch("fetchContent", { type: "callsToAction", perPage: 10 })
     dispatch("fetchContent", { type: "events", perPage: 10 })
-    dispatch("fetchContent", { type: "services" })
+    dispatch("fetchContent", { type: "services", perPage: 100 })
     dispatch("fetchContent", { type: "collection", perPage: 10 })
     dispatch("fetchContent", { type: "blogs", perPage: 5 })
   },
 
   async fetchContent({ commit }, { type, perPage = 100, pg = 1, params = [] }) {
+    console.log("FETCH " + type)
     const name = endpoint[type]["slug"]
     const api = endpoint[type]["type"]
-    console.log("fetching " + type)
     let args = params
     if (api === "bigKahuna") {
       args = { ...args, per_page: perPage, page: pg }
+      console.log(args)
       return bigKahuna.get(`/${name}`, args).then(response => {
         commit("ADD_CONTENT", { type: type, data: response.data })
-        resolve()
       })
     }
     if (api === "fontana") {
@@ -85,10 +85,8 @@ export default {
       //commit("ADD_CONTENT", [type, response.data])
       response.data.forEach(menu => {
         const items = fontana.get(`/menus/${menu.slug}`).then(results => {
-          console.log(results)
           commit("ADD_CONTENT_SLUG", { type: "menus", data: results.data })
         })
-        resolve()
       })
     })
   },

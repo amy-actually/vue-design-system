@@ -19,14 +19,12 @@ export default {
               page.acf.location &&
               page.acf.location.some(location => location.slug === locationName)
           )
-        : rootState.locations.currentLocation !== "all"
+        : state.locations.currentLocation !== "all"
         ? content.filter(
             page =>
               page.acf &&
               page.acf.location &&
-              page.acf.location.some(
-                location => location.slug === rootState.locations.currentLocation
-              )
+              page.acf.location.some(location => location.slug === state.locations.currentLocation)
           )
         : content
 
@@ -46,7 +44,7 @@ export default {
             page =>
               page.acf &&
               page.acf.services &&
-              page.acf.services.some(service => service.slug === rootState.services.currentService)
+              page.acf.services.some(service => service.slug === state.services.currentService)
           )
         : relatedContent
 
@@ -66,14 +64,12 @@ export default {
               page.acf.location &&
               page.acf.location.some(location => location.slug === locationName)
           )
-        : rootState.locations.currentLocation !== "all"
+        : state.locations.currentLocation !== "all"
         ? content.filter(
             page =>
               page.acf &&
               page.acf.location &&
-              page.acf.location.some(
-                location => location.slug === rootState.locations.currentLocation
-              )
+              page.acf.location.some(location => location.slug === state.locations.currentLocation)
           )
         : content
 
@@ -83,7 +79,7 @@ export default {
             page =>
               page.acf &&
               page.acf.services &&
-              page.acf.services.some(service => service.slug === rootState.services.currentService)
+              page.acf.services.some(service => service.slug === state.services.currentService)
           )
         : relatedContent
 
@@ -100,18 +96,35 @@ export default {
     return relatedContent
   },
 
-  getCtaByCategory: state => (slug, index = 1) => {
-    if (!state.callsToAction || state.callsToAction.length == 0) {
-      return null
-    }
+  getCtaByCategory: state => (slug = null, index = 0, exclude = []) => {
     const content = state.callsToAction
-
     let relatedContent
 
-    relatedContent = content.filter(
-      cta =>
-        cta.acf && cta.acf.category && cta.acf.category.some(category => category.slug === slug)
-    )
+    if (exclude.length > 0) {
+      relatedContent = content.filter(cta => (exclude.includes(cta.id) ? false : true))
+    }
+
+    if (relatedContent && (!slug || slug === "all" || slug === "any")) {
+      return index === "random"
+        ? relatedContent[Math.floor(Math.random() * relatedContent.length)]
+        : relatedContent[index]
+    }
+
+    relatedContent =
+      !relatedContent || relatedContent.length < 1
+        ? content.filter(
+            cta =>
+              cta.acf &&
+              cta.acf.category &&
+              cta.acf.category.some(category => category.slug === slug)
+          )
+        : relatedContent.filter(
+            cta =>
+              cta.acf &&
+              cta.acf.category &&
+              cta.acf.category.some(category => category.slug === slug)
+          )
+
     relatedContent =
       !relatedContent || relatedContent.length < 1
         ? content.filter(
@@ -138,7 +151,9 @@ export default {
           )
         : relatedContent
 
-    return relatedContent[index]
+    return index === "random"
+      ? relatedContent[Math.floor(Math.random() * relatedContent.length)]
+      : relatedContent[index]
   },
 
   getItemBySlug: state => (contentType, slug) => {

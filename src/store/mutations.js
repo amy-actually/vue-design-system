@@ -31,7 +31,6 @@ export default {
   },
   ADD_CONTENT_SLUG: (state, { type, data }) => {
     let container = state[type]
-    console.log(data)
     if (Array.isArray(data)) {
       data.forEach(content => {
         if (!container.find(item => item.slug === content.slug)) {

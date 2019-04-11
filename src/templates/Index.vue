@@ -1,15 +1,15 @@
 <template>
   <component :is="type" class="library">
     <main role="main">
-      <template v-for="(call, index) in callsToAction" v-if="index === 0">
-        <call-to-action
-          :action="call.acf.action"
-          :copy="call.acf.copy"
-          :image="call.acf.image"
-          :heading="call.acf.heading"
-          :link="call.acf.link"
-        ></call-to-action>
-      </template>
+      <call-to-action
+        v-if="primaryCallToAction"
+        class="call-to-action--large"
+        :action="primaryCallToAction.acf.action"
+        :copy="primaryCallToAction.acf.copy"
+        :image="primaryCallToAction.acf.image"
+        :heading="primaryCallToAction.acf.heading"
+        :link="primaryCallToAction.acf.link"
+      />
 
       <section
         class="background--blue-alternate library__section pb-3 pl-md-2 pb-md-4 pt-md-4 pr-md-2"
@@ -92,12 +92,13 @@
 
           <div class="ml-2 p-0">
             <call-to-action
-              action="Call to Action"
-              copy="Data tells a powerful story --
-                      about your content, who reads it, and what's possible"
-              image="https://source.unsplash.com/random"
-              heading="Watch the eclipse with us"
-            ></call-to-action>
+              v-if="secondaryCTA"
+              :action="secondaryCTA.acf.action"
+              :copy="secondaryCTA.acf.copy"
+              :image="secondaryCTA.acf.image"
+              :heading="secondaryCTA.acf.heading"
+              :link="secondaryCTA.acf.link"
+            />
           </div>
         </div>
       </section>
@@ -135,8 +136,8 @@ export default {
   computed: {
     ...mapState(["events", "collection", "services", "blogs"]),
 
-    callsToAction() {
-      return this.$store.getters.getContentBy("callsToAction", this.location)
+    primaryCallToAction() {
+      return this.$store.getters.getCtaByCategory(this.$store.state.currentLocation, "random")
     },
 
     randomCollectionItem() {
@@ -159,6 +160,12 @@ export default {
 
     post() {
       return this.blogs.length > 0 ? this.blogs[0] : null
+    },
+    secondaryCTA() {
+      let check = this.primaryCallToAction ? this.primaryCallToAction.id : null
+      return this.primaryCallToAction
+        ? this.$store.getters.getCtaByCategory(this.$store.state.currentLocation, "random", [check])
+        : null
     },
   },
 

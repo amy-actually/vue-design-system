@@ -28,7 +28,7 @@ $theme-colors: map-merge(
     "pink": $color-pink,
     "pink-dark": $color-pink-darker,
     "teal": $color-teal,
-    "white": $color-white
+    "white": $color-white,
   ),
   $theme-colors
 );
@@ -158,7 +158,7 @@ h5,
   border-radius: 0.25rem;
 }
 
-.background-image-test {
+.card__background {
   background-repeat: no-repeat;
   position: absolute;
   left: 0;
@@ -166,6 +166,7 @@ h5,
   bottom: 0;
   top: 0;
   background-position: right center;
+  background-size: cover;
   clip-path: polygon(100% 0, 100% 0, 100% 100%, 0 190%);
 
   @media #{$media-query-medium} {
@@ -173,12 +174,19 @@ h5,
   }
   &:after {
     content: "";
-    background-color: rgba(white, 0.7);
+    background-color: rgba($color-blue-dark, 0.35);
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+  }
+}
+.call-to-action--large .card__background {
+  &:after {
+    @media #{$media-query-medium} {
+      background-color: rgba($color-white, 0.7);
+    }
   }
 }
 
