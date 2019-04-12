@@ -1,35 +1,57 @@
 <template>
   <main :class="`background--white ${type}`" role="main">
     <call-to-action
-      v-if="call"
+      v-if="callToAction"
       class="call-to-action--large"
-      :key="call.id"
-      :action="call.acf.action"
-      :copy="call.acf.copy"
-      :image="call.acf.image"
-      :heading="call.acf.heading"
-      :link="call.acf.link"
+      :key="callToAction.id"
+      :action="callToAction.acf.action"
+      :copy="callToAction.acf.copy"
+      :image="callToAction.acf.image"
+      :heading="callToAction.acf.heading"
+      :link="callToAction.acf.link"
     ></call-to-action>
 
     <slot name="breadcrumb"> </slot>
     <slot name="header"> </slot>
-    <slot name="content"> </slot>
+
+    <section class="background--white library__section p-3">
+      <div class="col-lg-10 m-lg-auto">
+        <div class="d-md-flex">
+          <div class="col col-md-6 col-lg-4" v-if="sidebar">
+            <slot name="sidebar"></slot>
+          </div>
+
+          <div :class="sidebar ? 'col col-lg-8' : ''">
+            <slot name="content"> </slot>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
 
 <script>
+import CallToAction from "../patterns/CallToAction.vue"
+
 export default {
   name: "ChannelTemplate",
-
-  computed: {
-    call() {
-      return this.$store.getters.getCtaByCategory(this.slug, "random")
-    },
+  components: {
+    CallToAction,
   },
 
   props: {
-    slug: {
+    type: {
       type: String,
+    },
+    /**
+     * return this.$store.getters['content/getCtaByCategory'](this.slug, "random")
+     */
+    callToAction: {
+      type: Object,
+    },
+    sidebar: {
+      type: Boolean,
+      default: true,
     },
   },
 }

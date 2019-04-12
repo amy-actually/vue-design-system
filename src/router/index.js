@@ -35,7 +35,7 @@ const router = new Router({
           vast array of topics including historical and current events, technology, 
           cats and much more, as well as related books suggestions!
         `,
-        network: "blog",
+        network: "blogs",
         slug: "any",
       }),
     },
@@ -43,7 +43,7 @@ const router = new Router({
       component: Blog,
       path: "/blog/:slug",
       props: route => ({
-        page: router.app.$store.getters.getItemBySlug("blogs", route.params.slug),
+        page: router.app.$store.getters["content/getItemBySlug"]("blogs", route.params.slug),
       }),
     },
 
@@ -90,7 +90,10 @@ const router = new Router({
       component: Event,
       path: "/events/:slug",
       props: route => ({
-        eventObject: router.app.$store.getters.getItemBySlug("events", route.params.slug),
+        eventObject: router.app.$store.getters["content/getItemBySlug"](
+          "events",
+          route.params.slug
+        ),
       }),
     },
 
@@ -122,6 +125,21 @@ const router = new Router({
           route.params.slug
         ),
         location: route.query.location,
+      }),
+    },
+    {
+      component: Channel,
+      meta: {
+        title: "Information",
+      },
+      path: "/pages",
+      props: route => ({
+        channelTitle: "Library Information",
+        channelDescription: `
+          Find Information about general library services, how-to's and more.
+        `,
+        network: "pages",
+        slug: "pages/",
       }),
     },
     {

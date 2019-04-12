@@ -121,7 +121,7 @@ export default {
   fetchContent(type, params) {
     const name = endpoint[type]["slug"]
     const apiType = endpoint[type]["type"]
-    const mod = endpoint[type]["module"]
+    const variant = endpoint[type]["module"]
 
     if (type === "menus") {
       return fontana.get(`/menus`).then(response => {
@@ -135,15 +135,22 @@ export default {
 
     if (apiType === "fontana") {
       return fontana.get(`/${name}`, params).then(res => {
-        return { commit: "ADD_CONTENT", posts: res.data }
+        return variant !== "root"
+          ? {
+              commit: `${variant}/ADD_CONTENT`,
+              pages: Number(res.headers["x-wp-totalpages"]),
+              count: Number(res.headers["x-wp-total"]),
+              posts: res.data,
+            }
+          : { commit: "ADD_CONTENT", posts: res.data }
       })
     }
 
     if (apiType === "bigKahuna") {
       return bigKahuna.get(`/${name}`, params).then(res => {
-        return mod !== "taxonomies"
+        return variant !== "root"
           ? {
-              commit: `ADD_CONTENT`,
+              commit: `${variant}/ADD_CONTENT`,
               pages: Number(res.headers["x-wp-totalpages"]),
               count: Number(res.headers["x-wp-total"]),
               posts: res.data,
@@ -156,7 +163,7 @@ export default {
       return shelfLife.get(`/${name}`, params).then(res => {
         let perPage = params && params.number ? params.number : 20
         return {
-          commit: `ADD_BLOG_CONTENT`,
+          commit: `${variant}/ADD_BLOG_CONTENT`,
           pages: Math.ceil(res.data.found / perPage),
           count: Number(res.data.found),
           posts: res.data.posts,
@@ -167,20 +174,21 @@ export default {
   fetchBySlug(type, slug) {
     const name = endpoint[type]["slug"]
     const apiType = endpoint[type]["type"]
+    const variant = endpoint[type]["module"]
 
     if (apiType === "tribe") {
       return tribe.get(`/${name}/by-slug/${slug}`).then(res => {
-        return { commit: `ADD_CONTENT_SLUG`, data: res.data }
+        return { commit: `${variant}/ADD_CONTENT_SLUG`, data: res.data }
       })
     }
     if (apiType === "shelfLife" && type === "blogs") {
       return shelfLife.get(`/posts/slug:${slug}`).then(res => {
-        return { commit: `ADD_CONTENT_SLUG`, data: res.data }
+        return { commit: `content/ADD_CONTENT_SLUG`, data: res.data }
       })
     }
     if (apiType === "bigKahuna") {
       return bigKahuna.get(`/${name}?slug=${slug}`).then(res => {
-        return { commit: `ADD_CONTENT_SLUG`, data: res.data }
+        return { commit: `${variant}/ADD_CONTENT_SLUG`, data: res.data }
       })
     }
   },

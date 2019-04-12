@@ -13,62 +13,12 @@
           style="min-height: 197px;"
         >
           <template slot="action">
-            <router-link
-              class="button button--orange"
-              :to="{ name: 'services-slug', params: { slug: item.slug, pageObject: item } }"
-            >
+            <vue-link class="button button--orange" :to="`services/${item.slug}`">
               {{ item.acf.button_text ? item.acf.button_text : "Read more" }}
-            </router-link>
+            </vue-link>
           </template>
         </card>
-        <card
-          v-else-if="item.taxonomy == 'locations'"
-          :badge-label="item.name"
-          class="card--background-gray"
-          content-type="blog"
-          :copy="item.description"
-          :explainer="item.acf.city"
-          :heading="item.name"
-          heading-class="sr-only"
-          :key="item.id"
-          style="min-height: 197px;"
-        >
-          <div slot="copy" class="row d-flex">
-            <div class="col-4 order-2 align-self-end">
-              <img :src="item.acf.building_image.url" />
-            </div>
-            <div class="col col-8 order-0">
-              {{ item.acf.phone }}
-              <address
-                class="location__address mt-4 pt-4 border-top"
-                itemprop="address"
-                itemscope
-                itemtype="http://schema.org/PostalAddress"
-              >
-                <div class="location__street h4" itemprop="streetAddress">
-                  {{ item.acf.address }}
-                </div>
-                <div v-if="item.acf.mailing_address" class="location__mailing h4">
-                  {{ item.acf.mailing_address }}
-                </div>
-                <div class="location__city h4">
-                  <span itemprop="addressLocality">{{ item.acf.city }}, {{ item.acf.state }}</span>
-                  <span itemprop="postalCode">{{ item.acf.zip }}</span>
-                </div>
-                <div class="location__fax my-3">
-                  Fax: <span itemprop="faxNumber">{{ item.acf.fax }}</span>
-                </div>
-              </address>
-            </div>
-          </div>
-          <template slot="action">
-            <router-link
-              class="button button--blue-alternate"
-              :to="{ name: 'locations-slug', params: { slug: item.slug, pageObject: item } }"
-              >More</router-link
-            >
-          </template>
-        </card>
+        <location-card v-else-if="item.taxonomy == 'locations'" :location="item" :key="item.id" />
         <card
           v-else
           :badge-label="item.name"
@@ -81,10 +31,8 @@
           style="min-height: 197px;"
         >
           <template slot="action">
-            <router-link
-              class="button button--orange"
-              :to="{ name: item.taxonomy + '-slug', params: { slug: item.slug, pageObject: item } }"
-              >More</router-link
+            <vue-link class="button button--orange" :to="`${item.taxonomy}/${item.slug}`"
+              >More</vue-link
             >
           </template>
         </card>
@@ -112,12 +60,9 @@
           </div>
 
           <template slot="action">
-            <router-link
-              class="button button--aqua"
-              :to="{ name: 'blog-slug', params: { slug: item.slug, pageObject: item } }"
-            >
+            <vue-link class="button button--aqua" :to="`blogs/${item.slug}`">
               Info
-            </router-link>
+            </vue-link>
           </template>
         </card> </template
       ><!-- end blog card -->
@@ -144,14 +89,11 @@
           </div>
 
           <template slot="action">
-            <router-link
+            <vue-link
               class="button"
               :class="type == 'pages' || item.type == 'page' ? 'button--aqua' : 'button--orange'"
-              :to="{
-                name: item.type == 'page' ? 'pages-slug' : 'articles-slug',
-                params: { pageObject: item, slug: item.slug },
-              }"
-              >More</router-link
+              :to="`${item.type}s/${item.slug}`"
+              >More</vue-link
             >
           </template>
         </card> </template
@@ -200,11 +142,7 @@
           </div>
 
           <template slot="action">
-            <router-link
-              class="button button--teal"
-              :to="{ name: item.type + '-slug', params: { pageObject: item, slug: item.slug } }"
-              >More</router-link
-            >
+            <vue-link class="button button--teal" :to="`resources/${item.slug}`">More</vue-link>
           </template> </card
         ><!-- end pages card -->
       </template>
@@ -221,13 +159,14 @@
   </section>
 </template>
 <script>
+import VueLink from "vue-link"
 import Card from "../patterns/Card.vue"
 import EventCard from "../patterns/EventCard.vue"
+import LocationCard from "../patterns/LocationCard.vue"
 import CollectionItem from "../patterns/CollectionItem.vue"
 import Pagination from "../elements/Pagination.vue"
 import { chunk } from "lodash"
 import moment from "moment"
-import VueLink from "vue-link"
 
 export default {
   name: "Stream",
@@ -236,6 +175,8 @@ export default {
     EventCard,
     CollectionItem,
     Pagination,
+    VueLink,
+    LocationCard,
   },
   computed: {
     content() {
@@ -250,6 +191,7 @@ export default {
     },
     taxonomies() {
       let taxo = this.$state.taxonomies.taxonomies.map(tax => tax.slug)
+      console.log(taxo)
       return this.$state.taxonomies.taxonomies.map(tax => tax.slug)
     },
   },

@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <div class="card background--gray">
+      <div class="card background--gray d-flex">
         <call-to-action
           v-if="callToAction"
           :action="callToAction.acf.action"
@@ -117,6 +117,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex"
 import CallToAction from "../patterns/CallToAction.vue"
 import Card from "../patterns/Card.vue"
 import Heading from "../elements/Heading.vue"
@@ -131,9 +132,12 @@ export default {
   },
 
   computed: {
+    ...mapState("taxonomies", ["services"]),
+
     callToAction() {
-      return this.$store.getters.getCtaByCategory("any", "random")
+      return this.$store.getters["content/getCtaByCategory"]("any", "random")
     },
+
     featuredServices() {
       let featured = this.callToAction
         ? this.services.filter(service =>
@@ -141,11 +145,15 @@ export default {
           )
         : []
 
-      if (featured.length < 6 && featured.lenth > 0) {
-        let more = featured.forEach(s => this.services.filter(service => service.id != s.id))
-        featured = [...featured, ...more]
+      if (featured.length < 6 && featured.length > 0) {
+        let more = this.services.filter(service => {
+          return featured.find(s => s.id == service.id) ? false : true
+        })
+
+        featured = more ? [...featured, ...more] : featured
         featured = featured.splice(0, 6)
       }
+
       return featured
     },
 
@@ -153,12 +161,7 @@ export default {
       if (!this.filter) {
         return this.services
       }
-
       return this.services.filter(service => service.name.toLowerCase().includes(this.filter))
-    },
-
-    services() {
-      return this.$store.state.services
     },
   },
 

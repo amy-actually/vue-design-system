@@ -2,11 +2,11 @@
   <footer class="align-items-start d-md-flex justify-content-center justify-content-md-between p-3">
     <div class="col-md-6 col-xl-4 pl-0 pr-0 pt-md-3 mb-3">
       <card
+        v-if="location"
         class="card--background-blue-dark mb-3"
-        heading="Jackson County Public Library"
+        :heading="location.name"
         subheading="Fontana Regional Library"
         subheading-class="h4 mt-0 text--white"
-        v-if="location"
       >
         <template slot="copy">
           {{ location.acf.phone }} <br /><br />

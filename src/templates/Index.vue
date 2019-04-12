@@ -134,11 +134,14 @@ export default {
   },
 
   computed: {
-    ...mapState(["events", "collection", "blogs"]),
+    ...mapState("content", ["events", "collection", "blogs"]),
     ...mapState("taxonomies", ["services"]),
 
     primaryCallToAction() {
-      return this.$store.getters.getCtaByCategory(this.$store.state.currentLocation, "random")
+      return this.$store.getters["content/getCtaByCategory"](
+        this.$store.state.currentLocation,
+        "random"
+      )
     },
 
     randomCollectionItem() {
@@ -151,10 +154,13 @@ export default {
     },
 
     randomEvent() {
-      return this.events[Math.floor(Math.random() * this.events.length)]
+      return this.events ? this.events[Math.floor(Math.random() * this.events.length)] : null
     },
 
     randomServiceItem() {
+      if (!this.services) {
+        return null
+      }
       const servicesWithDescription = this.services.filter(service => service.description !== "")
       return servicesWithDescription[Math.floor(Math.random() * servicesWithDescription.length)]
     },
@@ -165,7 +171,11 @@ export default {
     secondaryCTA() {
       let check = this.primaryCallToAction ? this.primaryCallToAction.id : null
       return this.primaryCallToAction
-        ? this.$store.getters.getCtaByCategory(this.$store.state.currentLocation, "random", [check])
+        ? this.$store.getters["content/getCtaByCategory"](
+            this.$store.state.currentLocation,
+            "random",
+            [check]
+          )
         : null
     },
   },

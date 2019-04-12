@@ -1,116 +1,132 @@
 <template>
-    <main class="channel" role="main">
-        <template v-for="(call, index) in callsToAction" v-if="index === 0">
-            <call-to-action :action="call.acf.action"
-                            :copy="call.acf.copy"
-                            :image="call.acf.image"
-                            :heading="call.acf.heading"
-                            :link="call.acf.link" />
-        </template>
+  <channel-template :callToAction="primaryCTA" :type="network">
+    <template v-slot:breadcrumb v-if="nav">
+      <breadcrumb :current="channelTitle" :ancestors="nav" />
+    </template>
 
-        <header class="background--white d-flex p-4">
+    <template v-slot:header>
+      <channel-header :title="channelTitle" :description="channelDescription" />
+    </template>
 
-            <div class="col-md-10 m-auto">
+    <template v-slot:sidebar>
+      <content-search
+        :date-filter="network !== 'resources' ? true : false"
+        :location-filter="network !== 'resources' ? true : false"
+        :selected-date="network !== 'resources' ? selectedDate : null"
+        @selectdate="selectedDate = $event"
+        :filter="filter"
+        @querycontent="filter = $event"
+        :library="network !== 'resources' ? location : null"
+        @filterlibrary="location = $event"
+        @clearcontentfilter="clearFilter()"
+      />
+    </template>
 
-                <div class="col-md-8">
-
-                    <heading class="channel__title text--dark text--serif" level="h1">
-                        {{ channelTitle }}
-                    </heading>
-
-                    <p class="channel__description">{{ channelDescription }}</p>
-
-                </div>
-
-            </div>
-
-        </header>
-
-        <section class="background--white library__section p-3">
-
-            <div class="col-lg-10 m-lg-auto">
-
-                <div class="d-md-flex">
-
-
-                    <div class="col-md-4">
-                        Sidebar
-                    </div>
-
-                    <div class="col col-lg-8">
-
-                        <template v-if="network === 'blog'">
-
-                            <template v-for="post in posts">
-
-                                <card class="card--background-gray text--dark"
-                                      content-type="blog"
-                                      :explainer="post.author.nice_name"
-                                      :sub-explainer="post.date | moment('dddd, MMMM Do')"
-                                      :heading="post.title"
-                                      v-if="post">
-
-                                    <div slot="copy">
-                                        <div v-html="post.excerpt"></div>
-                                    </div>
-
-                                    <template slot="action">
-                                        <router-link class="button button--aqua" :to="`/posts/${post.slug}`">
-                                            Info
-                                        </router-link>
-                                    </template>
-
-                                </card>
-
-                            </template>
-
-                        </template>
-
-                    </div>
-
-                </div>
-
-            </div>
-        </section>
-   </main>
+    <template v-slot:content>
+      <filter-results
+        :total="total"
+        :selectedDate="selectedDate"
+        :filter="filter"
+        :location="location"
+        :contentName="network.slice(-1) == 's' ? network.substring(0, network.length - 1) : network"
+      />
+      <content-stream
+        :key="`${network}-${filter}-${location}-${selectedDate}`"
+        :type="network"
+        @totalresults="total = $event"
+        :filter="filter"
+        :selected-date="selectedDate"
+        :location="location"
+        :contents="contents"
+      />
+    </template>
+  </channel-template>
 </template>
 
 <script>
-import CallToAction from "../patterns/CallToAction.vue";
-import Card from '../patterns/Card.vue';
-import Heading from "../elements/Heading.vue";
+import ChannelTemplate from "../patterns/ChannelTemplate.vue"
+import Breadcrumb from "../elements/Breadcrumb.vue"
+import ChannelHeader from "../patterns/ChannelHeader.vue"
+import ContentSearch from "../patterns/ContentSearch.vue"
+import ContentStream from "../patterns/ContentStream.vue"
+import FilterResults from "../elements/FilterResults.vue"
 
 export default {
   name: "Channel",
 
   components: {
-    CallToAction,
-    Card,
-    Heading,
+    Breadcrumb,
+    ChannelHeader,
+    ChannelTemplate,
+    ContentSearch,
+    ContentStream,
+    FilterResults,
   },
 
   computed: {
-    callsToAction() {
-      return this.$store.getters.getCallsToActionByCategory(this.slug);
+    primaryCTA() {
+      if (this.network === "services" || this.network === "locations") {
+        return this.$store.getters["content/getCtaByCategory"](this.slug, "random")
+      }
+      if (this.$store.state.content[this.network]) {
+        return this.$store.getters["content/getCtaByCategory"](
+          this.$store.state.currentLocation,
+          "random"
+        )
+      }
+      if (
+        this.network === "genres" ||
+        this.network === "audience" ||
+        this.network === "featuredCollections"
+      ) {
+        return this.$store.getters["content/getCtaByCategory"]("collection-services", "random")
+      }
     },
 
-    collection() {
-      return this.$store.getters.getContentByService("collection", this.slug);
+    contents() {
+      if (this.network === "services" || this.network === "locations") {
+        return this.$store.getters["content/getAllContentBy"]("collection", this.slug)
+      }
+      if (this.$store.state.content[this.network]) {
+        this.total = this.$store.state.content[this.network].length
+          ? this.$store.state.content[this.network].length
+          : 0
+        return this.$store.state.content[this.network]
+      }
     },
-
-    pages() {
-      return this.$store.getters.getContentByService("pages", this.slug);
-    },
-
-    posts() {
-      return this.$store.state.posts;
-    },
-
-    service() {
-      return this.$store.getters.getServiceBySlug(this.slug);
+  },
+  created() {
+    console.log("CREATED: " + this.network)
+    this.$root.$on("resetPage", data => {
+      this.page = 1
+    })
+    if (
+      this.$store.state.content[this.network] &&
+      this.$store.state.content[this.network].length === 0
+    ) {
+      this.$store.dispatch("content/fetchAllContent", { type: this.network })
     }
   },
-
+  mounted() {
+    console.log("MOUNTED: " + this.network)
+  },
+  data() {
+    return {
+      location: "",
+      filter: "",
+      selectedDate: "",
+      page: 1,
+      total: 0,
+    }
+  },
+  methods: {
+    clearFilter() {
+      this.selectedDate = null
+      this.filter = null
+      this.location = null
+      this.page = 1
+    },
+  },
   props: {
     channelDescription: {
       type: String,
@@ -123,15 +139,31 @@ export default {
 
     network: {
       type: String,
+      required: true,
     },
 
     slug: {
       default: "any",
       required: true,
-      type: String
-    }
-  }
-};
+      type: String,
+    },
+
+    nav: {
+      type: Array,
+    },
+  },
+  watch: {
+    selectedDate() {
+      this.$root.$emit("resetpage")
+    },
+    filter() {
+      this.$root.$emit("resetpage")
+    },
+    location() {
+      this.$root.$emit("resetpage")
+    },
+  },
+}
 </script>
 
 <style lang="scss">
