@@ -134,7 +134,8 @@ export default {
   },
 
   computed: {
-    ...mapState(["events", "collection", "services", "blogs"]),
+    ...mapState(["events", "collection", "blogs"]),
+    ...mapState("taxonomies", ["services"]),
 
     primaryCallToAction() {
       return this.$store.getters.getCtaByCategory(this.$store.state.currentLocation, "random")

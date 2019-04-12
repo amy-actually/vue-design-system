@@ -117,7 +117,10 @@ const router = new Router({
       component: Service,
       path: "/services/:slug",
       props: route => ({
-        serviceObject: router.app.$store.getters.getItemBySlug("services", route.params.slug),
+        serviceObject: router.app.$store.getters["taxonomies/getTermBySlug"](
+          "services",
+          route.params.slug
+        ),
         location: route.query.location,
       }),
     },

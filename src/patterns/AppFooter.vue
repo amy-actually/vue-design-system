@@ -64,7 +64,7 @@ export default {
       type: Object,
     },
     beforeMount() {
-      this.$store.dispatch("fetchMenus")
+      this.$store.dispatch("fetchContent", { type: "menus" })
     },
   },
 }

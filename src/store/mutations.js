@@ -47,6 +47,6 @@ export default {
 
   SET_LOCATION: (state, location) => {
     state.currentLocation =
-      location && state.locations.find(term => term.slug === location) ? location : "all"
+      location && state.taxonomies.locations.find(term => term.slug === location) ? location : "all"
   },
 }

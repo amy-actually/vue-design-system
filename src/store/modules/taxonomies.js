@@ -1,46 +1,28 @@
+import api from "../plugins/api.js"
 export default {
   namespaced: true,
   state: {
     audience: [],
     featuredCollections: [],
     genres: [],
+    locations: [],
+    services: [],
     subjects: [],
     taxonomies: [],
   },
   actions: {
-    fetchAudiences({ commit }) {
-      return bigKahuna.get(`/audience`, { per_page: 100 }).then(response => {
-        commit("addTermsToState", ["audience", response.data])
-      })
-    },
-
-    fetchFeaturedCollections({ commit }, page = 1) {
-      return bigKahuna
-        .get(`/featured-collections`, { per_page: 100, page: page })
-        .then(response => {
-          commit("addTermsToState", ["featuredCollections", response.data])
-        })
-    },
-
-    fetchGenres({ commit }) {
-      return bigKahuna.get(`/genres`, { per_page: 100 }).then(response => {
-        commit("addTermsToState", ["genres", response.data])
-      })
-    },
-
-    fetchSubjects({ commit }) {
-      return bigKahuna.get(`/subjects`, { per_page: 100 }).then(response => {
-        commit("addTermsToState", ["genres", response.data])
-      })
-    },
-
-    fetchTaxonomies({ commit }) {
-      return bigKahuna.get(`/taxonomies`, { per_page: 100 }).then(response => {
-        commit("addTaxonomiesToState", response.data)
+    async fetchTerms({ commit }, { type, perPage = 100, pg = 1, params = [] }) {
+      let args = { ...params, per_page: perPage, page: pg }
+      return api.fetchContent(type, args).then(results => {
+        commit("addTermsToState", { type: type, data: results.posts })
       })
     },
   },
-  getters: {},
+  getters: {
+    getTermBySlug: (state, getters, rootState) => (type, slug) => {
+      return state[type].find(item => item.slug === slug)
+    },
+  },
   mutations: {
     addTermsToState(state, { type, data }) {
       if (Array.isArray(data) && (!state[type] || state[type].length == 0)) {
@@ -54,10 +36,6 @@ export default {
           }
         })
       }
-    },
-
-    addTaxonomiesToState(state, data) {
-      state.taxonomies = data
     },
   },
 }

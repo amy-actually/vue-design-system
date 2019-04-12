@@ -40,9 +40,10 @@ export default {
     Search,
   },
   computed: {
-    ...mapState(["currentLocation", "locations", "menus"]),
+    ...mapState(["currentLocation", "menus"]),
+    ...mapState("taxonomies", ["locations"]),
     location() {
-      return this.currentLocation === "all"
+      return this.currentLocation === "all" && this.locations
         ? this.locations.find(location => location.slug === "headquarters")
         : this.locations.find(location => location.slug === this.currentLocation)
     },
