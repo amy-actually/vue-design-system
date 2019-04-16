@@ -107,9 +107,6 @@ export default {
       this.$store.dispatch("content/fetchAllContent", { type: this.network })
     }
   },
-  mounted() {
-    console.log("MOUNTED: " + this.network)
-  },
   data() {
     return {
       location: "",
