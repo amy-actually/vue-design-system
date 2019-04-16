@@ -48,6 +48,12 @@ const endpoint = {
     module: "taxonomies",
   },
 
+  menus: {
+    type: "fontana",
+    slug: "menus",
+    module: "root",
+  },
+
   pages: {
     type: "bigKahuna",
     slug: "pages",
@@ -118,20 +124,10 @@ const tribe = axios.create({
 })
 
 export default {
-  fetchContent(type, params) {
+  async fetchContent(type, params) {
     const name = endpoint[type]["slug"]
     const apiType = endpoint[type]["type"]
     const mod = endpoint[type]["module"]
-
-    if (type === "menus") {
-      return fontana.get(`/menus`).then(response => {
-        response.data.forEach(menu => {
-          const items = this.api.fontana.get(`/menus/${menu.slug}`).then(results => {
-            return { commit: "ADD_CONTENT_SLUG", posts: results.data }
-          })
-        })
-      })
-    }
 
     if (apiType === "fontana") {
       return fontana.get(`/${name}`, { params: params }).then(res => {
@@ -164,7 +160,7 @@ export default {
       })
     }
   },
-  fetchBySlug(type, slug) {
+  async fetchBySlug(type, slug) {
     const name = endpoint[type]["slug"]
     const apiType = endpoint[type]["type"]
 
@@ -180,6 +176,11 @@ export default {
     }
     if (apiType === "bigKahuna") {
       return bigKahuna.get(`/${name}?slug=${slug}`).then(res => {
+        return { commit: `ADD_CONTENT_SLUG`, data: res.data }
+      })
+    }
+    if (apiType === "fontana") {
+      return fontana.get(`/${name}/${slug}`).then(res => {
         return { commit: `ADD_CONTENT_SLUG`, data: res.data }
       })
     }

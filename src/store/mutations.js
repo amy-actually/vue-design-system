@@ -49,4 +49,8 @@ export default {
     state.currentLocation =
       location && state.taxonomies.locations.find(term => term.slug === location) ? location : "all"
   },
+
+  ADD_COUNT: (state, { type, count }) => {
+    state.counts[type] = count
+  },
 }

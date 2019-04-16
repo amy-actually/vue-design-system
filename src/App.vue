@@ -3,9 +3,9 @@
     <header
       class="align-items-center d-flex justify-content-center justify-content-md-between library__header p-3"
     >
-      <router-link to="/">
+      <vue-link to="/">
         <Logo fill="white" />
-      </router-link>
+      </vue-link>
 
       <Menu
         :key="currentLocation"
@@ -29,6 +29,7 @@ import Logo from "./elements/Logo.vue"
 import Menu from "./patterns/Menu.vue"
 import Search from "./patterns/Search.vue"
 import { mapState } from "vuex"
+import VueLink from "vue-link"
 
 export default {
   name: "app",
@@ -38,6 +39,7 @@ export default {
     Logo,
     Menu,
     Search,
+    VueLink,
   },
   computed: {
     ...mapState(["currentLocation", "menus"]),
@@ -51,6 +53,9 @@ export default {
       const footer = this.menus.find(menu => menu.slug === "footer-menu")
       return !footer ? [] : footer.items
     },
+  },
+  created() {
+    this.$store.dispatch("loadApp")
   },
 }
 </script>

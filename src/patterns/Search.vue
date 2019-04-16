@@ -119,20 +119,27 @@ export default {
 
   computed: {
     isCatalogSearch() {
-      return this.qAction.toLowerCase() === "catalog" || this.qAction.toLowerCase() === "index"
+      return (
+        (this.qAction && this.qAction.toLowerCase() === "catalog") ||
+        (this.qAction && this.qAction.toLowerCase() === "index")
+      )
     },
 
     isEventSearch() {
-      return this.qAction.toLowerCase() === "events" || this.qAction.toLowerCase() === "events-slug"
+      return (
+        (this.qAction && this.qAction.toLowerCase() === "events") ||
+        (this.qAction && this.qAction.toLowerCase() === "events-slug")
+      )
     },
 
     isEverythingSearch() {
-      return this.qAction === "everything"
+      return (this.qAction && this.qAction === "everything") || !this.qAction
     },
 
     isServicesSearch() {
       return (
-        this.qAction.toLowerCase() === "services" || this.qAction.toLowerCase() === "events-slug"
+        (this.qAction && this.qAction.toLowerCase() === "services") ||
+        (this.qAction && this.qAction.toLowerCase() === "services-slug")
       )
     },
 
@@ -214,7 +221,6 @@ export default {
       this.qAction = "services"
     },
   },
-
   props: {
     containerClass: {
       default: "col-lg-6",

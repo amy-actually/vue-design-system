@@ -9,9 +9,9 @@ import actions from "./actions.js"
 import mutations from "./mutations.js"
 import getters from "./getters.js"
 
-import content from "./modules/content.js"
-import taxonomies from "./modules/taxonomies.js"
-import tribe from "./modules/tribe.js"
+import content from "./modules/content"
+import taxonomies from "./modules/taxonomies"
+import tribe from "./modules/tribe"
 
 export default new Vuex.Store({
   // Making sure that we're doing

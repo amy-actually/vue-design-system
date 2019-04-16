@@ -179,6 +179,9 @@ export default {
         : null
     },
   },
+  created() {
+    this.$store.dispatch("loadHome")
+  },
 
   props: {
     location: {
@@ -191,9 +194,6 @@ export default {
       type: String,
       default: "div",
     },
-  },
-  created() {
-    this.$store.dispatch("loadHome")
   },
 }
 </script>

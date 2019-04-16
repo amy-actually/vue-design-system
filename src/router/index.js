@@ -1,6 +1,5 @@
 import Vue from "vue"
 import Router from "vue-router"
-import Store from "../store"
 import Channel from "../templates/Channel.vue"
 import Collection from "../templates/Collection.vue"
 import Event from "../templates/Event.vue"
@@ -134,6 +133,7 @@ const router = new Router({
         title: "Information",
       },
       path: "/pages",
+      name: "Pages",
       props: route => ({
         channelTitle: "Library Information",
         channelDescription: `
@@ -142,11 +142,6 @@ const router = new Router({
         network: "pages",
         slug: "pages/",
       }),
-      beforeEnter: (to, from, next) => {
-        console.log(to)
-        router.app.$store.dispatch("content/fetchAllContent", { type: "pages" })
-        next()
-      },
     },
     {
       path: "*",
