@@ -134,13 +134,13 @@ export default {
     }
 
     if (apiType === "fontana") {
-      return fontana.get(`/${name}`, params).then(res => {
+      return fontana.get(`/${name}`, { params: params }).then(res => {
         return { commit: "ADD_CONTENT", posts: res.data }
       })
     }
 
     if (apiType === "bigKahuna") {
-      return bigKahuna.get(`/${name}`, params).then(res => {
+      return bigKahuna.get(`/${name}`, { params: params }).then(res => {
         return mod !== "taxonomies"
           ? {
               commit: `ADD_CONTENT`,
@@ -153,7 +153,7 @@ export default {
     }
 
     if (apiType === "shelfLife") {
-      return shelfLife.get(`/${name}`, params).then(res => {
+      return shelfLife.get(`/${name}`, { params: params }).then(res => {
         let perPage = params && params.number ? params.number : 20
         return {
           commit: `ADD_BLOG_CONTENT`,
