@@ -97,16 +97,11 @@ export default {
       if (!this.selected || this.selected.length == 0) {
         return null
       }
-      Object.keys(this.selected).forEach(tax => {
-        if (!this.termlist[tax] || this.termlist[tax].length < 0) {
-          this.termlist[tax] =
-            this.taxonomies[tax]["hierarchical"] === true
-              ? this.getChildren(tax)
-              : this.$store.state.taxonomies[tax]
-        }
-      })
-
-      return this.termlist
+      let array = Object.keys(this.selected)
+      console.log(array)
+      return array && array.length > 0
+        ? this.$store.getters["taxonomies/getTermFilters"](array)
+        : null
     },
   },
   data() {
@@ -115,7 +110,6 @@ export default {
         genres: { hierarchical: true, store: "genres", label: "Filter by Genre" },
         audience: { hierarchical: false, store: "audience", label: "Filter by Audience" },
       },
-      termlist: [],
     }
   },
   methods: {
@@ -142,6 +136,7 @@ export default {
         }
       }
       this.$emit("selectedterms", select)
+      this.backToOne()
     },
     /* getTerms(){
       let terms = [];
@@ -150,25 +145,12 @@ export default {
         terms[tax] = this.taxonomies[tax].hierarchical === true ? this.getChildren(tax): this.$store.state[tax] })
         return terms;
     }, */
-    getChildren(tax) {
-      let parents = this.$store.state.taxonomies[tax].filter(
-        term => !term.parent || term.parent == 0
-      )
-      parents.forEach(
-        parent =>
-          (parent.children = this.$store.state.taxonomies[tax].filter(
-            child => child.parent && child.parent == parent.id
-          ))
-      )
-      return parents
-    },
+
     isSelected(tax, id) {
       return this.selected[tax].includes(id)
     },
   },
-  beforeMount() {
-    //this.getTerms();
-  },
+
   mounted() {
     if (this.dateFilter === true) {
       this.calendar = flatpickr("#test", {

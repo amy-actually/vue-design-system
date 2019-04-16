@@ -15,7 +15,9 @@ export default {
 
     return api.fetchContent(type, args).then(results => {
       commit(`${results.commit}`, { type: type, data: results.posts })
-      commit("ADD_COUNT", { type: type, count: results.count })
+      if (!params || params.length == 0) {
+        commit("ADD_COUNT", { type: type, count: results.count })
+      }
     })
   },
 
@@ -42,6 +44,8 @@ export default {
       dispatch("fetchContent", { type: type, pg: page, params: args })
       page++
     }
-    commit("ADD_COUNT", { type: type, count: count })
+    if (!params || params.length == 0) {
+      commit("ADD_COUNT", { type: type, count: count })
+    }
   },
 }

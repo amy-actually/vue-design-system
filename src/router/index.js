@@ -55,9 +55,23 @@ const router = new Router({
       name: "Collection",
       path: "/collection",
       props: route => ({
+        collectionTitle: "Collection",
+        library: route.query.location,
+        slug: "any",
+      }),
+    },
+    {
+      component: Collection,
+      meta: {
+        title: "Collection",
+      },
+      name: "Collection-slug",
+      path: "/collection/:network/:slug",
+      props: route => ({
         channelTitle: "Collection",
-        location: route.query.location,
-        slug: any,
+        library: route.query.location,
+        network: route.params.network,
+        slug: route.params.slug,
       }),
     },
 

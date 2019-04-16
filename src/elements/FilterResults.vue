@@ -102,7 +102,7 @@ export default {
   methods: {
     getTerm(tid, tax) {
       // RECONFIG THIS GETTER
-      return this.$store.getters.getTerm(tid, tax)
+      return this.$store.getters["taxonomies/getTermById"](tax, tid)
     },
   },
   props: {

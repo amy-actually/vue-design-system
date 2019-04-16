@@ -181,13 +181,14 @@ export default {
   computed: {
     content() {
       let content = this.filterContent(this.filter, this.selectedDate, this.location)
+      this.resultTotal = content.length
       const paged = chunk(content, this.perPage)
       return paged[this.page - 1]
     },
 
     total() {
-      this.$emit("totalresults", this.apiTotal)
-      return this.apiTotal
+      this.$emit("totalresults", this.resultTotal)
+      return this.apiTotal ? this.apiTotal : this.resultTotal
     },
     taxonomies() {
       let taxo = this.$state.taxonomies.taxonomies.map(tax => tax.slug)
@@ -196,6 +197,9 @@ export default {
     },
   },
   created() {
+    if (this.$route.query && this.$route.query.page) {
+      this.page = Number(this.$route.query.page)
+    }
     this.$root.$on("resetpage", () => {
       this.page = 1
     })
@@ -203,8 +207,7 @@ export default {
   data() {
     return {
       page: 1,
-      apiTotal: 0,
-      apiContent: [],
+      resultTotal: 0,
     }
   },
   methods: {
@@ -269,7 +272,7 @@ export default {
             )
           )
 
-      this.apiTotal = content.length
+      //this.resultTotal = content.length
       return content
     },
     getExcerpt(excerpt) {
@@ -291,6 +294,12 @@ export default {
      */
     page() {
       this.$router.push({ query: { page: this.page } })
+      console.log(this.page)
+      console.log(this.resultTotal / this.perPage - 3)
+
+      if (this.apiTotal && this.page >= this.resultTotal / this.perPage - 5) {
+        this.$root.$emit("loadmore")
+      }
     },
   },
   props: {
@@ -305,12 +314,6 @@ export default {
       type: Number,
       default: 5,
     },
-    apiType: {
-      type: String,
-    },
-    apiParams: {
-      type: Object,
-    },
     filter: {
       type: String,
     },
@@ -322,6 +325,9 @@ export default {
     },
     termFilter: {
       type: Object,
+    },
+    apiTotal: {
+      type: Number,
     },
   },
 }

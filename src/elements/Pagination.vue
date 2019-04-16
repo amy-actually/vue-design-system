@@ -178,10 +178,6 @@ export default {
     setPage(targetPage) {
       if (targetPage <= this.lastPage && targetPage >= this.firstPage) {
         this.$emit("input", targetPage)
-        if (targetPage > 1 && !this.signalled) {
-          this.$root.$emit("loadmore")
-          this.signalled = true
-        }
       }
     },
   },
