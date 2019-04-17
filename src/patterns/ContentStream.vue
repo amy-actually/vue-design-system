@@ -293,9 +293,16 @@ export default {
      * Add the page to the route query params
      */
     page() {
-      this.$router.push({ query: { page: this.page } })
+      //this.$router.push({ query: { page: this.page } })
       console.log(this.page)
       console.log(this.resultTotal / this.perPage - 3)
+      let p = this.page > 1 ? this.page : undefined
+      this.$router.replace({
+        ...this.$router.currentRoute,
+        query: {
+          page: p,
+        },
+      })
 
       if (this.apiTotal && this.page >= this.resultTotal / this.perPage - 5) {
         this.$root.$emit("loadmore")

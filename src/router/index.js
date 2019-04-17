@@ -2,6 +2,7 @@ import Vue from "vue"
 import Router from "vue-router"
 import Channel from "../templates/Channel.vue"
 import Collection from "../templates/Collection.vue"
+import Collections from "../templates/Collections.vue"
 import Event from "../templates/Event.vue"
 import Events from "../templates/Events.vue"
 import Index from "../templates/Index.vue"
@@ -48,15 +49,14 @@ const router = new Router({
     },
 
     {
-      component: Collection,
+      component: Collections,
       meta: {
         title: "Collection",
       },
       name: "Collection",
       path: "/collection",
       props: route => ({
-        collectionTitle: "Collection",
-        library: route.query.location,
+        channelTitle: "Collection",
         slug: "any",
       }),
     },
@@ -65,13 +65,44 @@ const router = new Router({
       meta: {
         title: "Collection",
       },
-      name: "Collection-slug",
+      name: "Collection-new",
+      path: "/collection/new",
+      props: route => ({
+        channelTitle: "Collection",
+        network: "new",
+        slug: "any",
+        nav: [{ text: "Collection", to: "/collection" }],
+      }),
+    },
+    {
+      component: Channel,
+      meta: {
+        title: "Collection Genres",
+      },
+      name: "Collection-genres",
+      path: "/collection/genres",
+      props: route => ({
+        channelTitle: "Collection Genres",
+        network: "genres",
+        slug: "any",
+        nav: [{ text: "Collection", to: "/collection" }],
+      }),
+    },
+    {
+      component: Collection,
+      meta: {
+        title: "Collection",
+      },
+      name: "Collection-network-slug",
       path: "/collection/:network/:slug",
       props: route => ({
         channelTitle: "Collection",
-        library: route.query.location,
         network: route.params.network,
         slug: route.params.slug,
+        nav: [
+          { text: "Collection", to: "/collection" },
+          { text: route.params.network, to: "/collection/" + route.params.network },
+        ],
       }),
     },
 

@@ -1,4 +1,6 @@
 import api from "../../plugins/api.js"
+import * as utils from "../utilities.js"
+
 const content = {
   genres: { hierarchical: true, store: "genres", label: "Filter by Genre" },
   audience: { hierarchical: false, store: "audience", label: "Filter by Audience" },
@@ -30,15 +32,15 @@ export default {
     },
   },
   getters: {
-    getTermBySlug: state => (type, slug) => {
+    getTermBySlug: (state, getters, rootState, rootGetters) => (type, slug) => {
+      type = utils.returnTaxonomyType(type)
       return state[type].find(item => item.slug === slug)
     },
-    getTermById: state => (type, tid) => {
+    getTermById: (state, getters, rootState, rootGetters) => (type, tid) => {
+      type = utils.returnTaxonomyType(type)
       return state[type].find(item => item.id === tid)
     },
     getTermFilters: (state, getters) => types => {
-      console.log("GETTERMFILTERS")
-      console.log(types)
       let container = []
       types.forEach(tax => {
         container[tax] =

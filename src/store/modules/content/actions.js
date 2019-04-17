@@ -18,6 +18,7 @@ export default {
       if (!params || params.length == 0) {
         commit("ADD_COUNT", { type: type, count: results.count })
       }
+      return results.count
     })
   },
 
@@ -27,13 +28,13 @@ export default {
     })
   },
 
-  async fetchAllContent({ dispatch, commit }, { type, params = {} }) {
+  async fetchAllContent({ dispatch, commit }, { type, params = {}, number = 0 }) {
     let count = 0
 
     let args = type === "blog" ? { ...params, number: 100 } : { ...params, per_page: 100 }
 
     let results = await api.fetchContent(type, args)
-    let pages = results.pages
+    let pages = number > 0 ? number : results.pages
     count = results.count
 
     commit(`${results.commit}`, { type: type, data: results.posts })

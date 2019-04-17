@@ -1,4 +1,6 @@
 import axios from "axios"
+//import Qs from 'Qs'
+
 const endpoint = {
   alerts: {
     type: "bigKahuna",
@@ -111,6 +113,9 @@ const endpoint = {
 
 const bigKahuna = axios.create({
   baseURL: `https://fontana.librarians.design/wp-json/wp/v2/`,
+  /* paramsSerializer: function (params) {
+    return Qs.stringify(params, {arrayFormat: 'brackets'}).replace(/%2B/g, '+').replace(/%5B/g, '[').replace(/%5D/g, ']')
+  },  */
 })
 const fontana = axios.create({
   baseURL: `https://fontana.librarians.design/wp-json/fontana/v1/`,
@@ -128,7 +133,8 @@ export default {
     const name = endpoint[type]["slug"]
     const apiType = endpoint[type]["type"]
     const mod = endpoint[type]["module"]
-
+    console.log("FETCH")
+    console.log(params)
     if (apiType === "fontana") {
       return fontana.get(`/${name}`, { params: params }).then(res => {
         return { commit: "ADD_CONTENT", posts: res.data }

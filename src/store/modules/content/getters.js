@@ -170,29 +170,35 @@ export default {
       ? relatedContent[Math.floor(Math.random() * relatedContent.length)]
       : relatedContent[index]
   },
-  getCollection: state => (field, value) => {
-    console.log(field + " : " + value)
-
-    const content = state.collection
-
+  getCollection: state => (field, value, collection = "collection") => {
+    let content = state[collection]
     let relatedContent
 
-    let subField =
-      field === "audience"
-        ? "target_readership"
-        : field === "genres"
-        ? "genre"
-        : field === "featuredCollections"
-        ? "featured_collection"
-        : field
+    if (field === "new") {
+      relatedContent = content.slice(0, 200)
+    } else {
+      let subField =
+        field === "audience"
+          ? "target_readership"
+          : field === "genres"
+          ? "genre"
+          : field === "featuredCollections" ||
+            field === "featuredcollections" ||
+            field === "featured-collections"
+          ? "featured_collection"
+          : field
 
-    relatedContent =
-      subField !== "new"
-        ? content.filter(
-            page =>
-              page.acf && page.acf[subField] && page.acf[subField].some(item => item.slug === value)
-          )
-        : content
+      relatedContent =
+        subField !== "new"
+          ? content.filter(
+              page =>
+                page.acf &&
+                page.acf[subField] &&
+                page.acf[subField].some(item => item.slug === value)
+            )
+          : content
+    }
+
     return relatedContent
   },
 
