@@ -1,16 +1,16 @@
 import Vue from "vue"
 import Router from "vue-router"
-import Channel from "../templates/Channel.vue"
-import Collection from "../templates/Collection.vue"
-import Collections from "../templates/Collections.vue"
-import Event from "../templates/Event.vue"
-import Events from "../templates/Events.vue"
-import Index from "../templates/Index.vue"
+import ChannelExample from "../examples/Channel.vue"
+import CollectionExample from "../examples/Collection.vue"
+import CollectionsExample from "../examples/Collections.vue"
+import EventExample from "../examples/Event.vue"
+import EventsExample from "../examples/Events.vue"
+import Index from "../examples/Index.vue"
 import NotFound from "../templates/NotFound.vue"
-import SearchResults from "../templates/SearchResults.vue"
-import Service from "../templates/Service.vue"
-import Services from "../templates/Services.vue"
-import Blog from "../templates/Blog.vue"
+import SearchResults from "../examples/SearchResults.vue"
+import Service from "../examples/Service.vue"
+import Terms from "../examples/Terms.vue"
+import Blog from "../examples/Blog.vue"
 //--------------
 //import routes from "./routes"
 
@@ -21,7 +21,7 @@ const router = new Router({
 
   routes: [
     {
-      component: Channel,
+      component: ChannelExample,
       meta: {
         title: "Blog",
       },
@@ -49,7 +49,7 @@ const router = new Router({
     },
 
     {
-      component: Collections,
+      component: CollectionsExample,
       meta: {
         title: "Collection",
       },
@@ -61,7 +61,7 @@ const router = new Router({
       }),
     },
     {
-      component: Collection,
+      component: CollectionExample,
       meta: {
         title: "Collection",
       },
@@ -74,8 +74,9 @@ const router = new Router({
         nav: [{ text: "Collection", to: "/collection" }],
       }),
     },
+
     {
-      component: Channel,
+      component: Terms,
       meta: {
         title: "Collection Genres",
       },
@@ -83,13 +84,16 @@ const router = new Router({
       path: "/collection/genres",
       props: route => ({
         channelTitle: "Collection Genres",
-        network: "genres",
+        channelDescription: `
+        Find library materials by Genre`,
+        taxonomy: "genres",
         slug: "any",
+        sidebar: { search: { location: false } },
         nav: [{ text: "Collection", to: "/collection" }],
       }),
     },
     {
-      component: Collection,
+      component: CollectionExample,
       meta: {
         title: "Collection",
       },
@@ -118,8 +122,8 @@ const router = new Router({
       }),
     },
 
-    {
-      component: Events,
+    /* {
+      component: EventsExample,
       meta: {
         title: "Events",
       },
@@ -129,10 +133,27 @@ const router = new Router({
         filter: route.query.filter,
         location: route.query.location,
       }),
+    }, */
+
+    {
+      component: ChannelExample,
+      meta: {
+        title: "Events",
+      },
+      path: "/events",
+      name: "Events",
+      props: route => ({
+        channelTitle: "Events",
+        channelDescription: `
+        Through partnerships in the community, we are able to bring you art and historical exhibits, teach workshops, invite performers and speakers, provide nationally recognized children's programming, and more.
+        `,
+        network: "events",
+        slug: "events/",
+      }),
     },
 
     {
-      component: Event,
+      component: EventExample,
       path: "/events/:slug",
       props: route => ({
         eventObject: router.app.$store.getters["content/getItemBySlug"](
@@ -153,12 +174,17 @@ const router = new Router({
     },
 
     {
-      component: Services,
+      component: Terms,
       name: "Services",
       path: "/services",
       props: route => ({
-        filter: route.query.filter,
-        location: route.query.location,
+        channelTitle: "Services",
+        channelDescription: `
+          We are able to offer loads of services across multiple counties, which can help connect
+          you to free events, tax experts, your ancestry, or get you free books, movies, and much,
+          much more.`,
+        taxonomy: "services",
+        sidebar: { search: { location: false } },
       }),
     },
     {
@@ -173,7 +199,7 @@ const router = new Router({
       }),
     },
     {
-      component: Channel,
+      component: ChannelExample,
       meta: {
         title: "Information",
       },

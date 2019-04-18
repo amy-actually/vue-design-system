@@ -19,7 +19,7 @@
     <section class="background--white library__section p-3">
       <div class="col-lg-10 m-lg-auto">
         <div class="d-md-flex">
-          <div class="col col-md-6 col-lg-4">
+          <div class="mr-4">
             <content-search
               :date-filter="true"
               :selected-date="selectedDate"
@@ -33,7 +33,7 @@
             />
           </div>
 
-          <div class="col col-lg-8">
+          <div class="">
             <filter-results
               :total="total"
               :selectedDate="selectedDate"
@@ -66,7 +66,7 @@ import ContentSearch from "../patterns/ContentSearch.vue"
 import FilterResults from "../elements/FilterResults.vue"
 
 export default {
-  name: "Events",
+  name: "EventsExample",
 
   components: {
     ContentSearch,

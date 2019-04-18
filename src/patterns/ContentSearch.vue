@@ -1,5 +1,5 @@
 <template>
-  <component :is="wrapper" class="input">
+  <component :is="wrapper" class="input" style="min-width:250px">
     <input
       v-if="dateFilter"
       class="d-none"
@@ -9,7 +9,8 @@
       @input="$emit('selectdate', $event.target.value)"
     />
 
-    <div class="mt-3" style="width: 307.875px">
+    <div class="mt-3">
+      <!--style="width: 307.875px"-->
       <div class="form-group" v-if="searchFilter">
         <label class="form-label text--bold text--sans text--dark" for="filter">
           Search {{ contentName }}s
@@ -26,7 +27,10 @@
       </div>
 
       <div class="form-group" v-if="locationFilter">
-        <label class="form-label text--bold text--sans text--dark" for="eventSidebarLocation">
+        <label
+          class="form-label text--bold text--sans text--dark filter__default"
+          for="eventSidebarLocation"
+        >
           Filter {{ contentName }}s by location
         </label>
 
@@ -36,6 +40,9 @@
           :value="library"
           @input="$emit('filterlibrary', $event.target.value)"
         >
+          <option selected hidden disabled value="">
+            <em class="filter__default">All Libraries</em>
+          </option>
           <option :key="location.id" :value="location.slug" v-for="location in locations">
             {{ location.name }}
           </option>
@@ -202,7 +209,9 @@ export default {
     clear: both;
   }
 }
-
+.filter__default {
+  color: $color-orange;
+}
 .taglist {
   list-style-type: none;
   background-color: $color-blue-dark;

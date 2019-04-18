@@ -1,37 +1,23 @@
 <template>
   <main :class="`channel ${type}`" role="main">
-    <breadcrumb v-if="nav" :current="channelTitle" :ancestors="nav" />
-    <channel-header :title="channelTitle" :description="channelDescription" />
+    <slot name="breadcrumb"> </slot>
+    <slot name="header"> </slot>
 
-    <featured-terms :featuredObjects="featuredTerms" />
+    <featured-terms
+      :featuredObjects="featuredTerms"
+      :callToAction="callToAction"
+      v-if="!filter && showFeatured"
+    />
 
     <section class="background--white d-flex p-4">
       <div class="col-lg-10 m-lg-auto">
         <div class="d-md-flex">
-          <template v-if="sidebar">
-            <div class="col col-md-6 col-lg-4">
-              <content-search
-                v-if="sidebar.search"
-                :date-filter="false"
-                :location-filter="sidebar.search.location"
-                :filter="filter"
-                :library="sidebar.search.location ? location : null"
-                @filterlibrary="location = $event"
-                @clearcontentfilter="clearFilter()"
-                @querycontent="filter = $event"
-              />
-            </div>
-          </template>
+          <div class="col col-md-6 col-lg-4" v-if="sidebar">
+            <slot name="sidebar"></slot>
+          </div>
 
           <div :class="sidebar ? 'col col-lg-8' : ''">
-            <content-stream
-              :key="`${type}-${filter}-${location}`"
-              :type="type"
-              @totalresults="total = $event"
-              :filter="filter"
-              :location="location"
-              :contents="contents"
-            />
+            <slot name="content"> </slot>
           </div>
         </div>
       </div>
@@ -41,76 +27,112 @@
 
 <script>
 import FeaturedTerms from "../patterns/FeaturedTerms.vue"
-import Breadcrumb from "../elements/Breadcrumb.vue"
-import ChannelHeader from "../patterns/ChannelHeader.vue"
-import ContentSearch from "../patterns/ContentSearch.vue"
-import ContentStream from "../patterns/ContentStream.vue"
-import FilterResults from "../elements/FilterResults.vue"
+import { mapMutations } from "vuex"
 
 export default {
   name: "Terms",
   components: {
     FeaturedTerms,
-    Breadcrumb,
-    ChannelHeader,
-    ContentSearch,
-    ContentStream,
-    FilterResults,
   },
-  computed: {
-    primaryCTA() {
-      return this.$store.getters["content/getCtaByCategory"]("any", "random")
-    },
-    terms() {
-      return this.state.taxonomies[type]
-    },
-    featuredTerms() {
-      //let search = this.callToAction.acf[type] ? String(this.callToAction.acf[type]) : null
 
-      let featured = this.callToAction.acf[type]
-        ? this.terms.filter(item =>
+  computed: {
+    featuredTerms() {
+      if (!this.terms) {
+        return []
+      }
+      let matches = this.callToAction ? [this.callToAction.acf.heading] : []
+      if (
+        this.callToAction &&
+        this.callToAction.acf.services &&
+        this.callToAction.acf.services.length > 0
+      ) {
+        matches = [
+          ...matches,
+          ...this.callToAction.acf.services.map(serv => serv.slug),
+          ...this.callToAction.acf.services.map(serv => serv.name),
+        ]
+      }
+      if (
+        this.callToAction &&
+        this.callToAction.acf.location &&
+        this.callToAction.acf.location.length > 0
+      ) {
+        matches = [...matches, ...this.callToAction.acf.location.map(loc => loc.slug)]
+      }
+      if (
+        this.callToAction &&
+        this.callToAction.acf.event_categories &&
+        this.callToAction.acf.event_categories.length > 0
+      ) {
+        matches = [
+          ...matches,
+          ...this.callToAction.acf.event_categories.map(cat => cat.name),
+          ...this.callToAction.acf.event_categories.map(cat => cat.slug),
+        ]
+      }
+
+      let featured = []
+
+      matches.forEach(match => {
+        let m = match.toLowerCase()
+        this.terms.forEach(item => {
+          if (
             Object.keys(item).some(
               key =>
                 (item[key] != null &&
-                  this.callToAction.acf[type].some(value => {
-                    item[key]
-                      .toString()
-                      .toLowerCase()
-                      .includes(value.toLowerCase())
-                  })) ||
+                  item[key]
+                    .toString()
+                    .toLowerCase()
+                    .includes(m)) ||
                 Object.keys(item[key]).some(
                   k =>
                     item[key][k] !== null &&
-                    this.callToAction.acf[type].some(value => {
-                      item[key][k]
-                        .toString()
-                        .toLowerCase()
-                        .includes(value.toLowerCase())
-                    })
+                    item[key][k]
+                      .toString()
+                      .toLowerCase()
+                      .includes(m)
                 )
-            )
-          )
-        : this.terms.splice(0, 6)
+            ) &&
+            !featured.find(i => i.id == item.id)
+          ) {
+            featured.push(item)
+          }
+        })
+      })
 
-      if (featured.length < 6 && featured.length > 0) {
+      if (featured.length < 6) {
         let more = this.terms.filter(term => {
           return featured.find(t => t.id == term.id) ? false : true
         })
 
         featured = more ? [...featured, ...more] : featured
-        featured = featured.splice(0, 6)
       }
+      featured = featured.splice(0, 6)
 
       return featured
     },
   },
 
   props: {
-    taxonomy: {
+    type: {
       type: String,
     },
+    /**
+     * return this.$store.getters['content/getCtaByCategory'](this.slug, "random")
+     */
+    terms: {
+      type: Array,
+    },
+    callToAction: {
+      type: Object,
+    },
     sidebar: {
-      type: Boolean,
+      default: null,
+    },
+    filter: {
+      default: null,
+    },
+    showFeatured: {
       default: true,
     },
   },

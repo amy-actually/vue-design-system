@@ -150,7 +150,7 @@
 
     <pagination
       v-if="total > 0"
-      :key="total"
+      :key="total + 'pp'"
       :total="Math.ceil(total / perPage)"
       v-model="page"
       v-on:resetpage="page = 1"

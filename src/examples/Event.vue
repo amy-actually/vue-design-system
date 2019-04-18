@@ -98,7 +98,7 @@ Vue.use(AddToCalendar)
 Vue.use(VueMoment)
 
 export default {
-  name: "Event",
+  name: "EventExample",
 
   components: {
     CallToAction,

@@ -1,11 +1,11 @@
 <template>
-  <section class="d-md-flex p-4" v-if="!filter">
+  <section class="d-md-flex p-4">
     <div class="col-md-8">
       <div class="d-md-flex flex-md-wrap">
         <template v-for="item in featuredObjects">
-          <div class="mb-4 col-md-6" :key="item.id">
+          <div class="mb-4 col-md-6" :key="item.id + 'featured'">
             <card
-              :badge-label="service.name"
+              :badge-label="item.name"
               class="card--background-white"
               :content-type="
                 item.taxonomy.slice(-1) == 's'
@@ -16,7 +16,6 @@
               explainer="Featured"
               :heading="item.name"
               heading-class="sr-only"
-              :key="item.id"
               style="min-height: 197px;"
             >
               <template slot="action">
@@ -47,18 +46,20 @@
 <script>
 import CallToAction from "../patterns/CallToAction.vue"
 import VueLink from "vue-link"
+import Card from "../patterns/Card.vue"
 
 export default {
   name: "FeaturedTerms",
   components: {
     CallToAction,
+    Card,
     VueLink,
   },
   methods: {
     getPath(taxonomy, slug) {
       const collections = ["genres", "audience", "featured-collections"]
       return collections.includes(taxonomy)
-        ? `/collections/${taxonomy}/${slug}`
+        ? `/collection/${taxonomy}/${slug}`
         : `/${taxonomy}/${slug}`
     },
   },
@@ -71,10 +72,6 @@ export default {
      */
     callToAction: {
       type: Object,
-    },
-    sidebar: {
-      type: Boolean,
-      default: true,
     },
   },
 }

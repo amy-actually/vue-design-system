@@ -3,10 +3,18 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><vue-link to="/">Home</vue-link></li>
       <li v-for="item in ancestors" :key="item.text" class="breadcrumb-item">
-        <vue-link v-if="item.to" :to="item.to" v-html="item.text"></vue-link>
+        <vue-link
+          v-if="item.to"
+          :to="item.to"
+          v-html="item.text.charAt(0).toUpperCase() + item.text.slice(1)"
+        ></vue-link>
         <span v-else v-html="item.text"></span>
       </li>
-      <li class="breadcrumb-item active" aria-current="page" v-html="current"></li>
+      <li
+        class="breadcrumb-item active"
+        aria-current="page"
+        v-html="current.charAt(0).toUpperCase() + current.slice(1)"
+      ></li>
     </ol>
   </nav>
 </template>

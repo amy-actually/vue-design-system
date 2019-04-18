@@ -1,5 +1,5 @@
 <template>
-  <channel-template :callToAction="primaryCTA" :type="network">
+  <channel :callToAction="primaryCTA" :type="network">
     <template v-slot:breadcrumb v-if="nav">
       <breadcrumb :current="!term ? channelTitle : term.name" :ancestors="nav" />
     </template>
@@ -47,11 +47,11 @@
         @totalresults="calcTotal($event)"
       />
     </template>
-  </channel-template>
+  </channel>
 </template>
 
 <script>
-import ChannelTemplate from "../patterns/ChannelTemplate.vue"
+import Channel from "../templates/Channel.vue"
 import Breadcrumb from "../elements/Breadcrumb.vue"
 import ChannelHeader from "../patterns/ChannelHeader.vue"
 import ContentSearch from "../patterns/ContentSearch.vue"
@@ -59,12 +59,12 @@ import ContentStream from "../patterns/ContentStream.vue"
 import FilterResults from "../elements/FilterResults.vue"
 
 export default {
-  name: "Collection",
+  name: "CollectionExample",
 
   components: {
     Breadcrumb,
     ChannelHeader,
-    ChannelTemplate,
+    Channel,
     ContentSearch,
     ContentStream,
     FilterResults,
