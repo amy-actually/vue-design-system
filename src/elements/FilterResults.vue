@@ -106,29 +106,53 @@ export default {
     },
   },
   props: {
+    /**
+     * Value for DateFilter
+     */
     selectedDate: {
       type: String,
     },
+    /**
+     * Value for total of results
+     */
     total: {
       type: Number,
     },
+    /**
+     * Value for the location filter
+     */
     location: {
       type: String,
     },
+    /**
+     * Value for the search/query filter
+     */
     filter: {
       type: String,
     },
+    /**
+     * The wrapping element
+     */
     wrapper: {
       type: String,
       default: "div",
     },
+    /**
+     * The name of the content/"results" to display if specific
+     */
     contentName: {
       type: String,
       default: "result",
     },
+    /**
+     * The value of the term filter
+     */
     terms: {
       type: Object,
     },
+    /**
+     * The value of all results available (from the api) if not all are yet loaded in store
+     */
     prefetchTotal: {
       type: Number,
     },
@@ -150,3 +174,11 @@ export default {
   }
 }
 </style>
+<docs>
+  ```jsx
+  <div>
+<FilterResults
+    />
+  </div>
+  ```
+</docs>
