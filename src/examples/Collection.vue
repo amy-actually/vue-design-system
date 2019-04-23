@@ -31,8 +31,8 @@
         v-if="loaded"
         :total="total"
         :filter="filter"
-        :location="location"
-        :terms="selected"
+        :location="locationDetails"
+        :tags="tags"
         contentName="collection item"
         :prefetchTotal="Number(apiTotal)"
       />
@@ -99,6 +99,11 @@ export default {
         return this.$store.getters["content/getCtaByCategory"]("collection-services", "random")
       }
     },
+    locationDetails() {
+      return this.location && this.location !== "all"
+        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
+        : {}
+    },
     term() {
       if (this.network === "new") {
         return null
@@ -109,6 +114,21 @@ export default {
     },
     contents() {
       return this.$store.getters["content/getCollection"](this.network, this.slug)
+    },
+    tags() {
+      if (!this.selected || this.selected == 0) {
+        return null
+      }
+      let terms = []
+      for (const [taxonomy, value] of Object.entries(this.selected)) {
+        value.forEach(val => {
+          const t = this.getTerm(val, taxonomy)
+          if (!value.includes(t.parent)) {
+            terms.push(t)
+          }
+        })
+      }
+      return terms
     },
   },
   created() {
@@ -131,8 +151,10 @@ export default {
       this.page = 1
     })
     this.$root.$on("loadmore", data => {
-      this.apiPage++
-      this.fetchContent()
+      if (this.network !== "new") {
+        this.apiPage++
+        this.fetchContent()
+      }
     })
 
     if (this.$route.query.search) {
@@ -176,6 +198,7 @@ export default {
     calcTotal(total) {
       this.total = total
       if (
+        this.network !== "new" &&
         (this.filter ||
           (this.location && this.location !== "all") ||
           (this.selected.genres && this.selected.genres.length > 0) ||
@@ -248,6 +271,10 @@ export default {
         this.term && this.term.count_by_type ? this.term.count_by_type["collection-item"] : 0
       this.filter = null
       this.location = ""
+    },
+    getTerm(tid, tax) {
+      // RECONFIG THIS GETTER
+      return this.$store.getters["taxonomies/getTermById"](tax, tid)
     },
   },
   props: {

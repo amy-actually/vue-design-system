@@ -18,7 +18,7 @@
             </vue-link>
           </template>
         </card>
-        <location-card v-else-if="item.taxonomy == 'locations'" :location="item" :key="item.id" />
+        <location-card v-else-if="item.taxonomy == 'location'" :location="item" :key="item.id" />
         <card
           v-else
           :badge-label="item.name"

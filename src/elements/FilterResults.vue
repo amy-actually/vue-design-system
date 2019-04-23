@@ -16,16 +16,9 @@
       >
         Here is everything we can find that matches your search
         {{ filter ? "for" : "" }} <mark class="mark">{{ filter }}</mark>
-        <template v-if="location && locationDetails">
+        <template v-if="location && location.name">
           <span v-if="contentName === 'event'">happening</span> at
-          <router-link
-            class="link"
-            :to="{
-              name: 'locations-slug',
-              params: { slug: locationDetails.slug, pageObject: locationDetails },
-            }"
-            >{{ locationDetails.name }}</router-link
-          >
+          <vue-link class="link" :to="`/locations/${location.slug}`">{{ location.name }}</vue-link>
         </template>
         {{ tags && tags.length > 0 ? "tagged:" : "." }}
         <template v-for="tag in tags">
@@ -75,36 +68,16 @@
   </component>
 </template>
 <script>
+import VueLink from "vue-link"
+
 export default {
   name: "FilterResults",
-  computed: {
-    locationDetails() {
-      return this.location
-        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
-        : null
-    },
-    tags() {
-      if (!this.terms || this.terms == 0) {
-        return null
-      }
-      let terms = []
-      for (const [taxonomy, value] of Object.entries(this.terms)) {
-        value.forEach(val => {
-          const t = this.getTerm(val, taxonomy)
-          if (!value.includes(t.parent)) {
-            terms.push(t)
-          }
-        })
-      }
-      return terms
-    },
+  status: "prototype",
+  release: "1.0.0",
+  components: {
+    VueLink,
   },
-  methods: {
-    getTerm(tid, tax) {
-      // RECONFIG THIS GETTER
-      return this.$store.getters["taxonomies/getTermById"](tax, tid)
-    },
-  },
+
   props: {
     /**
      * Value for DateFilter
@@ -122,7 +95,7 @@ export default {
      * Value for the location filter
      */
     location: {
-      type: String,
+      type: Object,
     },
     /**
      * Value for the search/query filter
@@ -147,8 +120,8 @@ export default {
     /**
      * The value of the term filter
      */
-    terms: {
-      type: Object,
+    tags: {
+      type: Array,
     },
     /**
      * The value of all results available (from the api) if not all are yet loaded in store
@@ -176,9 +149,16 @@ export default {
 </style>
 <docs>
   ```jsx
+    const mockData = require('../examples/mockData.js'); 
   <div>
-<FilterResults
+<FilterResults content-name="collection item"
+                filter="Suess"
+                :location="mockData.location"
+                :total="Number(24)"
+                :tags="mockData.collectionSelected"
     />
   </div>
+           
+  
   ```
 </docs>

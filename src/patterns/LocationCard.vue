@@ -8,14 +8,17 @@
     :explainer="variant !== 'sidebar' ? location.acf.city : ''"
     :heading="variant === 'sidebar' ? 'Hours' : ''"
     :key="location.id"
-    v-bind:style="[variant !== 'sidebar' ? { 'min-height': '197px' } : {}]"
+    v-bind:style="variant !== 'sidebar' ? { 'min-height': '197px' } : {}"
     itemscope
     itemtype="http://schema.org/Library"
   >
-    <div slot="copy" :class="variant !== 'sidebar' ? 'row d-flex' : ''">
+    <template v-slot:copy :class="variant !== 'sidebar' ? 'row d-flex' : ''"
+      ><!-- DIV 1 -->
       <!-- SIDEBAR Operating Hours -->
       <template v-if="variant === 'sidebar'">
         <div class="location__hours__wrap d-flex flex-column">
+          <!-- DIV 2 -->
+          <!-- DIV 3 -->
           <div
             class="location__hours"
             v-for="(day, index) in library.acf.operating_hours"
@@ -25,7 +28,9 @@
             itemprop="openingHoursSpecification"
             itemtype="http://schema.org/OpeningHoursSpecification"
           ></div>
+          <!-- CLOSE DIV 3-->
         </div>
+        <!-- CLOSE DIV 2 -->
 
         <address
           :location="location"
@@ -37,6 +42,7 @@
           :fax="location.acf.fax"
         />
         <div class="location__social mt-3">
+          <!-- DIV 4 -->
           <vue-link
             v-if="library.acf.facebook_username"
             :href="`https://facebook.com/${library.acf.facebook_username}`"
@@ -45,7 +51,9 @@
             <Icon name="facebook" />
           </vue-link>
         </div>
+        <!-- CLOSE DIV 4-->
         <div class="d-flex flex-column">
+          <!-- DIV 5-->
           <c-button
             :aria-label="'phone ' + location.name"
             type="button"
@@ -66,16 +74,21 @@
             >
             </person>
           </template>
-        </div> </template
+        </div>
+        <!-- CLOSE DIV 5--></template
       ><!-- END sidebar operating hours-->
 
       <!-- Non-sidebar address/phone -->
-      <template v-if="variant !== 'sidebar'">
+      <div v-if="variant !== 'sidebar'">
+        <!--DIV 6-->
         <div class="col-4 order-2 align-self-end">
+          <!--DIV 7-->
           <img :src="location.acf.building_image.url" />
         </div>
+        <!-- CLOSE DIV 7-->
 
         <div class="col col-8 order-0">
+          <!--DIV 8-->
           <c-button :aria-label="'phone ' + location.name" type="button">{{
             location.acf.phone
           }}</c-button>
@@ -89,21 +102,23 @@
             :fax="location.acf.fax"
           />
         </div>
+        <!-- CLOSE DIV 8-->
         <!-- END Non-sidebar address/phone -->
-      </template>
-    </div>
-    <template slot="action">
+      </div>
+      <!-- CLOSE DIV 6--> </template
+    ><!-- CLOSE DIV 1 -->
+    <template v-slot:action>
       <vue-link
         v-if="variant !== 'sidebar'"
         class="button button--blue-alternate"
-        :to="'locations/' + location.slug"
+        :to="`/locations/${location.slug}`"
         >More</vue-link
       >
       <vue-link
-        v-if="variant === 'sidebar' && library.slug !== 'headquarters'"
+        v-else-if="variant === 'sidebar' && location.slug !== 'headquarters'"
         itemprop="branchOf"
         class="link mt-4"
-        to="locations/headquarters"
+        to="/locations/headquarters"
         >Member of Fontana Regional Library</vue-link
       >
     </template>
@@ -111,9 +126,8 @@
 </template>
 
 <script>
-import Vue from "vue"
-import VueMoment from "vue-moment"
 import VueLink from "vue-link"
+import VueMoment from "vue-moment"
 
 import Card from "./Card.vue"
 import Heading from "../elements/Heading.vue"
@@ -156,7 +170,6 @@ export default {
   },
   data() {
     return {
-      status: "",
       format: "hh:mm a",
     }
   },

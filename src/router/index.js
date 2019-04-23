@@ -188,6 +188,19 @@ const router = new Router({
       }),
     },
     {
+      component: Terms,
+      name: "Locations",
+      path: "/locations",
+      props: route => ({
+        channelTitle: "Locations",
+        channelDescription: `
+        The Heart of the Community, Enriching Lives and Inspiring the Future.<br/><br/>
+        With 6 locations in Western North Carolina, Fontana Regional Library provides the public of Jackson, Macon, and Swain counties with excellent service and convenient access to resources for your educational, informational, and recreational needs.`,
+        taxonomy: "locations",
+        sidebar: { search: { location: false } },
+      }),
+    },
+    {
       component: Service,
       path: "/services/:slug",
       props: route => ({
