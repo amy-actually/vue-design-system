@@ -11,8 +11,7 @@
             <heading class="h2 mt-0 text--serif" :level="headingLevel" v-html="item.title.rendered">
             </heading>
 
-            <heading class="h4 mt-0" :level="headingLevel">
-              {{ showcaseCreators(item) }}
+            <heading class="h4 mt-0" :level="headingLevel" v-html="showcaseCreators(item)">
             </heading>
 
             <p class="text--large" v-html="item.acf.abstract"></p>
@@ -115,3 +114,23 @@ export default {
   },
 }
 </script>
+<docs>
+  ```jsx
+  const mockData = require('../examples/mockData.js'); 
+  <div class="row">
+    
+    <collection-item class="col col-8 card--background-gray"
+      headingLevel="h2"
+      subheadingClass="mt-1"
+      :item="mockData.books[1]"
+      variant="feature"
+      />         
+
+    <collection-item class="col col-4 card--background-blue-dark"
+      headingLevel="h2"
+      subheadingClass="mt-1 text--white"
+      :item="mockData.books[0]"
+      />   
+      </div> 
+  ```
+</docs>

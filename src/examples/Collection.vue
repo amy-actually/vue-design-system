@@ -26,8 +26,9 @@
       />
     </template>
 
-    <template v-slot:content>
+    <template v-slot:content class="align-self-stretch" style="width:100%">
       <filter-results
+        v-if="loaded"
         :total="total"
         :filter="filter"
         :location="location"
@@ -35,7 +36,9 @@
         contentName="collection item"
         :prefetchTotal="Number(apiTotal)"
       />
-      <p>{{ apiTotal }}</p>
+      <!--v-if="!loaded && total==0"-->
+      <spinner :dotSize="Number(20)" v-if="!loaded && total == 0" />
+
       <content-stream
         :key="`${network}-${slug}`"
         type="collection"
@@ -57,6 +60,7 @@ import ChannelHeader from "../patterns/ChannelHeader.vue"
 import ContentSearch from "../patterns/ContentSearch.vue"
 import ContentStream from "../patterns/ContentStream.vue"
 import FilterResults from "../elements/FilterResults.vue"
+import Spinner from "../elements/Spinner.vue"
 
 export default {
   name: "CollectionExample",
@@ -68,6 +72,7 @@ export default {
     ContentSearch,
     ContentStream,
     FilterResults,
+    Spinner,
   },
 
   computed: {
@@ -160,6 +165,7 @@ export default {
         genres: [],
         audience: [],
       },
+      loaded: false,
     }
   },
   methods: {
@@ -183,6 +189,7 @@ export default {
 
     async fetchContent() {
       this.$store.dispatch("taxonomies/fetchCollectionTerms").then(results => {
+        this.loaded = false
         const term = this.term
           ? this.term
           : this.network !== "new"
@@ -191,7 +198,11 @@ export default {
 
         if (!this.network || this.network == "new") {
           this.$store.dispatch("content/fetchContent", { type: "collection", perPage: 100, pg: 1 })
-          this.$store.dispatch("content/fetchContent", { type: "collection", perPage: 100, pg: 2 })
+          this.$store
+            .dispatch("content/fetchContent", { type: "collection", perPage: 100, pg: 2 })
+            .then(results => {
+              this.loaded = true
+            })
         }
         if (this.network && this.network !== "new" && this.slug !== "any" && this.term) {
           let params = {}
@@ -219,9 +230,8 @@ export default {
               params: params,
             })
             .then(results => {
-              console.log("RESULTS TOTAL??")
-              console.log(results)
               this.apiTotal = results
+              this.loaded = true
             })
         }
       })

@@ -24,9 +24,13 @@
   </component>
 </template>
 <script>
+/**
+ * A wrapper for a location address that provides schema.org markup
+ */
 export default {
   name: "Address",
-
+  status: "prototype",
+  release: "1.0.0",
   props: {
     /**
      * The element the component renders as.
@@ -36,39 +40,60 @@ export default {
       type: String,
     },
     /**
-     * The library for which to render an address
+     * The street address / physical location
      */
     address: {
       type: String,
     },
+    /**
+     * The mailing address (if different from street address)
+     */
     mailingAddress: {
       type: String,
     },
+    /**
+     * City name
+     */
     city: {
       type: String,
     },
+    /**
+     * 2-letter abbreviation for state
+     */
     state: {
       type: String,
       default: "NC",
     },
+    /**
+     * Postal code
+     */
     zip: {
       type: String,
     },
+    /**
+     * Telephone/Contact Number
+     */
     phone: {
       type: String,
       default: null,
     },
+    /**
+     * Location's Fax number
+     */
     fax: {
       type: String,
       default: null,
     },
+    /**
+     * The address type (schema.org specified), if needed.
+     */
     type: {
       type: String,
       default: "address",
       validator: value => value.match(/(address|billingAddress|deliveryAddress|location)/),
     },
     /**
-     *
+     * Layout variant
      */
     variant: {
       type: String,
@@ -83,3 +108,17 @@ export default {
   font-style: normal;
 }
 </style>
+<docs>
+  ```jsx
+
+    <Address
+      address="249 Frank Allen Rd."
+      mailingAddress="PO BOX 2127"
+      city="Cashiers"
+      phone="828-743-0215"
+      fax="828-743-1638"
+      zip="28717"
+      />
+
+  ```
+</docs>

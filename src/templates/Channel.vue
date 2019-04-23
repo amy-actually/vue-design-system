@@ -21,7 +21,8 @@
             <slot name="sidebar"></slot>
           </div>
 
-          <div :class="sidebar ? '' : ''">
+          <div class="flex-grow-1">
+            <!--:class="sidebar ? '' : ''"-->
             <slot name="content"> </slot>
           </div>
         </div>

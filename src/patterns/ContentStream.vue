@@ -100,13 +100,14 @@
       ><!-- end pages card -->
 
       <!--collection card-->
+      <!-- class="card--background-blue-dark my-2" 
+            subheading-class="mt-1 text--white" -->
       <template v-else-if="item.type == 'collection-item'">
         <collection-item
-          class="card--background-blue-dark my-2"
           :item="item"
           heading-level="h3"
           :key="item.id"
-          subheading-class="mt-1 text--white"
+          subheading-class="mt-1"
           subheading-level="h4"
         /><!--end collection card-->
       </template>

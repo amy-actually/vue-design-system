@@ -1,17 +1,14 @@
 <template>
-    <component class="button btn"
-               :class="[`button--${variation}`]"
-               :is="element"
-               :type="type">
-
-        <slot />
-
-    </component>
+  <component class="button btn" :class="[`button--${variation}`]" :is="element" :type="type">
+    <slot />
+  </component>
 </template>
 
 <script>
 export default {
   name: "CButton",
+  status: "prototype",
+  release: "1.0.0",
 
   props: {
     /**
@@ -21,7 +18,9 @@ export default {
       default: "button",
       type: String,
     },
-
+    /**
+     * Can be deafult, disabled, focus, hover, press or progess
+     */
     state: {
       default: "default",
       type: String,
@@ -29,14 +28,16 @@ export default {
     },
 
     /**
-     * Type
+     * Can be button, reset, or submit
      */
     type: {
       default: "button",
       type: String,
       validator: value => value.match(/(button|reset|submit)/),
     },
-
+    /**
+     * Can be Link, Primary, or Secondary
+     */
     variation: {
       type: String,
       default: "primary",
@@ -163,3 +164,22 @@ export default {
   }
 }
 </style>
+<docs>
+  ```jsx
+  <div>
+    <CButton variation="link">
+      Click Here
+    </Cbutton>
+    <CButton variation="primary">
+      Click Here
+    </Cbutton>
+    <CButton variation="secondary">
+      Click Here
+    </Cbutton>
+    <CButton class="button--large">
+      Click Here
+    </Cbutton>
+  </div>
+
+  ```
+</docs>

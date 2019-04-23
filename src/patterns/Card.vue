@@ -61,7 +61,9 @@
 
 <script>
 import Heading from "../elements/Heading.vue"
-
+/**
+ * A card is used to display a content summary
+ */
 export default {
   name: "Card",
 
@@ -85,6 +87,9 @@ export default {
   },
 
   props: {
+    /**
+     *
+     */
     badgeLabel: {
       type: String,
     },
@@ -289,3 +294,32 @@ export default {
   }
 }
 </style>
+<docs>
+  ```jsx
+<div class="container-fluid">
+<div class="row">
+<card class="col col-6 card--background-blue-dark"
+  badge-label="This is a badge label" 
+  content-type="service"
+  explainer="This is an explainer"
+  heading="This is a heading"
+  image="https://unsplash.it/400/200?random"
+  sub-explainer="This is a subexplainer"
+  sub-heading="This is a subHEADING"
+  copy="Globular star cluster corpus callosum astonishment from which we spring star stuff harvesting star light preserve and cherish that pale blue dot? Hearts of the stars two ghostly white figures in coveralls and helmets are soflty dancing courage of our questions the ash of stellar alchemy laws of physics Rig Veda. With pretty stories for which there's little good evidence a mote of dust suspended in a sunbeam courage of our questions paroxysm of global death bits of moving fluff permanence of the stars and billions upon billions upon billions upon billions upon billions upon billions upon billions."
+  />
+  <card class="col col-6 card--background-gray"
+  badge-label="This is a badge label" 
+  content-type="event"
+  explainer="This is an explainer"
+  heading="This is a heading"
+  image="https://unsplash.it/500/400?random"
+  sub-explainer="This is a subexplainer"
+  sub-heading="This is a subHEADING"
+  copy="Trillion ship of the imagination Ut enim ad minima veniam adipisci velit quis nostrum exercitationem ullam corporis suscipit laboriosam are creatures of the cosmos. The carbon in our apple pies network of wormholes Flatland paroxysm of global death nisi ut aliquid ex ea commodi consequatur totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo? A mote of dust suspended in a sunbeam stirred by starlight muse about the only home we've ever known shores of the cosmic ocean nisi ut aliquid ex ea commodi consequatur and billions upon billions upon billions upon billions upon billions upon billions upon billions."
+  />
+  </div>
+  </div>
+
+  ```
+</docs>
