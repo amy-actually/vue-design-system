@@ -38,7 +38,7 @@
               :total="total"
               :selectedDate="selectedDate"
               :filter="q"
-              :location="library"
+              :location="locationDetails"
               contentName="event"
             />
 
@@ -78,6 +78,11 @@ export default {
     ...mapState("content", ["events"]),
     eventCount() {
       return this.$store.state.content.counts.events
+    },
+    locationDetails() {
+      return this.location && this.location !== "all"
+        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
+        : {}
     },
   },
 

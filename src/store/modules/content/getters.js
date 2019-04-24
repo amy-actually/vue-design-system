@@ -97,7 +97,6 @@ export default {
   },
 
   getCtaByCategory: state => (slug = null, index = 0, exclude = []) => {
-    console.log("GETTER")
     const content = state.callsToAction
     let relatedContent
 

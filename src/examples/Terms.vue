@@ -37,7 +37,7 @@
         v-if="(filter && filter.length > 0) || (location && location !== 'all')"
         :total="total"
         :filter="filter"
-        :location="location"
+        :location="locationDetails"
         :contentName="
           taxonomy.slice(-1) == 's' ? taxonomy.substring(0, taxonomy.length - 1) : taxonomy
         "
@@ -80,6 +80,11 @@ export default {
     terms() {
       return this.$store.state.taxonomies[this.taxonomy]
     },
+    locationDetails() {
+      return this.location && this.location !== "all"
+        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
+        : {}
+    },
   },
   data() {
     return {
@@ -89,7 +94,6 @@ export default {
     }
   },
   created() {
-    console.log(this.taxonomy)
     this.$store.dispatch("content/fetchContent", { type: "callsToAction" })
     this.$store.dispatch("taxonomies/fetchTerms", { type: this.taxonomy })
   },

@@ -60,6 +60,7 @@ const router = new Router({
         slug: "any",
       }),
     },
+
     {
       component: CollectionExample,
       meta: {
@@ -92,6 +93,7 @@ const router = new Router({
         nav: [{ text: "Collection", to: "/collection" }],
       }),
     },
+
     {
       component: CollectionExample,
       meta: {
@@ -121,19 +123,6 @@ const router = new Router({
         location: route.query.location,
       }),
     },
-
-    /* {
-      component: EventsExample,
-      meta: {
-        title: "Events",
-      },
-      name: "Events",
-      path: "/events",
-      props: route => ({
-        filter: route.query.filter,
-        location: route.query.location,
-      }),
-    }, */
 
     {
       component: ChannelExample,
@@ -187,6 +176,7 @@ const router = new Router({
         sidebar: { search: { location: false } },
       }),
     },
+
     {
       component: Terms,
       name: "Locations",
@@ -200,6 +190,7 @@ const router = new Router({
         sidebar: { search: { location: false } },
       }),
     },
+
     {
       component: Service,
       path: "/services/:slug",
@@ -211,6 +202,7 @@ const router = new Router({
         location: route.query.location,
       }),
     },
+
     {
       component: ChannelExample,
       meta: {
@@ -227,6 +219,7 @@ const router = new Router({
         slug: "pages/",
       }),
     },
+
     {
       path: "*",
       name: "NotFound",

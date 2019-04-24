@@ -133,8 +133,7 @@ export default {
     const name = endpoint[type]["slug"]
     const apiType = endpoint[type]["type"]
     const mod = endpoint[type]["module"]
-    console.log("FETCH")
-    console.log(params)
+
     if (apiType === "fontana") {
       return fontana.get(`/${name}`, { params: params }).then(res => {
         return { commit: "ADD_CONTENT", posts: res.data }

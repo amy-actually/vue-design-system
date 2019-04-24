@@ -30,8 +30,8 @@
       <filter-results
         :total="total"
         :filter="filter"
-        :location="location"
-        :terms="selected"
+        :location="locationDetails"
+        :terms="tags"
         contentName="collection item"
         :prefetchTotal="Number(apiTotal)"
       />
@@ -104,6 +104,26 @@ export default {
     },
     contents() {
       return this.$store.getters["content/getCollection"](this.network, this.slug)
+    },
+    locationDetails() {
+      return this.location && this.location !== "all"
+        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
+        : {}
+    },
+    tags() {
+      if (!this.selected || this.selected == 0) {
+        return null
+      }
+      let terms = []
+      for (const [taxonomy, value] of Object.entries(this.selected)) {
+        value.forEach(val => {
+          const t = this.getTerm(val, taxonomy)
+          if (!value.includes(t.parent)) {
+            terms.push(t)
+          }
+        })
+      }
+      return terms
     },
   },
   created() {

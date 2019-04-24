@@ -27,7 +27,7 @@
         :total="total"
         :selectedDate="selectedDate"
         :filter="filter"
-        :location="location"
+        :location="locationDetails"
         :contentName="network.slice(-1) == 's' ? network.substring(0, network.length - 1) : network"
       />
       <content-stream
@@ -93,6 +93,11 @@ export default {
           : 0
         return this.$store.state.content[this.network]
       }
+    },
+    locationDetails() {
+      return this.location && this.location !== "all"
+        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
+        : {}
     },
   },
   created() {

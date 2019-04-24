@@ -61,6 +61,7 @@
 
 <script>
 import Heading from "../elements/Heading.vue"
+import VueLink from "vue-link"
 /**
  * A card is used to display a content summary
  */
@@ -69,6 +70,7 @@ export default {
 
   components: {
     Heading,
+    VueLink,
   },
 
   computed: {
