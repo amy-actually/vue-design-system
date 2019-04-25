@@ -19,56 +19,73 @@ export default {
   actions: {
     async fetchCollectionTerms({ dispatch, commit }) {
       return Promise.all([
-        dispatch("fetchTerms", { type: "audience" }),
-        dispatch("fetchTerms", { type: "genres" }),
-        dispatch("fetchTerms", { type: "featuredCollections" }),
+        dispatch("fetchTerms", { taxonomy: "audience" }),
+        dispatch("fetchTerms", { taxonomy: "genres" }),
+        dispatch("fetchTerms", { taxonomy: "featuredCollections" }),
       ])
     },
-    async fetchTerms({ commit }, { type, perPage = 100, pg = 1, params = {} }) {
+    async fetchTerms({ commit }, { taxonomy, perPage = 100, pg = 1, params = {} }) {
       let args = { ...params, per_page: perPage, page: pg }
-      return api.fetchContent(type, args).then(results => {
-        commit("addTermsToState", { type: type, data: results.posts })
+      return api.fetchContent(taxonomy, args).then(results => {
+        commit("addTermsToState", { taxonomy: taxonomy, data: results.posts })
       })
+    },
+    async fetchTermContent(
+      { state, rootState, commit, dispatch, getters, rootGetters },
+      { taxonomy, slug }
+    ) {
+      let term = state[taxonomy].find(item => item.slug == slug)
+
+      if (!term) {
+        term = await dispatch("fetchTerms", { taxonomy: taxonomy })
+        term = state[taxonomy].find(item => item.slug == slug)
+      }
+      //NEEDS COMPLETION - DISPATCH GET LINKS (or count by page)
+      dispatch()
     },
   },
   getters: {
-    getTermBySlug: (state, getters, rootState, rootGetters) => (type, slug) => {
-      type = utils.returnTaxonomyType(type)
-      return state[type].find(item => item.slug === slug)
+    getTermBySlug: (state, getters, rootState, rootGetters) => (taxonomy, slug) => {
+      taxonomy = utils.returnTaxonomyType(taxonomy)
+      return state[taxonomy].find(item => item.slug === slug)
     },
-    getTermById: (state, getters, rootState, rootGetters) => (type, tid) => {
-      type = utils.returnTaxonomyType(type)
-      return state[type].find(item => item.id === tid)
+    getTermById: (state, getters, rootState, rootGetters) => (taxonomy, tid) => {
+      taxonomy = utils.returnTaxonomyType(taxonomy)
+      return state[taxonomy].find(item => item.id === tid)
     },
-    getTermFilters: (state, getters) => types => {
+    getTermFilters: (state, getters) => taxonomies => {
       let container = []
-      types.forEach(tax => {
-        container[tax] =
-          content[tax]["hierarchical"] === true ? getters.getHierarchy(tax) : state[tax]
+      taxonomies.forEach(taxonomy => {
+        container[taxonomy] =
+          content[taxonomy]["hierarchical"] === true
+            ? getters.getHierarchy(taxonomy)
+            : state[taxonomy]
       })
       return container
     },
-    getHierarchy: state => tax => {
-      let parents = state[tax].filter(term => !term.parent || term.parent == 0)
+    getHierarchy: state => taxonomy => {
+      let parents = state[taxonomy].filter(term => !term.parent || term.parent == 0)
       parents.forEach(
         parent =>
-          (parent.children = state[tax].filter(child => child.parent && child.parent == parent.id))
+          (parent.children = state[taxonomy].filter(
+            child => child.parent && child.parent == parent.id
+          ))
       )
       return parents
     },
   },
   mutations: {
-    addTermsToState(state, { type, data }) {
-      if (Array.isArray(data) && (!state[type] || state[type].length == 0)) {
-        state[type] = data
+    addTermsToState(state, { taxonomy, data }) {
+      if (Array.isArray(data) && (!state[taxonomy] || state[taxonomy].length == 0)) {
+        state[taxonomy] = data
       } else if (Array.isArray(data)) {
         data.forEach(content => {
-          if (state[type].find(item => item.id === content.id) == undefined) {
-            state[type].push(content)
+          if (state[taxonomy].find(item => item.id === content.id) == undefined) {
+            state[taxonomy].push(content)
           }
         })
-      } else if (data.id && state[type].find(item => item.id === data.id) == undefined) {
-        state[type].push(data)
+      } else if (data.id && state[taxonomy].find(item => item.id === data.id) == undefined) {
+        state[taxonomy].push(data)
       }
     },
   },

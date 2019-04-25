@@ -6,25 +6,31 @@
     heading="Hours"
     itemscope
     itemtype="http://schema.org/Library"
+    contentType="location"
   >
     <template v-slot:copy>
       <div class="location__hours__wrap d-flex flex-column">
-        <div
-          class="location__hours"
-          v-for="(day, index) in library.acf.operating_hours"
-          :key="index"
-          :class="getOrder(index, day)"
-          v-html="getOperatingHours(index, day)"
-          itemprop="openingHoursSpecification"
-          itemtype="http://schema.org/OpeningHoursSpecification"
-        ></div>
+        <template v-for="(day, index) in location.acf.operating_hours">
+          <div
+            :key="index"
+            class="location__hours"
+            :class="getOrder(index, day)"
+            v-html="getOperatingHours(index, day)"
+            itemprop="openingHoursSpecification"
+            itemtype="http://schema.org/OpeningHoursSpecification"
+          ></div>
+        </template>
       </div>
 
-      <address
+      <address-block
         :location="location"
         :variant="variant"
         :address="location.acf.address"
-        :mailing-address="location.acf.mailing_address"
+        :mailing-address="
+          location.acf.mailing_address && location.acf.mailing_address.length > 0
+            ? location.acf.mailing_address
+            : null
+        "
         :city="location.acf.city"
         :zip="location.acf.zip"
         :fax="location.acf.fax"
@@ -33,8 +39,8 @@
       <div class="location__social mt-3">
         <!-- DIV 4 -->
         <vue-link
-          v-if="library.acf.facebook_username"
-          :href="`https://facebook.com/${library.acf.facebook_username}`"
+          v-if="location.acf.facebook_username"
+          :href="`https://facebook.com/${location.acf.facebook_username}`"
           itemprop="sameAs"
         >
           <Icon name="facebook" />
@@ -46,14 +52,15 @@
         <c-button
           :aria-label="'phone ' + location.name"
           type="button"
-          :href="`tel:1-${library.acf.phone}`"
+          :href="`tel:1-${location.acf.phone}`"
         >
           <Icon name="phone" fill="#fff" size="medium" class="location__phone-button__icon" />
-          <span> {{ library.acf.phone }}</span>
+          <span> {{ location.acf.phone }}</span>
         </c-button>
 
-        <img :src="library.acf.building_image.url" class="flex-grow-0" />
-        <template v-for="contact in library.acf.contact">
+        <img :src="location.acf.building_image.url" class="flex-grow-0" />
+
+        <template v-for="contact in location.acf.contact">
           <person
             :key="contact.person.ID"
             :name="contact.person.post_title"
@@ -65,6 +72,7 @@
         </template>
       </div>
     </template>
+
     <template v-slot:action>
       <router-link
         v-if="location.slug !== 'headquarters'"
@@ -75,34 +83,42 @@
       >
     </template>
   </card>
-  <!--        :copy="location.description" -->
+
   <card
     v-else
-    :badge-label="location.name"
+    contentType="location"
+    :heading="location.name"
+    heading-level="h4"
     class="card--background-gray"
     :explainer="location.acf.city"
     v-bind:style="{ 'min-height': '197px' }"
     itemscope
     itemtype="http://schema.org/Library"
   >
-    <template v-slot:copy class="row d-flex">
-      <div class="col-4 order-2 align-self-end">
-        <img :src="location.acf.building_image.url" />
-      </div>
+    <template v-slot:copy>
+      <div class="row d-flex">
+        <div class="col-4 order-2 align-self-end">
+          <img :src="location.acf.building_image.url" />
+        </div>
 
-      <div class="col col-8 order-0">
-        <c-button :aria-label="'phone ' + location.name" type="button">
-          {{ location.acf.phone }}</c-button
-        >
-        <address
-          :location="location"
-          :variant="variant"
-          :address="location.acf.address"
-          :mailing-address="location.acf.mailing_address"
-          :city="location.acf.city"
-          :zip="location.acf.zip"
-          :fax="location.acf.fax"
-        />
+        <div class="col col-8 order-0">
+          <c-button :aria-label="'phone ' + location.name" type="button">
+            {{ location.acf.phone }}</c-button
+          >
+          <address-block
+            :location="location"
+            :variant="variant"
+            :address="location.acf.address"
+            :mailing-address="
+              location.acf.mailing_address && location.acf.mailing_address.length > 0
+                ? location.acf.mailing_address
+                : null
+            "
+            :city="location.acf.city"
+            :zip="location.acf.zip"
+            :fax="location.acf.fax"
+          />
+        </div>
       </div>
     </template>
 
@@ -119,7 +135,7 @@ import moment from "moment"
 import Card from "./Card.vue"
 import Heading from "../elements/Heading.vue"
 import CButton from "../elements/Button.vue"
-import Address from "../elements/Address.vue"
+import AddressBlock from "../elements/AddressBlock.vue"
 import Icon from "../elements/Icon.vue"
 import Person from "./Person.vue"
 
@@ -130,7 +146,7 @@ export default {
     Card,
     Heading,
     CButton,
-    Address,
+    AddressBlock,
     Icon,
     Person,
     VueLink,
@@ -144,17 +160,13 @@ export default {
       return this.time.day()
     },
     status() {
-      if (!this.location) {
-        console.log("beep beep")
-        return ""
-      }
       console.log("beep beep")
       const open = moment(this.location.acf.operating_hours[this.today].open, this.format)
       console.log(open)
       const close = moment(this.location.acf.operating_hours[this.today].close, this.format)
       const current = this.time.isBetween(open, close) ? "open" : "closed"
       if (current === "open" && close.diff(time, "minutes") < 46) {
-        current = "closing-soon"
+        return "closing-soon"
       }
       return current
     },

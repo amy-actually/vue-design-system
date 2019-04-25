@@ -2,10 +2,10 @@ import api from "./plugins/api.js"
 export default {
   async loadHome({ dispatch, commit }) {
     dispatch("content/loadHome")
-    dispatch("taxonomies/fetchTerms", { type: "services", perPage: 100 })
+    dispatch("taxonomies/fetchTerms", { taxonomy: "services", perPage: 100 })
   },
   async loadApp({ dispatch, commit }) {
-    dispatch("taxonomies/fetchTerms", { type: "locations" })
+    dispatch("taxonomies/fetchTerms", { taxonomy: "locations" })
     dispatch("fetchMenus", { root: true })
   },
 

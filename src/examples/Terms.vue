@@ -95,11 +95,11 @@ export default {
   },
   created() {
     this.$store.dispatch("content/fetchContent", { type: "callsToAction" })
-    this.$store.dispatch("taxonomies/fetchTerms", { type: this.taxonomy })
+    this.$store.dispatch("taxonomies/fetchTerms", { taxonomy: this.taxonomy })
   },
   beforeUpdate() {
     if (!this.terms || this.terms.length < 1) {
-      this.$store.dispatch("taxonomies/fetchTerms", { type: this.taxonomy })
+      this.$store.dispatch("taxonomies/fetchTerms", { taxonomy: this.taxonomy })
     }
   },
   methods: {

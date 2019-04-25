@@ -8,9 +8,12 @@
     itemtype="http://schema.org/PostalAddress"
   >
     <div class="location__street h4" itemprop="streetAddress">{{ address }}</div>
-    <div v-if="mailing_address" class="location__mailing h4">
-      {{ mailing_address }}
-    </div>
+    <div
+      v-if="mailingAddress"
+      class="location__mailing h4"
+      itemprop="postOfficeBoxNumber"
+      v-html="mailingAddress"
+    />
     <div class="location__city h4">
       <span itemprop="addressLocality">{{ city }}, {{ state }}</span>
       <span itemprop="postalCode">{{ zip }}</span>
@@ -28,7 +31,7 @@
  * A wrapper for a location address that provides schema.org markup
  */
 export default {
-  name: "Address",
+  name: "AddressBlock",
   status: "prototype",
   release: "1.0.0",
   props: {
@@ -50,6 +53,7 @@ export default {
      */
     mailingAddress: {
       type: String,
+      default: null,
     },
     /**
      * City name
@@ -111,7 +115,7 @@ export default {
 <docs>
   ```jsx
 
-    <Address
+    <AddressBlock
       address="249 Frank Allen Rd."
       mailingAddress="PO BOX 2127"
       city="Cashiers"

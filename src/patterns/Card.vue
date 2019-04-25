@@ -45,9 +45,9 @@
 
         <div class="card__heading__separator" v-if="isDeck"></div>
 
-        <p class="card__copy">
+        <div class="card__copy">
           <slot name="copy">{{ decodeHtml(copy) }}</slot>
-        </p>
+        </div>
 
         <slot name="action"></slot>
       </div>
