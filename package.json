@@ -12,7 +12,7 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --inline --config ./build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --config ./build/webpack.dev.conf.js --disable-host-check",
     "start": "npm-run-all --parallel styleguide theo:onchange theo dev",
     "unit": "jest --config ./test/unit/jest.conf.js --coverage",
     "build": "npm-run-all theo node:build",

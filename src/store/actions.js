@@ -1,4 +1,5 @@
 import api from "./plugins/api.js"
+
 export default {
   async loadHome({ dispatch, commit }) {
     dispatch("content/loadHome")

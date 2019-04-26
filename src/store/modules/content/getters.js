@@ -1,3 +1,5 @@
+import { endpoint, returnType } from "../utilities.js"
+
 export default {
   getAllContentBy: state => (locationName = "all", serviceName = "any") => {
     const content = [
@@ -52,6 +54,7 @@ export default {
   },
 
   getContentBy: state => (contentType, locationName = "all", serviceName = "any") => {
+    contentType = returnType(contentType)
     const content = state[contentType]
 
     let relatedContent
@@ -171,22 +174,16 @@ export default {
       : relatedContent[index]
   },
   getCollection: state => (field, value, collection = "collection") => {
+    let contentType = collection === "collection" ? "collection" : returnType(collection)
+    collection = !contentType ? collection : contentType
     let content = state[collection]
     let relatedContent
 
     if (field === "new") {
       relatedContent = content.slice(0, 200)
     } else {
-      let subField =
-        field === "audience"
-          ? "target_readership"
-          : field === "genres"
-          ? "genre"
-          : field === "featuredCollections" ||
-            field === "featuredcollections" ||
-            field === "featured-collections"
-          ? "featured_collection"
-          : field
+      let subField = returnType(field)
+      subField = !subField ? field : endpoint[collection].filter[subField]
 
       relatedContent =
         subField !== "new"
@@ -203,6 +200,7 @@ export default {
   },
 
   getItemBySlug: state => (contentType, slug) => {
+    contentType = returnType(contentType)
     return state[contentType].find(item => item.slug === slug)
   },
 }

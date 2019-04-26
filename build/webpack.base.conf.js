@@ -98,4 +98,7 @@ module.exports = {
     tls: "empty",
     child_process: "empty",
   },
+  devServer: {
+    disableHostCheck: true,
+  },
 }

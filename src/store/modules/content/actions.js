@@ -1,4 +1,6 @@
 import api from "../../plugins/api.js"
+import { returnType } from "../utilities.js"
+
 export default {
   async loadHome({ dispatch, commit }) {
     dispatch("fetchContent", { type: "callsToAction", perPage: 10 })
@@ -8,6 +10,7 @@ export default {
   },
 
   async fetchContent({ dispatch, commit, state }, { type, perPage = 100, pg = 1, params = {} }) {
+    type = returnType(type)
     let args =
       type === "blog"
         ? { ...params, number: perPage, page: pg }
@@ -23,12 +26,14 @@ export default {
   },
 
   async fetchContentBySlug({ commit }, { type, slug }) {
+    type = returnType(type)
     return api.fetchBySlug(type, slug).then(results => {
       commit("ADD_CONTENT_SLUG", { type: type, data: results.data })
     })
   },
 
   async fetchAllContent({ dispatch, commit }, { type, params = {}, number = 0 }) {
+    type = returnType(type)
     let count = 0
 
     let args = type === "blog" ? { ...params, number: 100 } : { ...params, per_page: 100 }

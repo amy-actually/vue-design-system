@@ -105,10 +105,7 @@ const router = new Router({
         channelTitle: "Collection",
         network: route.params.network,
         slug: route.params.slug,
-        nav: [
-          { text: "Collection", to: "/collection" },
-          { text: route.params.network, to: "/collection/" + route.params.network },
-        ],
+        nav: [{ text: "Collection", to: "/collection" }],
       }),
     },
 

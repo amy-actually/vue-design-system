@@ -105,7 +105,7 @@ export default {
         : {}
     },
     term() {
-      if (this.network === "new") {
+      if (!this.network || this.network === "new") {
         return null
       }
       const term = this.$store.getters["taxonomies/getTermBySlug"](this.network, this.slug)
@@ -302,11 +302,9 @@ export default {
   },
   watch: {
     filter() {
-      this.streamkey = this.filter
       this.$root.$emit("resetpage")
     },
     location() {
-      this.streamkey = this.library
       this.$root.$emit("resetpage")
     },
     /*     $route(){

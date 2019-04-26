@@ -1,5 +1,5 @@
 import api from "../../plugins/api.js"
-import * as utils from "../utilities.js"
+import { returnType } from "../utilities.js"
 
 const content = {
   genres: { hierarchical: true, store: "genres", label: "Filter by Genre" },
@@ -25,6 +25,8 @@ export default {
       ])
     },
     async fetchTerms({ commit }, { taxonomy, perPage = 100, pg = 1, params = {} }) {
+      let tax = returnType(taxonomy)
+      taxonomy = !tax ? taxonomy : tax
       let args = { ...params, per_page: perPage, page: pg }
       return api.fetchContent(taxonomy, args).then(results => {
         commit("addTermsToState", { taxonomy: taxonomy, data: results.posts })
@@ -34,6 +36,8 @@ export default {
       { state, rootState, commit, dispatch, getters, rootGetters },
       { taxonomy, slug }
     ) {
+      let tax = returnType(taxonomy)
+      taxonomy = !tax ? taxonomy : tax
       let term = state[taxonomy].find(item => item.slug == slug)
 
       if (!term) {
@@ -46,20 +50,22 @@ export default {
   },
   getters: {
     getTermBySlug: (state, getters, rootState, rootGetters) => (taxonomy, slug) => {
-      taxonomy = utils.returnTaxonomyType(taxonomy)
+      let tax = returnType(taxonomy)
+      taxonomy = !tax ? taxonomy : tax
       return state[taxonomy].find(item => item.slug === slug)
     },
     getTermById: (state, getters, rootState, rootGetters) => (taxonomy, tid) => {
-      taxonomy = utils.returnTaxonomyType(taxonomy)
+      let tax = returnType(taxonomy)
+      taxonomy = !tax ? taxonomy : tax
       return state[taxonomy].find(item => item.id === tid)
     },
     getTermFilters: (state, getters) => taxonomies => {
       let container = []
       taxonomies.forEach(taxonomy => {
-        container[taxonomy] =
-          content[taxonomy]["hierarchical"] === true
-            ? getters.getHierarchy(taxonomy)
-            : state[taxonomy]
+        let tax = returnType(taxonomy)
+        tax = !tax ? taxonomy : tax
+        container[tax] =
+          content[tax]["hierarchical"] === true ? getters.getHierarchy(tax) : state[tax]
       })
       return container
     },
