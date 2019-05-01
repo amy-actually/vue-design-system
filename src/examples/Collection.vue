@@ -1,7 +1,7 @@
 <template>
-  <channel :callToAction="primaryCTA" :type="network">
+  <channel :callToAction="primaryCTA" :type="verifiedType">
     <template v-slot:breadcrumb v-if="nav">
-      <breadcrumb :current="!term ? channelTitle : term.name" :ancestors="nav" />
+      <breadcrumb :current="!term ? channelTitle : term.name" :ancestors="navigation" />
     </template>
 
     <template v-slot:header>
@@ -76,6 +76,13 @@ export default {
   },
 
   computed: {
+    navigation() {
+      let here = this.nav
+      if (this.verifiedType && this.verifiedType !== "error") {
+        here.push({ text: this.verifiedType, to: `/collection/${this.verifiedType}` })
+      }
+      return here
+    },
     primaryCTA() {
       //return this.$store.state.callsToAction;
       //return this.$store.getters["content/getCtaByCategory"](this.slug, "random")
@@ -91,13 +98,8 @@ export default {
           "random"
         )
       }
-      if (
-        this.network === "genres" ||
-        this.network === "audience" ||
-        this.network === "featuredCollections"
-      ) {
-        return this.$store.getters["content/getCtaByCategory"]("collection-services", "random")
-      }
+
+      return this.$store.getters["content/getCtaByCategory"]("collection-services", "random")
     },
     locationDetails() {
       return this.location && this.location !== "all"
@@ -105,7 +107,7 @@ export default {
         : {}
     },
     term() {
-      if (this.network === "new") {
+      if (this.network.toLowerCase() === "new") {
         return null
       }
       const term = this.$store.getters["taxonomies/getTermBySlug"](this.network, this.slug)
@@ -132,9 +134,12 @@ export default {
     },
   },
   created() {
-    if (this.network && this.selected[this.network]) {
-      delete this.selected[this.network]
+    this.verifiedType = this.$store.getters.verifyType(this.network)
+    if (this.selected[this.verifiedType]) {
+      console.log(this.verifiedType)
+      delete this.selected[this.verifiedType]
     }
+
     this.fetchContent()
 
     console.log("CREATED: " + this.network)
@@ -188,6 +193,7 @@ export default {
         audience: [],
       },
       loaded: false,
+      verifiedType: null,
     }
   },
   methods: {
@@ -227,9 +233,11 @@ export default {
               this.loaded = true
             })
         }
-        if (this.network && this.network !== "new" && this.slug !== "any" && this.term) {
+        if (this.network && this.network !== "new" && this.slug !== "any") {
+          //&& this.term
+
           let params = {}
-          params[this.network] = term.id
+          params[this.verifiedType] = this.term ? term.id : ""
           if (this.filter) {
             params.search = this.filter
           }
@@ -302,11 +310,9 @@ export default {
   },
   watch: {
     filter() {
-      this.streamkey = this.filter
       this.$root.$emit("resetpage")
     },
     location() {
-      this.streamkey = this.library
       this.$root.$emit("resetpage")
     },
     /*     $route(){

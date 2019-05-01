@@ -1,4 +1,5 @@
 import actions from "../../actions.js"
+import { returnType } from "../utilities.js"
 
 export default {
   namespaced: true,
@@ -10,8 +11,10 @@ export default {
 
   actions,
   getters: {
-    getTribeByField: state => (type, field, value) =>
-      state[type].find(item => item[field] === value),
+    getTribeByField: state => (type, field, value) => {
+      const contentType = returnType(type)
+      state[contentType].find(item => item[field] === value)
+    },
   },
 
   mutations: {

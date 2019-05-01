@@ -85,7 +85,7 @@ export default {
     })
     //this.location = this.taxonomy=="locations" ? this.slug : this.$store.state.currentLocation;
 
-    if (
+    /* if (
       this.$store.state.taxonomies[this.taxonomy] &&
       this.$store.state.taxonomies[this.taxonomy].length === 0
     ) {
@@ -95,7 +95,8 @@ export default {
       })
     } else {
       let term = this.$store.getters["taxonomies/getTermBySlug"](this.taxonomy, this.slug)
-    }
+    } */
+    this.$store.dispatch("taxonomies/fetchTermContent", { taxonomy: this.taxonomy })
 
     this.location = this.taxonomy == "locations" ? this.slug : this.$store.state.currentLocation
   },

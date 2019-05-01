@@ -1,6 +1,9 @@
+import { returnType } from "./modules/utilities.js"
+
 export default {
   getContentBy: state => (contentType, locationName = "all", serviceName = "any") => {
-    const content = state[contentType]
+    const type = returnType(contentType)
+    const content = state[type]
 
     let relatedContent
 
@@ -45,6 +48,12 @@ export default {
   },
 
   getItemBySlug: state => (contentType, slug) => {
-    return state[contentType].find(item => item.slug === slug)
+    const type = returnType(contentType)
+    return state[type].find(item => item.slug === slug)
+  },
+
+  verifyType: state => type => {
+    console.log("VERIFYING... " + type)
+    return returnType(type)
   },
 }

@@ -1,3 +1,5 @@
+import { returnType, endpoint } from "../utilities.js"
+
 export default {
   getAllContentBy: state => (locationName = "all", serviceName = "any") => {
     const content = [
@@ -52,7 +54,9 @@ export default {
   },
 
   getContentBy: state => (contentType, locationName = "all", serviceName = "any") => {
-    const content = state[contentType]
+    console.log("getContentBy: " + contentType)
+    const type = returnType(contentType)
+    const content = state[type]
 
     let relatedContent
 
@@ -171,25 +175,24 @@ export default {
       : relatedContent[index]
   },
   getCollection: state => (field, value, collection = "collection") => {
-    let content = state[collection]
+    console.log("getCollection: " + collection)
+    const type = returnType(collection)
+
+    let content = state[type]
     let relatedContent
 
     if (field === "new") {
       relatedContent = content.slice(0, 200)
     } else {
-      let subField =
-        field === "audience"
-          ? "target_readership"
-          : field === "genres"
-          ? "genre"
-          : field === "featuredCollections" ||
-            field === "featuredcollections" ||
-            field === "featured-collections"
-          ? "featured_collection"
+      let subField = returnType(field)
+
+      subField =
+        endpoint[subField] && endpoint[type].filter[subField]
+          ? endpoint[type].filter[subField]
           : field
 
       relatedContent =
-        subField !== "new"
+        subField !== "new" && subField !== "error"
           ? content.filter(
               page =>
                 page.acf &&
@@ -203,6 +206,7 @@ export default {
   },
 
   getItemBySlug: state => (contentType, slug) => {
-    return state[contentType].find(item => item.slug === slug)
+    const type = returnType(contentType)
+    return state[type].find(item => item.slug === slug)
   },
 }

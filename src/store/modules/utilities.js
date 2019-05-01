@@ -1,11 +1,11 @@
-export const endpoint = {
+const endpoint = {
   alerts: {
     type: "bigKahuna",
     slug: "notices",
     module: "content",
     alts: ["notice", "alert", "alerts"],
     filter: {
-      location: "affected_location",
+      locations: "affected_location",
     },
   },
 
@@ -39,11 +39,11 @@ export const endpoint = {
       "actions",
     ],
     filter: {
-      service: "category",
-      location: "location",
-      featuredCollection: "featured_collection",
-      subject: "subjects",
-      category: "event_categories",
+      services: "category",
+      locations: "location",
+      featuredCollections: "featured_collection",
+      subjects: "subjects",
+      categories: "event_categories",
     },
   },
 
@@ -53,11 +53,11 @@ export const endpoint = {
     module: "content",
     alts: ["collections"],
     filter: {
-      service: "services",
-      location: "location",
-      featuredCollection: "featured_collection",
+      services: "services",
+      locations: "location",
+      featuredCollections: "featured_collection",
       audience: "target_readership",
-      genre: "genre",
+      genres: "genre",
     },
   },
 
@@ -67,8 +67,8 @@ export const endpoint = {
     module: "content",
     alts: ["event", "tribe_event", "tribe_events"],
     filter: {
-      service: "services",
-      location: "location",
+      services: "services",
+      locations: "location",
     },
   },
 
@@ -114,8 +114,8 @@ export const endpoint = {
     module: "content",
     alts: ["page"],
     filter: {
-      service: "services",
-      location: "location",
+      services: "services",
+      locations: "location",
     },
   },
 
@@ -125,8 +125,8 @@ export const endpoint = {
     module: "content",
     alts: ["post"],
     filter: {
-      service: "services",
-      location: "location",
+      services: "services",
+      locations: "location",
     },
   },
 
@@ -136,9 +136,9 @@ export const endpoint = {
     module: "content",
     alts: ["resource"],
     filter: {
-      subject: "subjects",
-      vendor: "vendors",
-      resourceType: "resource-types",
+      subjects: "subjects",
+      vendors: "vendors",
+      resourceTypes: "resource-types",
     },
   },
 
@@ -162,7 +162,7 @@ export const endpoint = {
     module: "blog",
     alts: ["blog"],
     filter: {
-      service: "categories",
+      services: "categories",
     },
   },
 
@@ -197,24 +197,31 @@ export const endpoint = {
   },
 }
 
-export function returnTaxonomyType(type) {
-  return type === "featured-collections" ||
-    type === "featured_collections" ||
-    type === "featuredcollections"
-    ? "featuredCollections"
-    : type === "genre"
-    ? "genres"
-    : type === "audiences"
-    ? "audience"
-    : type
+const returnType = type => {
+  console.log("TESTING FOR TYPE.............. " + type)
+  if (endpoint[type]) {
+    console.log("RETURNTYPE1 " + type)
+    return type
+  }
+  for (const name of Object.keys(endpoint)) {
+    if (endpoint[name].alts && endpoint[name].alts.includes(type)) {
+      console.log("RETURNTYPE2 " + name)
+      return name
+    }
+  }
+
+  /* Object.keys(endpoint).forEach(name => {
+    if (endpoint[name].alts && endpoint[name].alts.includes(type)) {
+      console.log("RETURNTYPE2 " + name)
+      return name
+    }
+  }) */
+  console.log("RETURN TYPE ERROR")
+  //return type
+  return "error"
 }
 
-export function returnPostType(type) {
-  //NEEDS COMPLETION
-  return
-}
-
-export function sortByDate(data, type = null) {
+const sortByDate = (data, type = null) => {
   if (type === "collection") {
     return data.sort(function(a, b) {
       let date1 = new Date(a.acf.record_creation_date)
@@ -249,3 +256,5 @@ export function sortByDate(data, type = null) {
     return date1.getTime() - date2.getTime()
   })
 }
+
+export { endpoint, returnType, sortByDate }

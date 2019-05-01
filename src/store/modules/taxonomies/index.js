@@ -1,5 +1,6 @@
 import api from "../../plugins/api.js"
-import * as utils from "../utilities.js"
+
+import { returnType, endpoint } from "../utilities.js"
 
 const content = {
   genres: { hierarchical: true, store: "genres", label: "Filter by Genre" },
@@ -25,33 +26,48 @@ export default {
       ])
     },
     async fetchTerms({ commit }, { taxonomy, perPage = 100, pg = 1, params = {} }) {
+      let tax = returnType(taxonomy)
       let args = { ...params, per_page: perPage, page: pg }
-      return api.fetchContent(taxonomy, args).then(results => {
-        commit("addTermsToState", { taxonomy: taxonomy, data: results.posts })
+      return api.fetchContent(tax, args).then(results => {
+        commit("addTermsToState", { taxonomy: tax, data: results.posts })
       })
     },
     async fetchTermContent(
       { state, rootState, commit, dispatch, getters, rootGetters },
       { taxonomy, slug }
     ) {
-      let term = state[taxonomy].find(item => item.slug == slug)
+      let tax = returnType(taxonomy)
+      let term = state[tax].find(item => item.slug == slug)
 
       if (!term) {
-        term = await dispatch("fetchTerms", { taxonomy: taxonomy })
-        term = state[taxonomy].find(item => item.slug == slug)
+        term = await dispatch("fetchTerms", { taxonomy: tax })
+        term = state[tax].find(item => item.slug == slug)
       }
       //NEEDS COMPLETION - DISPATCH GET LINKS (or count by page)
-      dispatch()
+
+      for (var content in term.count_by_type) {
+        if (term.count_by_type[content] > 0) {
+          let params = {}
+          params[tax] = term.id
+          dispatch(
+            "content/fetchContent",
+            { type: term.count_by_type[content], params: params },
+            { root: true }
+          )
+        }
+      }
     },
   },
   getters: {
     getTermBySlug: (state, getters, rootState, rootGetters) => (taxonomy, slug) => {
-      taxonomy = utils.returnTaxonomyType(taxonomy)
-      return state[taxonomy].find(item => item.slug === slug)
+      let tax = returnType(taxonomy)
+      //taxonomy = utils.returnTaxonomyType(tax)
+      return state[tax].find(item => item.slug === slug)
     },
     getTermById: (state, getters, rootState, rootGetters) => (taxonomy, tid) => {
-      taxonomy = utils.returnTaxonomyType(taxonomy)
-      return state[taxonomy].find(item => item.id === tid)
+      let tax = returnType(taxonomy)
+      //taxonomy = utils.returnTaxonomyType(taxonomy)
+      return state[tax].find(item => item.id === tid)
     },
     getTermFilters: (state, getters) => taxonomies => {
       let container = []
