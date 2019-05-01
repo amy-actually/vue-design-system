@@ -6,7 +6,7 @@
     <featured-terms
       :featuredObjects="featuredTerms"
       :callToAction="callToAction"
-      v-if="!filter && showFeatured"
+      v-if="!filter && showFeatured && showFeatured > 0"
     />
 
     <section class="background--white d-flex p-4">
@@ -100,14 +100,14 @@ export default {
         })
       })
 
-      if (featured.length < 6) {
+      if (featured.length < this.showFeatured) {
         let more = this.terms.filter(term => {
           return featured.find(t => t.id == term.id) ? false : true
         })
 
         featured = more ? [...featured, ...more] : featured
       }
-      featured = featured.splice(0, 6)
+      featured = featured.splice(0, Number(this.showFeatured))
 
       return featured
     },
@@ -133,7 +133,7 @@ export default {
       default: null,
     },
     showFeatured: {
-      default: true,
+      default: 6,
     },
   },
 }

@@ -8,7 +8,7 @@
     :showFeatured="showFeatured()"
   >
     <template v-slot:breadcrumb v-if="nav">
-      <breadcrumb :current="channelTitle" :ancestors="nav" />
+      <breadcrumb :current="taxonomy" :ancestors="nav" />
     </template>
 
     <template v-slot:header>
@@ -91,6 +91,7 @@ export default {
       location: "all",
       filter: null,
       total: 0,
+      featured: 3,
     }
   },
   created() {
@@ -112,7 +113,7 @@ export default {
       if (this.$route.query && this.$route.query.page && this.$route.query.page > 1) {
         return false
       }
-      return !this.filter || this.filter.length == 0
+      return this.featured
     },
   },
   props: {
