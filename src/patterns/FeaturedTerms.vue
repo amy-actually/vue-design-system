@@ -5,18 +5,16 @@
         <template v-for="item in featuredObjects">
           <div class="mb-4 col-md-6" :key="item.id + 'featured'">
             <card
-              :badge-label="item.name"
+              :badge-label="getType(item.taxonomy)"
               class="card--background-white"
-              :content-type="
-                item.taxonomy.slice(-1) == 's'
-                  ? item.taxonomy.substring(0, item.taxonomy.length - 1)
-                  : item.taxonomy
-              "
+              :content-type="getType(item.taxonomy)"
               :copy="item.description"
               explainer="Featured"
               :heading="item.name"
               heading-class="sr-only"
               style="min-height: 197px;"
+              :type="featuredObjects && featuredObjects.length > 2 ? 'default' : 'deck'"
+              :image="getImage(item)"
             >
               <template slot="action">
                 <vue-link class="button button--orange" :to="getPath(item.taxonomy, item.slug)"
@@ -61,6 +59,28 @@ export default {
       return collections.includes(taxonomy)
         ? `/collection/${taxonomy}/${slug}`
         : `/${taxonomy}/${slug}`
+    },
+    getType(type) {
+      return type.slice(-1) == "s" ? type.substring(0, type.length - 1) : type
+    },
+    getImage(term) {
+      if (this.featuredObjects && this.featuredObjects.length > 2) {
+        return null
+      }
+      if (this.$route.path.includes("collection") && term.taxonomy) {
+        let item = this.$store.getters["content/getItemByField"](
+          "collection",
+          term.taxonomy,
+          term.slug
+        )
+        console.log("Looking for image...")
+        console.log(item)
+        return item && item.featured_image
+          ? item.featured_image
+          : term.acf && term.acf.sample_cover
+          ? term.acf.sample_cover.sizes.large
+          : null
+      }
     },
   },
   props: {

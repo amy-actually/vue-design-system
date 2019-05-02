@@ -209,4 +209,25 @@ export default {
     const type = returnType(contentType)
     return state[type].find(item => item.slug === slug)
   },
+
+  getItemByField: state => (contentType, field, value) => {
+    const type = returnType(contentType)
+    let subField = returnType(field)
+
+    subField =
+      endpoint[subField] && endpoint[type].filter[subField]
+        ? endpoint[type].filter[subField]
+        : field
+
+    return state[type].find(
+      item =>
+        item.acf[subField] === value ||
+        item.acf[subField].some(obj => Object.values(obj).includes(value))
+    )
+    /* {
+        console.log(obj)
+       return obj == value || 
+      })) */
+    //|| (typeof obj === 'object' && obj.any(prop=>prop==value)) )
+  },
 }

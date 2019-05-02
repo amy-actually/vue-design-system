@@ -26,13 +26,15 @@
             </div>
           </div>
         </template>
-
+        <!-- FIX THE IMAGE FOR DECK / GENRES / AUDIENCE -->
+        <div class="card__image--deck img-fluid" v-if="image && isDeck">
+          <img :src="image" alt="" />
+        </div>
         <heading
           :class="[{ 'text--serif': isDeck }, headingClass ? headingClass : 'card__heading']"
           :level="headingLevel"
           v-if="heading"
-          v-html="heading"
-        >
+          >{{ decodeHtml(heading) }}
         </heading>
 
         <heading

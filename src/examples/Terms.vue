@@ -91,12 +91,18 @@ export default {
       location: "all",
       filter: null,
       total: 0,
-      featured: 3,
+      featured: 2,
     }
   },
   created() {
     this.$store.dispatch("content/fetchContent", { type: "callsToAction" })
     this.$store.dispatch("taxonomies/fetchTerms", { taxonomy: this.taxonomy })
+    if (
+      this.channelTitle.toLowerCase().includes("collection") &&
+      this.$store.state.content.collection.length < 10
+    ) {
+      this.$store.dispatch("loadHome")
+    }
   },
   beforeUpdate() {
     if (!this.terms || this.terms.length < 1) {
