@@ -124,6 +124,13 @@ module.exports = {
       sectionDepth: 1,
     },
     {
+      name: "Vue Help",
+      content: "../docs/vue.md",
+      exampleMode: "hide",
+      usageMode: "hide",
+      sectionDepth: 1,
+    },
+    {
       /**
        * Private components have to be loaded into the documentation as well,
        * otherwise anything using them will be broken. We’re loading them in

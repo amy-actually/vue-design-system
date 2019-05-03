@@ -14,31 +14,38 @@
               :heading="item.name"
               heading-class="sr-only"
               style="min-height: 197px;"
-              :type="featuredObjects && featuredObjects.length > 2 ? 'default' : 'deck'"
-            >
+              ><!--:type="featuredObjects && featuredObjects.length > 2 ? 'default' : 'deck'"-->
               <template slot="action">
                 <vue-link class="button button--orange" :to="getPath(item.taxonomy, item.slug)"
                   >More</vue-link
                 >
               </template>
             </card>
-            <vue-link v-if="collection" :to="`${$route.path}/${item.slug}`">
-              <term-card
+            <vue-link
+              class="card__link link link--undecorated"
+              v-if="collection"
+              :to="`${$route.path}/${item.slug}`"
+            >
+              <!-- <term-card
                 :image="getImage(item)"
                 :title="item.name"
                 :content="item.description"
                 :explainer="`Featured ` + getType(item.taxonomy)"
-              />
-              <!-- <card class="p-4" content-container-class="p-0"
-                                  :heading="item.name"
-                                  heading-class="h3 text--white text--bold text--nowrap text--ellipsis"
-                                  heading-level="h3"
-                                  :explainer="`Featured ` + getType(item.taxonomy)"
-                                  subheading-class="h5 mt-1 text--white text--nowrap text--ellipsis"
-                                  subheading-level="h4"
-                                  :image="getImage(item)"
-                                  >
-                            </card> -->
+              /> -->
+              <card
+                class="card--background-white"
+                content-container-class="p4"
+                :heading="item.name"
+                heading-class="h3 text--bold"
+                heading-level="h3"
+                :explainer="`Featured ` + getType(item.taxonomy)"
+                subheading-class="h5 mt-1"
+                subheading-level="h4"
+                :image="getImage(item)"
+                type="collection"
+                :contentType="getType(item.taxonomy)"
+              >
+              </card>
             </vue-link>
           </div>
         </template>
@@ -108,8 +115,7 @@ export default {
           term.taxonomy,
           term.slug
         )
-        console.log("Looking for image...")
-        console.log(item)
+
         return item && item.featured_image
           ? item.featured_image
           : term.acf && term.acf.sample_cover
@@ -131,3 +137,15 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.card__link {
+  &.link {
+    &:focus,
+    &:hover {
+      box-shadow: $box-shadow-small;
+    }
+
+    transition: all 0.2s ease-out;
+  }
+}
+</style>

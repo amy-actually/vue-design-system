@@ -1,61 +1,73 @@
 <template>
   <component class="card" :class="{ 'card--deck': isDeck }" :is="element">
-    <div :class="contentContainerClass">
-      <div :class="{ 'card__content mb-4 pb-4 pl-md-0 pr-md-0': isDeck }">
-        <template v-if="contentType">
-          <div
-            aria-hidden="true"
-            class="card__color-code mb-1"
-            :class="`card__color-code--${contentType}`"
-            v-if="contentType"
-          ></div>
+    <div
+      :class="[
+        contentContainerClass,
+        { 'card__content mb-4 pb-4 pl-md-0 pr-md-0': isDeck },
+        { 'row no-gutters': isCollection },
+      ]"
+    >
+      <div class="col-md-4" v-if="isCollection">
+        <img :src="image" class="card-img" alt="..." />
+      </div>
+      <div :class="{ 'col-md-8': isCollection }">
+        <div :class="{ 'card-body px-2': isCollection }">
+          <template v-if="contentType">
+            <div class="card__badge d-flex justify-content-between">
+              <div>
+                <div
+                  aria-hidden="true"
+                  class="card__color-code mb-1"
+                  :class="`card__color-code--${contentType}`"
+                  v-if="contentType"
+                ></div>
+                <div
+                  class="card__badge__label text--bold text--extra-small text--uppercase"
+                  v-html="badgeLabel ? badgeLabel : contentType"
+                  :class="{
+                    'mb-2': !heading || (headingClass && headingClass.includes('sr-only')),
+                  }"
+                ></div>
+              </div>
 
-          <div class="align-items-center card__badge d-flex justify-content-between">
-            <div
-              class="align-self-start card__badge__label text--bold text--extra-small text--uppercase"
-              v-html="badgeLabel ? badgeLabel : contentType"
-            ></div>
+              <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
+                {{ decodeHtml(explainer) }}
+                <br />
 
-            <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
-              {{ decodeHtml(explainer) }}
-              <br />
-
-              <div class="card__badge__sub-explainer" v-if="subExplainer">
-                {{ decodeHtml(subExplainer) }}
+                <div class="card__badge__sub-explainer" v-if="subExplainer">
+                  {{ decodeHtml(subExplainer) }}
+                </div>
               </div>
             </div>
+          </template>
+
+          <heading
+            :class="[{ 'text--serif': isDeck }, headingClass ? headingClass : 'card__heading']"
+            :level="headingLevel"
+            v-if="heading"
+            >{{ decodeHtml(heading) }}
+          </heading>
+
+          <heading
+            :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
+            :level="subheadingLevel"
+            v-if="subheading"
+          >
+            {{ decodeHtml(subheading) }}
+          </heading>
+
+          <div class="card__heading__separator" v-if="isDeck"></div>
+
+          <div class="card__copy pb-3">
+            <slot name="copy">{{ decodeHtml(copy) }}</slot>
           </div>
-        </template>
 
-        <!-- <div class="card__image img-fluid" v-if="image && (contentType == 'genre' || contentType == 'audience' || contentType == 'featured-collection')">
-          <img :src="image" alt="" />
-        </div> -->
-        <heading
-          :class="[{ 'text--serif': isDeck }, headingClass ? headingClass : 'card__heading']"
-          :level="headingLevel"
-          v-if="heading"
-          >{{ decodeHtml(heading) }}
-        </heading>
-
-        <heading
-          :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
-          :level="subheadingLevel"
-          v-if="subheading"
-        >
-          {{ decodeHtml(subheading) }}
-        </heading>
-
-        <div class="card__heading__separator" v-if="isDeck"></div>
-
-        <div class="card__copy">
-          <slot name="copy">{{ decodeHtml(copy) }}</slot>
+          <slot name="action"></slot>
         </div>
-
-        <slot name="action"></slot>
       </div>
     </div>
 
-    <div class="card__image img-fluid" v-if="image && !isDeck">
+    <div class="card__image img-fluid" v-if="image && !isDeck && !isCollection">
       <img :src="image" alt="" />
     </div>
   </component>
@@ -78,6 +90,9 @@ export default {
   computed: {
     isDeck() {
       return this.type === "deck"
+    },
+    isCollection() {
+      return this.type === "collection"
     },
   },
   methods: {
@@ -158,7 +173,7 @@ export default {
     type: {
       default: "default",
       type: String,
-      validator: value => value.match(/(default|deck)/),
+      validator: value => value.match(/(default|deck|collection)/),
     },
   },
 }
@@ -205,14 +220,16 @@ export default {
     }
 
     &__explainer {
-      position: absolute;
-      right: 3em;
+      //position: absolute;
+      float: right;
     }
   }
 
   &__color-code {
     &::before {
-      flex: 0 1 64px;
+      display: block;
+      width: 64px;
+      height: 4px;
       content: "";
     }
 
@@ -231,10 +248,8 @@ export default {
     &--service::before {
       background-color: $color-orange;
     }
-
-    display: flex;
-    justify-content: flex-start;
-    align-items: stretch;
+    display: block;
+    width: 64px;
     height: 4px;
     border: none;
     box-shadow: none;
