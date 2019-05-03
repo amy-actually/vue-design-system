@@ -21,11 +21,18 @@
         <location-card v-else-if="item.taxonomy == 'location'" :location="item" :key="item.id" />
         <card
           v-else
-          :badge-label="item.name"
+          :badge-label="
+            item.taxonomy.slice(-1) == 's'
+              ? item.taxonomy.substring(0, item.taxonomy.length - 1)
+              : item.taxonomy
+          "
           class="card--background-white"
-          content-type="service"
+          :content-type="
+            item.taxonomy.slice(-1) == 's'
+              ? item.taxonomy.substring(0, item.taxonomy.length - 1)
+              : item.taxonomy
+          "
           :copy="item.description"
-          :explainer="item.taxonomy"
           :heading="item.name"
           :key="item.id"
           style="min-height: 197px;"

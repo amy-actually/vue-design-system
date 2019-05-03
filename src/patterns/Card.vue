@@ -1,7 +1,7 @@
 <template>
   <component class="card" :class="{ 'card--deck': isDeck }" :is="element">
     <div :class="contentContainerClass">
-      <div :class="{ 'card__content col-sm-10 col-md-5 mb-4 pb-4 pl-md-0 pr-md-0': isDeck }">
+      <div :class="{ 'card__content mb-4 pb-4 pl-md-0 pr-md-0': isDeck }">
         <template v-if="contentType">
           <div
             aria-hidden="true"
@@ -26,10 +26,10 @@
             </div>
           </div>
         </template>
-        <!-- FIX THE IMAGE FOR DECK / GENRES / AUDIENCE -->
-        <div class="card__image--deck img-fluid" v-if="image && isDeck">
+
+        <!-- <div class="card__image img-fluid" v-if="image && (contentType == 'genre' || contentType == 'audience' || contentType == 'featured-collection')">
           <img :src="image" alt="" />
-        </div>
+        </div> -->
         <heading
           :class="[{ 'text--serif': isDeck }, headingClass ? headingClass : 'card__heading']"
           :level="headingLevel"

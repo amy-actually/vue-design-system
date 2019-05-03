@@ -5,16 +5,16 @@
         <template v-for="item in featuredObjects">
           <div class="mb-4 col-md-6" :key="item.id + 'featured'">
             <card
-              :badge-label="getType(item.taxonomy)"
+              v-if="!collection"
+              :badge-label="item.name"
               class="card--background-white"
               :content-type="getType(item.taxonomy)"
               :copy="item.description"
-              explainer="Featured"
+              :explainer="`Featured ` + getType(item.taxonomy)"
               :heading="item.name"
               heading-class="sr-only"
               style="min-height: 197px;"
               :type="featuredObjects && featuredObjects.length > 2 ? 'default' : 'deck'"
-              :image="getImage(item)"
             >
               <template slot="action">
                 <vue-link class="button button--orange" :to="getPath(item.taxonomy, item.slug)"
@@ -22,6 +22,24 @@
                 >
               </template>
             </card>
+            <vue-link v-if="collection" :to="`${$route.path}/${item.slug}`">
+              <term-card
+                :image="getImage(item)"
+                :title="item.name"
+                :content="item.description"
+                :explainer="`Featured ` + getType(item.taxonomy)"
+              />
+              <!-- <card class="p-4" content-container-class="p-0"
+                                  :heading="item.name"
+                                  heading-class="h3 text--white text--bold text--nowrap text--ellipsis"
+                                  heading-level="h3"
+                                  :explainer="`Featured ` + getType(item.taxonomy)"
+                                  subheading-class="h5 mt-1 text--white text--nowrap text--ellipsis"
+                                  subheading-level="h4"
+                                  :image="getImage(item)"
+                                  >
+                            </card> -->
+            </vue-link>
           </div>
         </template>
       </div>
@@ -45,6 +63,7 @@
 import CallToAction from "../patterns/CallToAction.vue"
 import VueLink from "vue-link"
 import Card from "../patterns/Card.vue"
+import TermCard from "../patterns/TermCard.vue"
 
 export default {
   name: "FeaturedTerms",
@@ -52,6 +71,22 @@ export default {
     CallToAction,
     Card,
     VueLink,
+    TermCard,
+  },
+  created() {
+    if (this.$route.path.includes("collection")) {
+      this.collection = true
+    }
+  },
+  updated() {
+    if (this.$route.path.includes("collection")) {
+      this.collection = true
+    }
+  },
+  data() {
+    return {
+      collection: false,
+    }
   },
   methods: {
     getPath(taxonomy, slug) {
@@ -67,7 +102,7 @@ export default {
       if (this.featuredObjects && this.featuredObjects.length > 2) {
         return null
       }
-      if (this.$route.path.includes("collection") && term.taxonomy) {
+      if (this.collection && term.taxonomy) {
         let item = this.$store.getters["content/getItemByField"](
           "collection",
           term.taxonomy,
