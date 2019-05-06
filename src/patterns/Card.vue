@@ -1,73 +1,59 @@
 <template>
   <component class="card" :class="{ 'card--deck': isDeck }" :is="element">
-    <div
-      :class="[
-        contentContainerClass,
-        { 'card__content mb-4 pb-4 pl-md-0 pr-md-0': isDeck },
-        { 'row no-gutters': isCollection },
-      ]"
-    >
-      <div class="col-md-4" v-if="isCollection">
-        <img :src="image" class="card-img" alt="..." />
-      </div>
-      <div :class="{ 'col-md-8': isCollection }">
-        <div :class="{ 'card-body px-2': isCollection }">
-          <template v-if="contentType">
-            <div class="card__badge d-flex justify-content-between">
-              <div>
-                <div
-                  aria-hidden="true"
-                  class="card__color-code mb-1"
-                  :class="`card__color-code--${contentType}`"
-                  v-if="contentType"
-                ></div>
-                <div
-                  class="card__badge__label text--bold text--extra-small text--uppercase"
-                  v-html="badgeLabel ? badgeLabel : contentType"
-                  :class="{
-                    'mb-2': !heading || (headingClass && headingClass.includes('sr-only')),
-                  }"
-                ></div>
-              </div>
+    <div :class="contentContainerClass">
+      <div :class="{ 'card__content col-sm-10 col-md-5 mb-4 pb-4 pl-md-0 pr-md-0': isDeck }">
+        <template v-if="contentType">
+          <div
+            aria-hidden="true"
+            class="card__color-code mb-1"
+            :class="`card__color-code--${contentType}`"
+            v-if="contentType"
+          ></div>
 
-              <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
-                {{ decodeHtml(explainer) }}
-                <br />
+          <div class="align-items-center card__badge d-flex justify-content-between">
+            <div
+              class="align-self-start card__badge__label text--bold text--extra-small text--uppercase"
+              v-html="badgeLabel ? badgeLabel : contentType"
+            ></div>
 
-                <div class="card__badge__sub-explainer" v-if="subExplainer">
-                  {{ decodeHtml(subExplainer) }}
-                </div>
+            <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
+              {{ decodeHtml(explainer) }}
+              <br />
+
+              <div class="card__badge__sub-explainer" v-if="subExplainer">
+                {{ decodeHtml(subExplainer) }}
               </div>
             </div>
-          </template>
-
-          <heading
-            :class="[{ 'text--serif': isDeck }, headingClass ? headingClass : 'card__heading']"
-            :level="headingLevel"
-            v-if="heading"
-            >{{ decodeHtml(heading) }}
-          </heading>
-
-          <heading
-            :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
-            :level="subheadingLevel"
-            v-if="subheading"
-          >
-            {{ decodeHtml(subheading) }}
-          </heading>
-
-          <div class="card__heading__separator" v-if="isDeck"></div>
-
-          <div class="card__copy pb-3">
-            <slot name="copy">{{ decodeHtml(copy) }}</slot>
           </div>
+        </template>
 
-          <slot name="action"></slot>
+        <heading
+          :class="[{ 'text--serif': isDeck }, headingClass ? headingClass : 'card__heading']"
+          :level="headingLevel"
+          v-if="heading"
+          v-html="heading"
+        >
+        </heading>
+
+        <heading
+          :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
+          :level="subheadingLevel"
+          v-if="subheading"
+        >
+          {{ decodeHtml(subheading) }}
+        </heading>
+
+        <div class="card__heading__separator" v-if="isDeck"></div>
+
+        <div class="card__copy">
+          <slot name="copy">{{ decodeHtml(copy) }}</slot>
         </div>
+
+        <slot name="action"></slot>
       </div>
     </div>
 
-    <div class="card__image img-fluid" v-if="image && !isDeck && !isCollection">
+    <div class="card__image img-fluid" v-if="image && !isDeck">
       <img :src="image" alt="" />
     </div>
   </component>
@@ -81,18 +67,13 @@ import VueLink from "vue-link"
  */
 export default {
   name: "Card",
-
   components: {
     Heading,
     VueLink,
   },
-
   computed: {
     isDeck() {
       return this.type === "deck"
-    },
-    isCollection() {
-      return this.type === "collection"
     },
   },
   methods: {
@@ -104,7 +85,6 @@ export default {
       }
     },
   },
-
   props: {
     /**
      *
@@ -112,68 +92,54 @@ export default {
     badgeLabel: {
       type: String,
     },
-
     copy: {
       type: String,
     },
-
     contentContainerClass: {
       default: "p-4",
       type: String,
     },
-
     contentType: {
       type: String,
       //validator: value => value.match(/(event|blog|collection|service)/)
     },
-
     element: {
       default: "div",
       type: String,
     },
-
     explainer: {
       type: String,
     },
-
     heading: {
       type: String,
     },
-
     headingLevel: {
       default: "h2",
       type: String,
     },
-
     headingClass: {
       type: String,
     },
-
     image: {
       type: String,
     },
-
     subExplainer: {
       type: String,
     },
-
     subheading: {
       type: String,
     },
-
     subheadingClass: {
       type: String,
     },
-
     subheadingLevel: {
       default: "h3",
       type: String,
     },
-
     type: {
       default: "default",
       type: String,
-      validator: value => value.match(/(default|deck|collection)/),
+      validator: value => value.match(/(default|deck)/),
     },
   },
 }
@@ -182,7 +148,6 @@ export default {
 <style lang="scss">
 @mixin card($background-color) {
   background-color: $background-color;
-
   .card__badge {
     &__explainer,
     &__label {
@@ -194,87 +159,70 @@ export default {
       opacity: 0.5;
     }
   }
-
   .card__copy,
   .card__heading {
     color: color-yiq($background-color);
   }
-
   &__copy {
     font-family: $font-family-text;
   }
 }
 .card {
   position: relative;
-
   @each $color, $value in $theme-colors {
     &--background-#{$color} {
       @include card($value);
     }
   }
-
   &__badge {
     &__explainer,
     &__label {
       font-family: $font-family-text;
     }
-
     &__explainer {
-      //position: absolute;
-      float: right;
+      position: absolute;
+      right: 3em;
     }
   }
-
   &__color-code {
     &::before {
-      display: block;
-      width: 64px;
-      height: 4px;
+      flex: 0 1 64px;
       content: "";
     }
-
     &--collection::before {
       background-color: $color-pink;
     }
-
     &--event::before {
       background-color: $color-aqua;
     }
-
     &--everything::before {
       background: linear-gradient(90deg, $color-pink, $color-orange);
     }
-
     &--service::before {
       background-color: $color-orange;
     }
-    display: block;
-    width: 64px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
     height: 4px;
     border: none;
     box-shadow: none;
   }
-
   &--deck {
     .card {
       &__content {
         @media #{$media-query-medium} {
           max-width: 66%;
         }
-
         z-index: 1;
       }
-
       &__heading {
         font-size: $font-size-x-large;
         font-weight: $font-weight-regular;
-
         @media #{$media-query-medium} {
           font-size: $font-size-xxx-large;
         }
-
         line-height: $line-height-heading;
-
         &__separator {
           display: flex;
           justify-content: flex-start;
@@ -283,7 +231,6 @@ export default {
           border: none;
           box-shadow: none;
           margin: 40px 0;
-
           &::before {
             flex: 0 1 144px;
             background-color: white;
@@ -291,7 +238,6 @@ export default {
           }
         }
       }
-
       &__copy {
         font-size: $font-size-base;
         @media #{$media-query-medium} {
@@ -301,12 +247,10 @@ export default {
       }
     }
   }
-
   &__heading {
     font-size: $font-size-large;
     font-weight: $font-weight-bold;
   }
-
   &__image img {
     max-width: 100%;
     vertical-align: bottom;

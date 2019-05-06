@@ -91,7 +91,7 @@ export default {
       location: "all",
       filter: null,
       total: 0,
-      featured: 2,
+      featured: 6,
     }
   },
   created() {

@@ -21,24 +21,18 @@
         <location-card v-else-if="item.taxonomy == 'location'" :location="item" :key="item.id" />
         <card
           v-else
-          :badge-label="
-            item.taxonomy.slice(-1) == 's'
-              ? item.taxonomy.substring(0, item.taxonomy.length - 1)
-              : item.taxonomy
-          "
+          :badge-label="getContentType(item.taxonomy)"
           class="card--background-white"
-          :content-type="
-            item.taxonomy.slice(-1) == 's'
-              ? item.taxonomy.substring(0, item.taxonomy.length - 1)
-              : item.taxonomy
-          "
+          :content-type="getContentType(item.taxonomy)"
           :copy="item.description"
           :heading="item.name"
           :key="item.id"
           style="min-height: 197px;"
+          :image="getImage(item)"
+          :type="getType(item.taxonomy)"
         >
           <template slot="action">
-            <vue-link class="button button--orange" :to="`${item.taxonomy}/${item.slug}`"
+            <vue-link class="button button--orange" :to="getPath(item.taxonomy, item.slug)"
               >More</vue-link
             >
           </template>
@@ -219,6 +213,36 @@ export default {
     }
   },
   methods: {
+    getPath(taxonomy, slug) {
+      const collections = ["genres", "audience", "featured-collections"]
+      return collections.includes(taxonomy)
+        ? `/collection/${taxonomy}/${slug}`
+        : `/${taxonomy}/${slug}`
+    },
+    getType(type) {
+      const collections = ["genres", "audience", "featured-collections"]
+      return collections.includes(type) ? "collection" : "default"
+    },
+    getContentType(type) {
+      return type.slice(-1) == "s" ? type.substring(0, type.length - 1) : type
+    },
+    getImage(term) {
+      const collections = ["genres", "audience", "featured-collections"]
+      if (term.taxonomy && collections.includes(term.taxonomy)) {
+        let item = this.$store.getters["content/getItemByField"](
+          "collection",
+          term.taxonomy,
+          term.slug
+        )
+
+        return item && item.featured_image
+          ? item.featured_image
+          : term.acf && term.acf.sample_cover
+          ? term.acf.sample_cover.sizes.large
+          : null
+      }
+      return null
+    },
     filterContent(filter, datestring, library) {
       let content = !datestring
         ? this.contents

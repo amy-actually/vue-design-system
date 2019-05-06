@@ -3,7 +3,7 @@
     <div class="col-md-8">
       <div class="d-md-flex flex-md-wrap">
         <template v-for="item in featuredObjects">
-          <div class="mb-4 col-md-6" :key="item.id + 'featured'">
+          <div class="mb-4 col-md-6 d-flex align-items-stretch" :key="item.id + 'featured'">
             <card
               v-if="!collection"
               :badge-label="item.name"
@@ -21,32 +21,7 @@
                 >
               </template>
             </card>
-            <vue-link
-              class="card__link link link--undecorated"
-              v-if="collection"
-              :to="`${$route.path}/${item.slug}`"
-            >
-              <!-- <term-card
-                :image="getImage(item)"
-                :title="item.name"
-                :content="item.description"
-                :explainer="`Featured ` + getType(item.taxonomy)"
-              /> -->
-              <card
-                class="card--background-white"
-                content-container-class="p4"
-                :heading="item.name"
-                heading-class="h3 text--bold"
-                heading-level="h3"
-                :explainer="`Featured ` + getType(item.taxonomy)"
-                subheading-class="h5 mt-1"
-                subheading-level="h4"
-                :image="getImage(item)"
-                type="collection"
-                :contentType="getType(item.taxonomy)"
-              >
-              </card>
-            </vue-link>
+            <collection-item v-if="collection" :item="item"> </collection-item>
           </div>
         </template>
       </div>
@@ -70,7 +45,7 @@
 import CallToAction from "../patterns/CallToAction.vue"
 import VueLink from "vue-link"
 import Card from "../patterns/Card.vue"
-import TermCard from "../patterns/TermCard.vue"
+import CollectionItem from "../patterns/CollectionItem.vue"
 
 export default {
   name: "FeaturedTerms",
@@ -78,7 +53,7 @@ export default {
     CallToAction,
     Card,
     VueLink,
-    TermCard,
+    CollectionItem,
   },
   created() {
     if (this.$route.path.includes("collection")) {
@@ -106,9 +81,6 @@ export default {
       return type.slice(-1) == "s" ? type.substring(0, type.length - 1) : type
     },
     getImage(term) {
-      if (this.featuredObjects && this.featuredObjects.length > 2) {
-        return null
-      }
       if (this.collection && term.taxonomy) {
         let item = this.$store.getters["content/getItemByField"](
           "collection",
