@@ -35,16 +35,13 @@
               v-if="randomServiceItem"
             >
               <template slot="action">
-                <router-link
-                  class="button button--orange"
-                  :to="`/services/${randomServiceItem.slug}`"
-                >
+                <vue-link class="button button--orange" :to="`/services/${randomServiceItem.slug}`">
                   {{
                     randomServiceItem.acf.button_text
                       ? randomServiceItem.acf.button_text
                       : "Explore"
                   }}
-                </router-link>
+                </vue-link>
               </template>
             </card>
           </div>
@@ -83,9 +80,9 @@
               </div>
 
               <template slot="action">
-                <router-link class="button button--aqua" :to="`/blog/${post.slug}`">
+                <vue-link class="button button--aqua" :to="`/blog/${post.slug}`">
                   Info
-                </router-link>
+                </vue-link>
               </template>
             </card>
           </div>
@@ -108,7 +105,7 @@
 
 <script>
 import { mapState } from "vuex"
-
+import VueLink from "vue-link"
 import CallToAction from "../patterns/CallToAction.vue"
 import Card from "../patterns/Card.vue"
 import CollectionItem from "../patterns/CollectionItem.vue"
@@ -131,6 +128,7 @@ export default {
     CollectionItem,
     EventCard,
     Showcase,
+    VueLink,
   },
 
   computed: {

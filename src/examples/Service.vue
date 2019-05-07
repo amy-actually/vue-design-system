@@ -60,15 +60,16 @@
                   </div>
 
                   <template slot="action">
-                    <router-link class="button button--aqua" :to="`${page.slug}`">
+                    <vue-link class="button button--aqua" :to="`${page.slug}`">
                       Info
-                    </router-link>
+                    </vue-link>
                   </template>
                 </card>
               </template>
 
               <template v-for="article in articles">
                 <card
+                  :key="article.ID"
                   class="card--background-white text--dark"
                   :content-type="blog"
                   :explainer="getAuthor(article.author)"
@@ -81,9 +82,9 @@
                   </div>
 
                   <template slot="action">
-                    <router-link class="button button--aqua" :to="`/articles/${article.slug}`">
+                    <vue-link class="button button--aqua" :to="`/articles/${article.slug}`">
                       Info
-                    </router-link>
+                    </vue-link>
                   </template>
                 </card>
               </template>
@@ -109,6 +110,7 @@
 </template>
 
 <script>
+import VueLink from "vue-link"
 import CallToAction from "../patterns/CallToAction.vue"
 import Card from "../patterns/Card.vue"
 import CollectionItem from "../patterns/CollectionItem.vue"
@@ -126,6 +128,7 @@ export default {
     EventCard,
     Heading,
     Showcase,
+    VueLink,
   },
 
   computed: {

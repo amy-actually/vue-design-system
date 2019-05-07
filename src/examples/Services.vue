@@ -33,8 +33,8 @@
                 style="min-height: 197px;"
               >
                 <template slot="action">
-                  <router-link class="button button--orange" :to="`/services/${service.slug}`"
-                    >More</router-link
+                  <vue-link class="button button--orange" :to="`/services/${service.slug}`"
+                    >More</vue-link
                   >
                 </template>
               </card>
@@ -103,9 +103,9 @@
                 style="min-height: 197px;"
               >
                 <template slot="action">
-                  <router-link class="button button--orange" :to="`/services/${service.slug}`">
+                  <vue-link class="button button--orange" :to="`/services/${service.slug}`">
                     {{ service.acf.button_text ? service.acf.button_text : "Read more" }}
-                  </router-link>
+                  </vue-link>
                 </template>
               </card>
             </template>
@@ -121,6 +121,7 @@ import { mapState } from "vuex"
 import CallToAction from "../patterns/CallToAction.vue"
 import Card from "../patterns/Card.vue"
 import Heading from "../elements/Heading.vue"
+import VueLink from "vue-link"
 
 export default {
   name: "Services",
@@ -129,6 +130,7 @@ export default {
     CallToAction,
     Card,
     Heading,
+    VueLink,
   },
 
   computed: {

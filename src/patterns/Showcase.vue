@@ -57,7 +57,7 @@
         </div>
         <!-- end .showcase__wrap-->
 
-        <router-link
+        <vue-link
           class="link"
           :to="{
             name: 'collection-type-slug',
@@ -66,8 +66,8 @@
           v-if="collectionLink && collectionType"
         >
           {{ collectionLinkLabel }}
-        </router-link>
-        <router-link
+        </vue-link>
+        <vue-link
           class="link"
           :to="{
             name: 'collection-type',
@@ -81,7 +81,7 @@
           v-else-if="!collectionLink && collectionType"
         >
           {{ collectionLinkLabel }}
-        </router-link>
+        </vue-link>
       </div>
       <!-- end .showcase -->
     </template>
@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import VueLink from "vue-link"
 import Card from "./Card.vue"
 
 export default {
@@ -96,6 +97,7 @@ export default {
 
   component: {
     Card,
+    VueLink,
   },
   data() {
     return {

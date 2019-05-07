@@ -68,10 +68,10 @@
 
           <heading class="text--dark" level="h3">Where</heading>
 
-          <router-link
+          <vue-link
             class="d-block text--dark text--underline"
             :to="`/location/${eventObject.venue.slug}`"
-            >{{ eventObject.venue.venue }}</router-link
+            >{{ eventObject.venue.venue }}</vue-link
           >
           <span class="d-block">{{ eventObject.venue.address }}</span>
           <span class="d-block"
@@ -89,8 +89,8 @@
 import AddToCalendar from "vue-add-to-calendar"
 import Vue from "vue"
 import VueMoment from "vue-moment"
+import VueLink from "vue-link"
 import Breadcrumb from "../elements/Breadcrumb.vue"
-
 import CallToAction from "../patterns/CallToAction.vue"
 import Heading from "../elements/Heading.vue"
 
@@ -104,6 +104,7 @@ export default {
     CallToAction,
     Heading,
     Breadcrumb,
+    VueLink,
   },
 
   computed: {

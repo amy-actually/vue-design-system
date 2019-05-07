@@ -74,12 +74,12 @@
     </template>
 
     <template v-slot:action>
-      <router-link
+      <vue-link
         v-if="location.slug !== 'headquarters'"
         itemprop="branchOf"
         class="link mt-4"
         to="/locations/headquarters"
-        >Member of Fontana Regional Library</router-link
+        >Member of Fontana Regional Library</vue-link
       >
     </template>
   </card>
@@ -123,8 +123,8 @@
     </template>
 
     <template v-slot:action>
-      <router-link class="button button--blue-alternate" :to="`/locations/${location.slug}`"
-        >More</router-link
+      <vue-link class="button button--blue-alternate" :to="`/locations/${location.slug}`"
+        >More</vue-link
       >
     </template>
   </card>
