@@ -36,14 +36,19 @@
         :fax="location.acf.fax"
       />
 
-      <div class="location__social mt-3">
+      <div class="location__social mt-3 link">
         <!-- DIV 4 -->
         <vue-link
           v-if="location.acf.facebook_username"
-          :href="`https://facebook.com/${location.acf.facebook_username}`"
+          :to="`https://facebook.com/${location.acf.facebook_username}`"
           itemprop="sameAs"
+          class="link"
         >
-          <Icon name="facebook" />
+          <Icon
+            name="facebook"
+            class="location__social--icon"
+            :fill="tokens.color_blue_alternate.value"
+          />
         </vue-link>
       </div>
 
@@ -87,9 +92,7 @@
   <card
     v-else
     contentType="location"
-    :heading="location.name"
-    heading-level="h4"
-    class="card--background-gray"
+    class="card--background-gray my-2"
     :explainer="location.acf.city"
     v-bind:style="{ 'min-height': '197px' }"
     itemscope
@@ -97,14 +100,20 @@
   >
     <template v-slot:copy>
       <div class="row d-flex">
-        <div class="col-4 order-2 align-self-end">
+        <div class="col-4 order-2 align-self-end d-flex flex-column">
+          <c-button
+            :aria-label="'phone ' + location.name"
+            type="button"
+            class="location__phone flex-grow-1"
+          >
+            <Icon name="phone" fill="#fff" size="small" class="location__phone--icon" />
+            {{ location.acf.phone }}</c-button
+          >
           <img :src="location.acf.building_image.url" />
         </div>
 
-        <div class="col col-8 order-0">
-          <c-button :aria-label="'phone ' + location.name" type="button">
-            {{ location.acf.phone }}</c-button
-          >
+        <div class="col col-8 order-0 d-flex flex-column justify-content-around">
+          <heading level="h3"> {{ location.name }} </heading>
           <address-block
             :location="location"
             :variant="variant"
@@ -118,6 +127,16 @@
             :zip="location.acf.zip"
             :fax="location.acf.fax"
           />
+          <div class="location__social mt-3">
+            <!-- DIV 4 -->
+            <vue-link
+              v-if="location.acf.facebook_username"
+              :to="`https://facebook.com/${location.acf.facebook_username}`"
+              itemprop="sameAs"
+            >
+              <Icon name="facebook" />
+            </vue-link>
+          </div>
         </div>
       </div>
     </template>
@@ -142,7 +161,7 @@ import Person from "./Person.vue"
 export default {
   name: "LocationCard",
 
-  component: {
+  components: {
     Card,
     Heading,
     CButton,
@@ -228,3 +247,19 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.location__phone {
+  font-size: 1em;
+  position: relative;
+  &--icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.2em;
+    vertical-align: text-top;
+  }
+}
+.location__social-icon {
+  fill: $color-blue-alternate;
+}
+</style>
