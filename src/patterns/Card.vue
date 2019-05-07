@@ -10,13 +10,19 @@
             v-if="contentType"
           ></div>
 
-          <div class="align-items-center card__badge d-flex justify-content-between">
+          <div
+            class="align-items-center card__badge d-flex flex-wrap justify-content-between align-items-stretch"
+            style="width:100%"
+          >
             <div
-              class="align-self-start card__badge__label text--bold text--extra-small text--uppercase"
+              class="align-self-start card__badge__label text--bold text--extra-small text--uppercase flex-grow-1"
               v-html="badgeLabel ? badgeLabel : contentType"
             ></div>
 
-            <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
+            <div
+              class="card__badge__explainer text--extra-small text--right align-self-end flex-grow-1 flex-shrink-1"
+              v-if="explainer"
+            >
               {{ decodeHtml(explainer) }}
               <br />
 
@@ -61,7 +67,6 @@
 
 <script>
 import Heading from "../elements/Heading.vue"
-import VueLink from "vue-link"
 /**
  * A card is used to display a content summary
  */
@@ -69,7 +74,6 @@ export default {
   name: "Card",
   components: {
     Heading,
-    VueLink,
   },
   computed: {
     isDeck() {
@@ -154,6 +158,7 @@ export default {
       color: color-yiq($background-color);
     }
     &__sub-explainer {
+      display: inline-block;
       border-top: 2px solid color_yiq($background-color);
       margin-top: 3px;
       opacity: 0.5;
@@ -178,10 +183,11 @@ export default {
     &__explainer,
     &__label {
       font-family: $font-family-text;
+      min-width: 64px;
     }
     &__explainer {
-      position: absolute;
-      right: 3em;
+      //position: absolute;
+      //right: 3em;
     }
   }
   &__color-code {
