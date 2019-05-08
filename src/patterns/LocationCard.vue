@@ -127,6 +127,15 @@
             :zip="location.acf.zip"
             :fax="location.acf.fax"
           />
+          <!-- MOVE OUT OF CARD TO LOCATION PAGE -->
+          <div v-if="location.acf.newsletter">
+            <div
+              v-for="newsletter in location.acf.newsletter"
+              :key="newsletter.name"
+              v-html="newsletter.signup_widget"
+            />
+          </div>
+          <!-- ABOVE -->
           <div class="location__social mt-3">
             <!-- DIV 4 -->
             <vue-link
@@ -231,6 +240,53 @@ export default {
      */
     getLibrarian(id) {
       return this.$store.state.tribe.organizers.find(organizer => organizer.id == id)
+    },
+
+    buildFormFromWidget(widget) {
+      /**
+       * REMOVE THIS FUNCTION & USE embedded instead
+       */
+      console.log(widget)
+      let fragment = document.createElement("div")
+      fragment.innerHTML = widget
+      let action = fragment.getElementsByTagName("form")[0].getAttribute("action")
+      //action = action[0].getAttribute('action');
+
+      let u = action.match(/(?:u=)(.*)(?:\&)/i, action)[1]
+      let id = action.match(/(?:id=)(.*)(?:\&|$)/i, action)[1]
+      action = action.match(/[^\?]*/i, action)[0]
+
+      let inputs = fragment.getElementsByTagName("input")
+
+      let form = `<form action="${action}" method="POST">
+                  <input type="hidden" name="u" value="${u}">
+                  <input type="hidden" name="id" value="${id}">
+                  `
+
+      const excludeInputs = ["radio", "button", "checkbox", "submit"]
+      var count = 0
+      for (let i = 0; i < inputs.length; i++) {
+        const name = inputs[i].name
+
+        if (
+          inputs[i].type.toLowerCase() !== "hidden" &&
+          !excludeInputs.includes(inputs[i].type.toLowerCase()) &&
+          inputs[i].previousElementSibling
+        ) {
+          let newName = "MERGE" + count
+          form += `<div class="form--field"><label for="${newName}">${
+            inputs[i].previousElementSibling.innerText
+          }</label><input type="${inputs[i].type}" name="${newName}" id="${newName}" value="${
+            inputs[i].value
+          }"></div>`
+          count++
+        }
+      }
+
+      return (
+        form +
+        `<input type="submit" class="formEmailButton" name="submit" value="Subscribe"></form>`
+      )
     },
   },
   props: {
