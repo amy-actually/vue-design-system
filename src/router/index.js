@@ -10,6 +10,7 @@ import NotFound from "../templates/NotFound.vue"
 import SearchResults from "../examples/SearchResults.vue"
 import Service from "../examples/Service.vue"
 import Terms from "../examples/Terms.vue"
+import TermExample from "../examples/Term.vue"
 import Blog from "../examples/Blog.vue"
 //--------------
 //import routes from "./routes"
@@ -189,14 +190,12 @@ const router = new Router({
     },
 
     {
-      component: Service,
+      component: TermExample,
       path: "/services/:slug",
       props: route => ({
-        serviceObject: router.app.$store.getters["taxonomies/getTermBySlug"](
-          "services",
-          route.params.slug
-        ),
-        location: route.query.location,
+        slug: route.params.slug,
+        taxonomy: "services",
+        nav: [{ text: "Services", to: "/services" }],
       }),
     },
 
@@ -233,7 +232,11 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!hasLocationQueryParameter(to) && hasLocationQueryParameter(from)) {
+  if (
+    !hasLocationQueryParameter(to) &&
+    hasLocationQueryParameter(from) &&
+    from.query.location !== "all"
+  ) {
     next({ name: to.name, query: from.query })
   } else {
     next()

@@ -105,6 +105,16 @@ export default {
     this.$root.$on("resetPage", data => {
       this.page = 1
     })
+    this.location =
+      this.$route.query && this.$route.query.location
+        ? this.$route.query.location
+        : this.$store.state.currentLocation !== "all"
+        ? this.$store.state.currentLocation
+        : ""
+    this.filter =
+      this.$route.query && (this.$route.query.filter || this.$route.query.search)
+        ? this.$route.query.filter || this.$route.query.search
+        : ""
     if (
       this.$store.state.content[this.network] &&
       this.$store.state.content[this.network].length === 0
@@ -162,6 +172,11 @@ export default {
       this.$root.$emit("resetpage")
     },
     location() {
+      this.$root.$emit("resetpage")
+    },
+    "$store.state.currentLocation"() {
+      this.location =
+        this.$store.state.currentLocation !== "all" ? this.$store.state.currentLocation : ""
       this.$root.$emit("resetpage")
     },
   },

@@ -42,13 +42,7 @@
       </p>
       <div v-if="total > 0" class="results_total text--dark text--sans m-2">
         <p v-if="!prefetchTotal">
-          {{
-            contentName == "result"
-              ? total
-              : total == 1
-              ? `1 ${contentName}`
-              : total + ` ${contentName}s`
-          }}
+          {{ total == 1 ? `1 ${contentName}` : total + ` ${contentName}s` }}
           found.
         </p>
         <p v-else>

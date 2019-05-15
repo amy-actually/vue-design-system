@@ -1,7 +1,7 @@
 <template>
-  <channel :callToAction="primaryCTA" :type="taxonomy">
-    <template v-slot:breadcrumb v-if="nav">
-      <breadcrumb :current="term.name" :ancestors="{ text: taxonomy, to: `/${taxonomy}` }" />
+  <channel :callToAction="primaryCTA" :type="taxonomy" v-if="term">
+    <template v-slot:breadcrumb>
+      <breadcrumb :current="term.name" :ancestors="[{ text: taxonomy, to: `/${taxonomy}` }]" />
     </template>
 
     <template v-slot:header>
@@ -17,6 +17,7 @@
       />
 
       <content-search
+        :contentFilter="contentTypes"
         :location-filter="taxonomy !== 'locations' ? true : false"
         :filter="filter"
         @querycontent="filter = $event"
@@ -27,8 +28,7 @@
     </template>
 
     <template v-slot:content>
-      <filter-results :total="total" :filter="filter" :location="locationDetails" />
-
+      <filter-results :total="Number(total)" :filter="filter" :location="locationDetails" />
       <content-stream
         :key="`${taxonomy}-${slug}`"
         @totalresults="total = $event"
@@ -47,6 +47,7 @@ import ChannelHeader from "../patterns/ChannelHeader.vue"
 import ContentSearch from "../patterns/ContentSearch.vue"
 import ContentStream from "../patterns/ContentStream.vue"
 import FilterResults from "../elements/FilterResults.vue"
+import { getName } from "../store/modules/utilities.js"
 
 export default {
   name: "TermExample",
@@ -66,9 +67,10 @@ export default {
     },
 
     contents() {
-      if (this.network === "services" || this.network === "locations") {
-        return this.$store.getters["content/getAllContentBy"]("collection", this.slug)
+      if (this.taxonomy === "locations") {
+        return this.$store.getters["content/getAllContentBy"](this.slug)
       }
+      return this.$store.getters["content/getAllContentBy"](this.location, this.slug)
     },
     term() {
       return this.$store.getters["taxonomies/getTermBySlug"](this.taxonomy, this.slug)
@@ -77,9 +79,24 @@ export default {
     locationDetails() {
       return this.$store.getters["taxonomies/getTermBySlug"]("locations", this.location)
     },
+    contentTypes() {
+      if (!this.term || !this.term.count_by_type) {
+        return []
+      }
+      let types = []
+      for (var type in this.term.count_by_type) {
+        let name = getName(type)
+        console.log(name)
+        if (name && name.name && this.term.count_by_type[type] > 0) {
+          types.push({ ...name, count: this.term.count_by_type[type] })
+        }
+      }
+
+      return types
+    },
   },
   created() {
-    console.log("CREATED: " + this.network)
+    console.log("CREATED: " + this.taxonomy)
     this.$root.$on("resetPage", data => {
       this.page = 1
     })
@@ -96,9 +113,13 @@ export default {
     } else {
       let term = this.$store.getters["taxonomies/getTermBySlug"](this.taxonomy, this.slug)
     } */
-    this.$store.dispatch("taxonomies/fetchTermContent", { taxonomy: this.taxonomy })
+    this.$store.dispatch("taxonomies/fetchTermContent", {
+      taxonomy: this.taxonomy,
+      slug: this.slug,
+    })
 
-    this.location = this.taxonomy == "locations" ? this.slug : this.$store.state.currentLocation
+    this.location =
+      this.taxonomy == "locations" ? this.slug : this.$store.state.currentLocation || "all"
   },
   data() {
     return {

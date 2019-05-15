@@ -36,24 +36,22 @@ export default {
       { state, rootState, commit, dispatch, getters, rootGetters },
       { taxonomy, slug }
     ) {
-      let tax = returnType(taxonomy)
-      let term = state[tax].find(item => item.slug == slug)
+      console.log(`fetchTermContent: looking for ${slug} in ${taxonomy} `)
 
-      if (!term) {
+      let tax = returnType(taxonomy)
+      let term
+      if (state[tax].length == 0 || !state[tax].find(item => item.slug == slug)) {
         term = await dispatch("fetchTerms", { taxonomy: tax })
-        term = state[tax].find(item => item.slug == slug)
+        //term = state[tax].find(item => item.slug == slug)
       }
+      term = state[tax].find(item => item.slug == slug)
       //NEEDS COMPLETION - DISPATCH GET LINKS (or count by page)
 
       for (var content in term.count_by_type) {
         if (term.count_by_type[content] > 0) {
           let params = {}
           params[tax] = term.id
-          dispatch(
-            "content/fetchContent",
-            { type: term.count_by_type[content], params: params },
-            { root: true }
-          )
+          dispatch("content/fetchContent", { type: content, params: params }, { root: true })
         }
       }
     },
@@ -97,11 +95,13 @@ export default {
       } else if (Array.isArray(data)) {
         data.forEach(content => {
           if (state[taxonomy].find(item => item.id === content.id) == undefined) {
-            state[taxonomy].push(content)
+            //state[taxonomy].push(content)
+            state[taxonomy] = [...state[taxonomy], content]
           }
         })
       } else if (data.id && state[taxonomy].find(item => item.id === data.id) == undefined) {
-        state[taxonomy].push(data)
+        //state[taxonomy].push(data)
+        state[taxonomy] = [...state[taxonomy], data]
       }
     },
   },

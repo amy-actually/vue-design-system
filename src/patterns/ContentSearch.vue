@@ -1,5 +1,19 @@
 <template>
   <component :is="wrapper" class="input" style="min-width:250px">
+    <div v-if="contentFilter.length > 0" class="d-flex flex-column align-items-start">
+      <CButton
+        v-for="type in contentFilter"
+        :key="type.name"
+        class="my-1"
+        :class="type.class ? `button--${type.class}` : 'button--blue-alternate'"
+        @click="setActive(type.type)"
+      >
+        See More {{ type.name }}s <span class="badge badge-light">{{ type.count }}</span>
+      </CButton>
+      <CButton v-if="active !== 'all'" class="my-1" @click="setActive('all')">
+        See All Results
+      </CButton>
+    </div>
     <input
       v-if="dateFilter"
       class="d-none"
@@ -13,7 +27,7 @@
       <!--style="width: 307.875px"-->
       <div class="form-group" v-if="searchFilter">
         <label class="form-label text--bold text--sans text--dark" for="filter">
-          Search {{ contentName }}s
+          {{ contentName !== "result" ? `Search ${contentName}s` : "Search" }}
         </label>
 
         <input
@@ -94,9 +108,13 @@
 <script>
 import flatpickr from "flatpickr"
 import { mapState } from "vuex"
+import CButton from "../elements/Button.vue"
 
 export default {
   name: "ContentSearch",
+  components: {
+    CButton,
+  },
 
   computed: {
     ...mapState("taxonomies", ["locations"]),
@@ -117,6 +135,7 @@ export default {
         genres: { hierarchical: true, store: "genres", label: "Filter by Genre" },
         audience: { hierarchical: false, store: "audience", label: "Filter by Audience" },
       },
+      active: "all",
     }
   },
   methods: {
@@ -156,6 +175,11 @@ export default {
     isSelected(tax, id) {
       return this.selected[tax].includes(id)
     },
+    setActive(type) {
+      // FIX @CLICK
+      console.log(type)
+      this.active = type
+    },
   },
 
   mounted() {
@@ -178,6 +202,10 @@ export default {
     dateFilter: {
       type: Boolean,
       default: false,
+    },
+    contentFilter: {
+      type: Array,
+      default: () => [],
     },
     searchFilter: {
       type: Boolean,

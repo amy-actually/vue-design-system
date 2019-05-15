@@ -3,7 +3,7 @@ import { returnType } from "./modules/utilities.js"
 export default {
   getContentBy: state => (contentType, locationName = "all", serviceName = "any") => {
     const type = returnType(contentType)
-    const content = state[type]
+    const content = [...state.content[type]]
 
     let relatedContent
 
@@ -15,12 +15,12 @@ export default {
               page.acf.location &&
               page.acf.location.some(location => location.slug === locationName)
           )
-        : state.locations.currentLocation !== "all"
+        : state.currentLocation !== "all"
         ? content.filter(
             page =>
               page.acf &&
               page.acf.location &&
-              page.acf.location.some(location => location.slug === state.locations.currentLocation)
+              page.acf.location.some(location => location.slug === state.currentLocation)
           )
         : content
 
@@ -30,7 +30,7 @@ export default {
             page =>
               page.acf &&
               page.acf.services &&
-              page.acf.services.some(service => service.slug === state.services.currentService)
+              page.acf.services.some(service => service.slug === serviceName)
           )
         : relatedContent
 

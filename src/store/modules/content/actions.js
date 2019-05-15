@@ -16,13 +16,16 @@ export default {
         ? { ...params, number: perPage, page: pg }
         : { ...params, per_page: perPage, page: pg }
 
-    return api.fetchContent(contentType, args).then(results => {
-      commit(`${results.commit}`, { type: contentType, data: results.posts })
-      if (!params || params.length == 0) {
-        commit("ADD_COUNT", { type: contentType, count: results.count })
-      }
-      return results.count
-    })
+    return api
+      .fetchContent(contentType, args)
+      .then(results => {
+        commit(`${results.commit}`, { type: contentType, data: results.posts })
+        if (!params || params.length == 0) {
+          commit("ADD_COUNT", { type: contentType, count: results.count })
+        }
+        return results.count
+      })
+      .catch(e => console.error(`.catch(${e})`))
   },
 
   async fetchContentBySlug({ commit }, { type, slug }) {

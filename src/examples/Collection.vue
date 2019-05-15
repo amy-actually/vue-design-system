@@ -77,7 +77,7 @@ export default {
 
   computed: {
     navigation() {
-      let here = this.nav
+      let here = [...this.nav]
       if (this.verifiedType && this.verifiedType !== "error") {
         here.push({ text: this.verifiedType, to: `/collection/${this.verifiedType}` })
       }

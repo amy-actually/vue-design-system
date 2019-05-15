@@ -1,7 +1,6 @@
 <template>
   <section class="content" v-if="content">
     <template v-for="item in content">
-      <!-- SERVICE CARD -->
       <template v-if="!item.type && item.taxonomy">
         <card
           v-if="item.taxonomy == 'services'"
@@ -38,15 +37,11 @@
           </template>
         </card>
       </template>
-      <!-- events card -->
+
       <template v-else-if="item.type == 'event'">
-        <event-card
-          class="card--background-gray my-2"
-          :event="item"
-          :key="item.id"
-        /><!-- end events card -->
+        <event-card class="card--background-gray my-2" :event="item" :key="item.id" />
       </template>
-      <!-- blog template-->
+
       <template v-else-if="item.type == 'post' && item.site_ID">
         <card
           :key="item.id"
@@ -65,9 +60,9 @@
               Info
             </vue-link>
           </template>
-        </card> </template
-      ><!-- end blog card -->
-      <!-- pages card -->
+        </card>
+      </template>
+
       <template v-else-if="item.type == 'page' || (item.type == 'post' && !item.site_ID)">
         <card
           :badge-label="type == 'pages' || item.type == 'page' ? 'Information' : 'Article'"
@@ -97,12 +92,8 @@
               >More</vue-link
             >
           </template>
-        </card> </template
-      ><!-- end pages card -->
-
-      <!--collection card-->
-      <!-- class="card--background-blue-dark my-2" 
-            subheading-class="mt-1 text--white" -->
+        </card>
+      </template>
       <template v-else-if="item.type == 'collection-item'">
         <collection-item
           :item="item"
@@ -110,13 +101,13 @@
           :key="item.id"
           subheading-class="mt-1"
           subheading-level="h4"
-        /><!--end collection card-->
+        />
       </template>
 
       <!-- pages card -->
       <template v-else>
         <card
-          :badge-label="item.type && item.type == 'resources' ? 'Resource' : ' '"
+          :badge-label="item.type && item.type == 'resources' ? 'Resource' : ''"
           :sub-explainer="
             item.type ? item.type.toUpperCase() : item.taxonomy ? item.taxonomy.toUpperCase() : ''
           "
@@ -145,8 +136,8 @@
 
           <template slot="action">
             <vue-link class="button button--teal" :to="`resources/${item.slug}`">More</vue-link>
-          </template> </card
-        ><!-- end pages card -->
+          </template>
+        </card>
       </template>
     </template>
 
@@ -183,13 +174,11 @@ export default {
   computed: {
     content() {
       let content = this.filterContent(this.filter, this.selectedDate, this.location)
-      this.resultTotal = content.length
+      this.resultTotal = content && content.length > 0 ? content.length : "0"
       const paged = chunk(content, this.perPage)
       return paged[this.page - 1]
     },
-
     total() {
-      this.$emit("totalresults", this.resultTotal)
       return this.apiTotal ? this.apiTotal : this.resultTotal
     },
     taxonomies() {
@@ -339,6 +328,9 @@ export default {
       if (this.apiTotal && this.page >= this.resultTotal / this.perPage - 5) {
         this.$root.$emit("loadmore")
       }
+    },
+    resultTotal() {
+      this.$emit("totalresults", this.resultTotal)
     },
   },
   props: {

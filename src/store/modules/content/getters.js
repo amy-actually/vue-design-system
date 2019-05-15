@@ -1,15 +1,14 @@
-import { returnType, endpoint } from "../utilities.js"
+import { returnType, endpoint, sortByDate } from "../utilities.js"
 
 export default {
-  getAllContentBy: state => (locationName = "all", serviceName = "any") => {
+  getAllContentBy: (state, getters, rootState) => (locationName = "all", serviceName = "any") => {
     const content = [
-      ...state.blogs,
-      ...state.collection,
       ...state.events,
       ...state.pages,
-      ...state.posts,
       ...state.resources,
-      ...state.services,
+      ...state.posts,
+      ...state.blogs,
+      ...state.collection,
     ]
     let relatedContent
 
@@ -21,12 +20,12 @@ export default {
               page.acf.location &&
               page.acf.location.some(location => location.slug === locationName)
           )
-        : state.locations.currentLocation !== "all"
+        : rootState.currentLocation !== "all"
         ? content.filter(
             page =>
               page.acf &&
               page.acf.location &&
-              page.acf.location.some(location => location.slug === state.locations.currentLocation)
+              page.acf.location.some(location => location.slug === rootState.currentLocation)
           )
         : content
 
@@ -46,17 +45,21 @@ export default {
             page =>
               page.acf &&
               page.acf.services &&
-              page.acf.services.some(service => service.slug === state.services.currentService)
+              page.acf.services.some(service => service.slug === serviceName)
           )
         : relatedContent
 
-    return relatedContent
+    return sortByDate(relatedContent)
   },
 
-  getContentBy: state => (contentType, locationName = "all", serviceName = "any") => {
+  getContentBy: (state, getters, rootState) => (
+    contentType,
+    locationName = "all",
+    serviceName = "any"
+  ) => {
     console.log("getContentBy: " + contentType)
     const type = returnType(contentType)
-    const content = state[type]
+    const content = [...state[type]]
 
     let relatedContent
 
@@ -68,12 +71,12 @@ export default {
               page.acf.location &&
               page.acf.location.some(location => location.slug === locationName)
           )
-        : state.locations.currentLocation !== "all"
+        : rootState.currentLocation !== "all"
         ? content.filter(
             page =>
               page.acf &&
               page.acf.location &&
-              page.acf.location.some(location => location.slug === state.locations.currentLocation)
+              page.acf.location.some(location => location.slug === rootState.currentLocation)
           )
         : content
 
@@ -83,7 +86,7 @@ export default {
             page =>
               page.acf &&
               page.acf.services &&
-              page.acf.services.some(service => service.slug === state.services.currentService)
+              page.acf.services.some(service => service.slug === serviceName)
           )
         : relatedContent
 
@@ -101,7 +104,7 @@ export default {
   },
 
   getCtaByCategory: state => (slug = null, index = 0, exclude = []) => {
-    const content = state.callsToAction
+    const content = [...state.callsToAction]
     let relatedContent
 
     if (exclude.length > 0) {
@@ -178,7 +181,7 @@ export default {
     console.log("getCollection: " + collection)
     const type = returnType(collection)
 
-    let content = state[type]
+    let content = [...state[type]]
     let relatedContent
 
     if (field === "new") {

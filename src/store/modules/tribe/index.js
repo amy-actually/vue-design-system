@@ -21,7 +21,7 @@ export default {
     addItem(state, { type, data }) {
       //Check is exists, if not then push
       if (state[type].find(item => item.id === data.id) == undefined) {
-        state[type].push(data)
+        state[type] = [...state[type], data]
       }
     },
     addAllItems(state, { type, data }) {

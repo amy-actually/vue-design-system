@@ -21,7 +21,11 @@ const tribe = axios.create({
 
 export default {
   async fetchContent(type, params) {
-    const name = endpoint[type]["slug"]
+    if (!endpoint[type]) {
+      console.log("Endpoint doesn't exist for " + type)
+      throw new Error("Endpoint doesn't exist for " + type)
+    }
+    const name = endpoint[type].slug
     const apiType = endpoint[type]["type"]
     const mod = endpoint[type]["module"]
 

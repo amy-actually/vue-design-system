@@ -7,6 +7,8 @@ const endpoint = {
     filter: {
       locations: "affected_location",
     },
+    resultName: "Notice",
+    colorCode: null,
   },
 
   audience: {
@@ -22,6 +24,8 @@ const endpoint = {
       "target-audience",
     ],
     filter: {},
+    resultName: "Audience",
+    colorCode: null,
   },
 
   callsToAction: {
@@ -45,13 +49,21 @@ const endpoint = {
       subjects: "subjects",
       categories: "event_categories",
     },
+    resultName: null,
+    colorCode: null,
   },
 
   collection: {
     type: "bigKahuna",
     slug: "collection",
     module: "content",
-    alts: ["collections"],
+    alts: [
+      "collections",
+      "collection-item",
+      "collection-items",
+      "collectionitem",
+      "collectionitems",
+    ],
     filter: {
       services: "services",
       locations: "location",
@@ -59,6 +71,8 @@ const endpoint = {
       audience: "target_readership",
       genres: "genre",
     },
+    resultName: "Collection Item",
+    colorCode: "pink",
   },
 
   events: {
@@ -70,6 +84,8 @@ const endpoint = {
       services: "services",
       locations: "location",
     },
+    resultName: "Event",
+    colorCode: "aqua",
   },
 
   featuredCollections: {
@@ -85,6 +101,8 @@ const endpoint = {
       "featured_collection",
       "featuredcollection",
     ],
+    resultName: "Featured Collection",
+    colorCode: "pink",
   },
 
   genres: {
@@ -92,6 +110,8 @@ const endpoint = {
     slug: "genres",
     module: "taxonomies",
     alts: ["genre"],
+    resultName: "Genre",
+    colorCode: "pink",
   },
 
   locations: {
@@ -99,6 +119,8 @@ const endpoint = {
     slug: "locations",
     module: "taxonomies",
     alts: ["location"],
+    resultName: "Location",
+    colorCode: null,
   },
 
   menus: {
@@ -106,6 +128,8 @@ const endpoint = {
     slug: "menus",
     module: "root",
     alts: ["menu"],
+    resultName: null,
+    colorCode: null,
   },
 
   pages: {
@@ -117,17 +141,21 @@ const endpoint = {
       services: "services",
       locations: "location",
     },
+    resultName: "Information Page",
+    colorCode: "blue-base",
   },
 
   posts: {
     type: "bigKahuna",
     slug: "posts",
     module: "content",
-    alts: ["post"],
+    alts: ["post", "articles", "article"],
     filter: {
       services: "services",
       locations: "location",
     },
+    resultName: "Article",
+    colorCode: null,
   },
 
   resources: {
@@ -140,6 +168,8 @@ const endpoint = {
       vendors: "vendors",
       resourceTypes: "resource-types",
     },
+    resultName: "Resource",
+    colorCode: "teal",
   },
 
   services: {
@@ -147,6 +177,8 @@ const endpoint = {
     slug: "services",
     module: "taxonomies",
     alts: ["service"],
+    resultName: "Service",
+    colorCode: "orange",
   },
 
   subjects: {
@@ -154,6 +186,8 @@ const endpoint = {
     slug: "subjects",
     module: "taxonomies",
     alts: ["subject"],
+    resultName: "Subject",
+    colorCode: null,
   },
 
   blogs: {
@@ -164,6 +198,8 @@ const endpoint = {
     filter: {
       services: "categories",
     },
+    resultName: "Blog Post",
+    colorCode: null,
   },
 
   taxonomies: {
@@ -171,6 +207,8 @@ const endpoint = {
     slug: "taxonomies",
     module: "content",
     alts: ["taxonomy", "terms"],
+    resultName: null,
+    colorCode: null,
   },
 
   search: {
@@ -178,6 +216,8 @@ const endpoint = {
     slug: "search",
     module: null,
     alts: [],
+    resultName: null,
+    colorCode: null,
   },
 
   organizers: {
@@ -186,6 +226,8 @@ const endpoint = {
     module: "tribe",
     alts: ["tribe_organizer", "organizer", "tribe_organizers"],
     filter: {},
+    resultName: "Organizer",
+    colorCode: null,
   },
 
   venues: {
@@ -194,51 +236,45 @@ const endpoint = {
     module: "tribe",
     alts: ["tribe_venue", "venue", "tribe_venues"],
     filter: {},
+    resultName: "Venue",
+    colorCode: null,
   },
 }
 
 const returnType = type => {
-  console.log("TESTING FOR TYPE.............. " + type)
-  if (endpoint[type]) {
-    console.log("RETURNTYPE1 " + type)
+  if (endpoint[type.toLowerCase()]) {
+    //console.log("RETURNTYPE1 " + type)
     return type
   }
-  for (const name of Object.keys(endpoint)) {
-    if (endpoint[name].alts && endpoint[name].alts.includes(type)) {
-      console.log("RETURNTYPE2 " + name)
+  //for (const name of Object.keys(endpoint)) {
+  for (const name in endpoint) {
+    if (endpoint[name].alts && endpoint[name].alts.includes(type.toLowerCase())) {
       return name
     }
   }
-
-  /* Object.keys(endpoint).forEach(name => {
-    if (endpoint[name].alts && endpoint[name].alts.includes(type)) {
-      console.log("RETURNTYPE2 " + name)
-      return name
-    }
-  }) */
-  console.log("RETURN TYPE ERROR")
+  console.log("UTILITIES: RETURN TYPE ERROR " + type)
   //return type
   return "error"
 }
 
 const sortByDate = (data, type = null) => {
   if (type === "collection") {
-    return data.sort(function(a, b) {
+    return [...data].sort(function(a, b) {
       let date1 = new Date(a.acf.record_creation_date)
       let date2 = new Date(b.acf.record_creation_date)
-      return date1.getTime() - date2.getTime()
+      return date2.getTime() - date1.getTime()
     })
   }
 
   if (type === "events" || type === "event") {
-    return data.sort(function(a, b) {
+    return [...data].sort(function(a, b) {
       let date1 = new Date(a.start_date)
       let date2 = new Date(b.start_date)
-      return date1.getTime() - date2.getTime()
+      return date2.getTime() - date1.getTime()
     })
   }
 
-  return data.sort(function(a, b) {
+  return [...data].sort(function(a, b) {
     let date1 = !a.type
       ? 0
       : a.type === "event"
@@ -253,8 +289,22 @@ const sortByDate = (data, type = null) => {
       : b.type === "collection-item"
       ? new Date(b.acf.record_creation_date)
       : new Date(b.date)
-    return date1.getTime() - date2.getTime()
+    return date2 - date1
+    //return date1.getTime() - date2.getTime()
   })
 }
+const getName = type => {
+  const checkType = type.toLowerCase()
+  if (endpoint[checkType]) {
+    //console.log("RETURNTYPE1 " + type)
+    return { name: endpoint[checkType].resultName, class: endpoint[checkType].colorCode }
+  }
+  for (const name in endpoint) {
+    if (endpoint[name].alts && endpoint[name].alts.includes(checkType)) {
+      return { name: endpoint[name].resultName, class: endpoint[name].colorCode, type: name }
+    }
+  }
+  return null
+}
 
-export { endpoint, returnType, sortByDate }
+export { endpoint, returnType, sortByDate, getName }
