@@ -75,9 +75,9 @@ module.exports = {
     {
       name: "Design Tokens",
       content: "../docs/tokens.md",
-      sectionDepth: 1,
-      exampleMode: "hide",
-      usageMode: "hide",
+      sectionDepth: 2,
+      exampleMode: "expand",
+      usageMode: "expand",
       components: () => [
         "../docs/components/tokens/Color.vue",
         "../docs/components/tokens/FontSize.vue",

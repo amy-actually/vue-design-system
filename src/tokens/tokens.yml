@@ -17,6 +17,7 @@ imports:
   - ./border-radius.yml
   - ./spacing.yml
   - ./line-height.yml
+  - ./brand-colors.yml
 global:
   type: global
   category: all

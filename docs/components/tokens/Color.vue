@@ -7,15 +7,15 @@
       :class="prop.category"
       v-if="prop.type === 'color'"
     >
-      <div class="swatch" :style="{ backgroundColor: prop.value }"/>
-      <h3>{{prop.name.replace(/_/g, " ").replace(/color/g, "")}}</h3>
+      <div class="swatch" :style="{ backgroundColor: prop.value }" />
+      <h3>{{ prop.name.replace(/_/g, " ").replace(/color/g, "") }}</h3>
       <span>
         <em>RGB:</em>
-        {{prop.value}}
+        {{ prop.value }}
       </span>
       <span>
         <em>SCSS:</em>
-        ${{prop.name.replace(/_/g, "-")}}
+        ${{ prop.name.replace(/_/g, "-") }}
       </span>
     </div>
   </div>
@@ -34,6 +34,20 @@ import orderBy from "lodash/orderBy"
  */
 export default {
   name: "Color",
+  computed: {
+    sections() {
+      const sections = [...new Set(this.tokens.map(item => item.name))]
+      let bySection = []
+      this.tokens.forEach(item => {
+        if (!bySection[item.category]) {
+          bySection[item.category] = []
+        }
+        bySection[item.category].push(item)
+      })
+      //return byCategoryAndName
+      console.log(bySection)
+    },
+  },
   methods: {
     orderData: function(data) {
       // let byValue = orderBy(data, "value", "asc")

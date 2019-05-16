@@ -1,0 +1,58 @@
+#
+# SOCIAL BRAND COLOR TOKENS
+# Use these tokens to set a color.
+# For reference, see http://hslpicker.com/
+#
+# To make things a little simpler for your team,
+# utilize both global & local tokens for colors.
+#
+props:
+  facebook:
+    value: "#3b5998"
+  messenger:
+    value: "#0084FF"
+  instagram:
+    value: "#E4405F"
+  twitter:
+    value: "#1DA1F2"
+  tumblr:
+    value: "#36465D"
+  youtube:
+    value: "#FF0000"
+  wordpress:
+    value: "#21759B"
+  goodreads:
+    value: "#663300"
+  tiktok:
+    value: "#000000"
+  discord:
+    value: "#7289DA"
+  pinterest:
+    value: "#BD081C"
+  whatsapp:
+    value: "#25D366"
+  snapchat:
+    value: "#FFFC00"
+  wechat:
+    value: "#7BB32E"
+  linkedin:
+    value: "#0077B5"
+  reddit:
+    value: "#FF4500"
+  twitch:
+    value: "#6441A4"
+  medium:
+    value: "#12100E"
+  skype:
+    value: "#00AFF0"
+  blogger:
+    value: "#FF5722"
+  viber:
+    value: "#665CAC"
+  github:
+    value: "#181717"
+  codepen:
+    value: "#000"
+global:
+  type: color
+  category: social-brand-colors

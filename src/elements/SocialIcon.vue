@@ -1,8 +1,11 @@
 <template>
-  <vue-link :to="url" itemprop="sameAs" class="social__icon--link">
-    <c-button v-bind:style="[colorCode ? { backgroundColor: iconColor } : '']">
-      <Icon :name="name" class="social__icon" :fill="colorCode ? '#fff' : null" /> &nbsp;&nbsp;
-    </c-button>
+  <vue-link
+    :to="url"
+    itemprop="sameAs"
+    class="social__icon--link button"
+    :class="`social__icon--link--${name}`"
+  >
+    <Icon :name="name" class="social__icon" :fill="colorCode ? '#fff' : null" /> &nbsp;&nbsp;
   </vue-link>
 
   <!-- <component :is="type"
@@ -55,11 +58,7 @@ export default {
     VueLink,
     CButton,
   },
-  computed: {
-    iconColor() {
-      return !this.colorCode || !brandColors[this.name] ? null : brandColors[this.name]
-    },
-  },
+
   props: {
     /**
      * The url to the social media profile
@@ -93,15 +92,11 @@ export default {
 </script>
 
 <style lang="scss">
-.social__icon--link {
-  margin: 1px;
-  display: inline-block;
-  button {
+/*  .social__icon--link {
+  
     border: none;
     position: relative;
-    height: 2.5em;
-    width: 2.5em;
-  }
+   
   svg {
     position: absolute;
     max-height: 100%;
@@ -109,6 +104,30 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+}  */
+
+@mixin social($background-color) {
+  background-color: $background-color;
+  border-color: $background-color;
+  color: color-yiq($background-color);
+
+  &:hover {
+    $hover-background: darken($background-color, 7.5%);
+    background-color: $hover-background;
+    border-color: darken($background-color, 10%);
+    color: color-yiq($background-color);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba($background-color, 0.5);
+    outline: 0;
+  }
+
+  &:disabled {
+    color: color-yiq($background-color);
+    background-color: $background-color;
+    border-color: $background-color;
   }
 }
 </style>
