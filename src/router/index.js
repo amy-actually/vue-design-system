@@ -198,6 +198,15 @@ const router = new Router({
         nav: [{ text: "Services", to: "/services" }],
       }),
     },
+    {
+      component: TermExample,
+      path: "/locations/:slug",
+      props: route => ({
+        slug: route.params.slug,
+        taxonomy: "locations",
+        nav: [{ text: "Locations", to: "/locations" }],
+      }),
+    },
 
     {
       component: ChannelExample,

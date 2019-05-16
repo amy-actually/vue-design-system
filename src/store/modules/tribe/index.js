@@ -12,8 +12,10 @@ export default {
   actions,
   getters: {
     getTribeByField: state => (type, field, value) => {
+      console.log("tribe getter")
       const contentType = returnType(type)
-      state[contentType].find(item => item[field] === value)
+      console.log(contentType)
+      return state[contentType].find(item => item[field] === value)
     },
   },
 
@@ -25,7 +27,17 @@ export default {
       }
     },
     addAllItems(state, { type, data }) {
-      state[type] = data
+      if (state[type].length == 0) {
+        state[type] = data
+      } else {
+        let items = []
+        data.forEach(content => {
+          if (!state[type].find(item => item.slug === content.slug)) {
+            items.push(content)
+          }
+        })
+        state[type] = state[type].concat(items)
+      }
     },
   },
 }

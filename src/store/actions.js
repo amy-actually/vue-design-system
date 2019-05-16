@@ -34,10 +34,15 @@ export default {
   },
 
   async fetchAllContent({ commit, state }, { type, params = {} }) {
+    console.log("FECTHING ALL " + type)
     const contentType = returnType(type)
+    console.log(contentType)
     let args = { ...params, per_page: 100 }
 
     let results = await api.fetchContent(contentType, args)
+    if (contentType === "organizers") {
+      console.log(results)
+    }
     let pages = results.pages
 
     commit(`${results.commit}`, { type: contentType, data: results.posts })

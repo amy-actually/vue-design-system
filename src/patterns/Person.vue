@@ -32,6 +32,9 @@ export default {
           ? this.getImage(this.profileImage)
           : this.profileImage
       }
+      if (!this.personObject) {
+        return null
+      }
       let image = []
       switch (this.type) {
         case "organizer":
@@ -189,7 +192,7 @@ export default {
 <docs>
   ```jsx
   <div>
-<person profileImage="https://fontanalib.wordpress.com/author/awestlib" name="Amy West" title="Digital Content Coordinator, Fontana Regional Library" />
+<person profileImage="https://secure.gravatar.com/avatar/9d2e56562b5ae4b1f84805af1dd5d09c?s=96&d=mm&r=g" name="Amy West" title="Digital Content Coordinator, Fontana Regional Library" />
   </div>
   ```
 </docs>

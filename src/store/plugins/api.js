@@ -59,6 +59,17 @@ export default {
         }
       })
     }
+
+    if (apiType === "tribe") {
+      return tribe.get(`/${name}`, { params: params }).then(res => {
+        return {
+          commit: "addAllItems",
+          count: Number(res.data.total),
+          pages: Number(res.data.total_pages),
+          posts: res.data[name],
+        }
+      })
+    }
   },
   async fetchBySlug(type, slug) {
     const name = endpoint[type]["slug"]
