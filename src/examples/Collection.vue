@@ -29,7 +29,7 @@
     <template v-slot:content class="align-self-stretch" style="width:100%">
       <filter-results
         v-if="loaded"
-        :total="total"
+        :total="Number(total)"
         :filter="filter"
         :location="locationDetails"
         :tags="tags"
@@ -122,10 +122,10 @@ export default {
         return null
       }
       let terms = []
-      for (const [taxonomy, value] of Object.entries(this.selected)) {
-        value.forEach(val => {
-          const t = this.getTerm(val, taxonomy)
-          if (!value.includes(t.parent)) {
+      for (const tax in this.selected) {
+        this.selected[tax].forEach(val => {
+          const t = this.$store.getters["taxonomies/getTermById"](tax, val)
+          if (!this.selected[tax].includes(t.parent)) {
             terms.push(t)
           }
         })
@@ -133,14 +133,14 @@ export default {
       return terms
     },
   },
+  mounted() {
+    this.fetchContent()
+  },
   created() {
     this.verifiedType = this.$store.getters.verifyType(this.network)
     if (this.selected[this.verifiedType]) {
-      console.log(this.verifiedType)
       delete this.selected[this.verifiedType]
     }
-
-    this.fetchContent()
 
     console.log("CREATED: " + this.network)
     this.$root.$on("resetPage", data => {
@@ -215,7 +215,9 @@ export default {
         this.fetchContent()
       }
     },
-
+    /**
+     * NEED TO WORK OUT FETCHING... check for content before fetching
+     */
     async fetchContent() {
       this.$store.dispatch("taxonomies/fetchCollectionTerms").then(results => {
         this.loaded = false
@@ -279,10 +281,6 @@ export default {
         this.term && this.term.count_by_type ? this.term.count_by_type["collection-item"] : 0
       this.filter = null
       this.location = ""
-    },
-    getTerm(tid, tax) {
-      // RECONFIG THIS GETTER
-      return this.$store.getters["taxonomies/getTermById"](tax, tid)
     },
   },
   props: {

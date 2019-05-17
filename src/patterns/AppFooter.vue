@@ -20,17 +20,24 @@
       <Search class="col" container-class="" :search-action="$route.name" />
     </div>
 
-    <nav class="col-md d-xl-flex flex-wrap menu menu--footer p-0 p-md-3" role="navigation">
-      <div class="col-xl-4 p-0 pl-xl-2 pr-xl-2" v-for="item in menuItems">
-        <vue-link
-          class="background--blue-alternate d-block link link--undecorated mb-3 p-4 menu__item"
-          :to="item.url"
-        >
-          <span class="menu__item__label text--white">
-            {{ item.title }}
-          </span>
-        </vue-link>
-      </div>
+    <nav class="col-md menu menu--footer p-0 p-md-3 mb-5" role="navigation">
+      <template v-for="(item, index) in menuItems">
+        <div class="" v-if="item.menu_item_parent == 0" :key="index">
+          <vue-link
+            class="background--blue-alternate d-block link link--undecorated mb-3 menu__item"
+            :to="item.url"
+          >
+            <h4 class="p-2 px-md-4 m-0 text--white text--uppercase">
+              {{ item.title }}
+            </h4>
+          </vue-link>
+          <ul v-if="children[item.ID]" class="menu__item__children p-2 px-md-4">
+            <li v-for="(child, key) in children[item.ID]" :key="key" class="py-1">
+              <vue-link class="text--white text--sans" :to="child.url">{{ child.title }}</vue-link>
+            </li>
+          </ul>
+        </div>
+      </template>
     </nav>
   </footer>
 </template>
@@ -48,6 +55,25 @@ export default {
     Search,
     VueLink,
   },
+  computed: {
+    children() {
+      let menu = []
+      this.menuItems.forEach(item => {
+        if (item.menu_item_parent > 0 && !menu[item.menu_item_parent]) {
+          menu[item.menu_item_parent] = []
+        }
+        if (item.menu_item_parent > 0) {
+          menu[item.menu_item_parent].push(item)
+        }
+      })
+      return menu
+    },
+  },
+  data() {
+    return {
+      parents: this.menuItems.filter(item => item.menu_item_parent == 0),
+    }
+  },
 
   props: {
     /**
@@ -63,9 +89,34 @@ export default {
     location: {
       type: Object,
     },
-    beforeMount() {
-      this.$store.dispatch("fetchContent", { type: "menus" })
-    },
   },
 }
 </script>
+<style lang="scss">
+nav.menu--footer {
+  display: flex;
+  flex-flow: column;
+  @media #{$media-query-medium} {
+    flex-flow: column wrap;
+  }
+  @media #{$media-query-large} {
+    flex-flow: row wrap;
+  }
+  > div {
+    flex: 1 1 auto;
+    @media #{$media-query-medium} {
+      border-right: $border_width_default $border_style_default $color_blue_alternate;
+      &:last-child {
+        border: none;
+      }
+    }
+  }
+  .menu__item__children {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  h4 {
+    font-size: 110%;
+  }
+}
+</style>

@@ -28,14 +28,13 @@
 
     <template v-slot:content>
       <filter-results
-        :total="total"
+        :total="Number(total)"
         :filter="filter"
         :location="locationDetails"
         :terms="tags"
         contentName="collection item"
         :prefetchTotal="Number(apiTotal)"
       />
-      <p>{{ apiTotal }}</p>
       <content-stream
         :key="`${network}-${slug}`"
         type="collection"
