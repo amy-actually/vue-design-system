@@ -57,29 +57,7 @@
         </div>
         <!-- end .showcase__wrap-->
 
-        <vue-link
-          class="link"
-          :to="{
-            name: 'collection-type-slug',
-            params: { channel: heading, type: collectionType, userLocation: location },
-          }"
-          v-if="collectionLink && collectionType"
-        >
-          {{ collectionLinkLabel }}
-        </vue-link>
-        <vue-link
-          class="link"
-          :to="{
-            name: 'collection-type',
-            params: {
-              slug: collectionLink,
-              channel: heading,
-              type: collectionType,
-              userLocation: location,
-            },
-          }"
-          v-else-if="!collectionLink && collectionType"
-        >
+        <vue-link class="link" :to="collectionLink" v-if="collectionLink">
           {{ collectionLinkLabel }}
         </vue-link>
       </div>
@@ -95,7 +73,7 @@ import Card from "./Card.vue"
 export default {
   name: "Showcase",
 
-  component: {
+  components: {
     Card,
     VueLink,
   },
