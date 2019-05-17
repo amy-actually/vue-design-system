@@ -39,26 +39,37 @@ aliases:
 props:
   color_aqua:
     value: "hsla({!aqua}, 64%, 1)"
+    category: theme_color
   color_aqua_darker:
     value: "hsla({!aqua}, 33%, 1)"
+    category: theme_color
   color_blue_alternate:
     value: "hsla({!blue_alternate}, 26%, 1)"
+    category: theme_color
   color_blue_base:
     value: "hsla({!blue_base}, 20%, 1)"
+    category: theme_color
   color_blue_dark:
     value: "hsla({!blue_dark}, 14%, 1)"
+    category: theme_color
   color_gray:
     value: "hsla({!gray}, 96%, 1)"
+    category: theme_color
   color_gray_dark:
     value: "hsla({!gray}, 66%, 1)"
+    category: theme_color
   color_orange:
     value: "hsla({!orange}, 52%, 1)"
+    category: theme_color
   color_pink:
     value: "hsla({!pink}, 52%, 1)"
+    category: theme_color
   color_pink_darker:
     value: "hsla({!pink}, 33%, 1)"
+    category: theme_color
   color_teal:
     value: "hsla({!teal}, 46%, 1}"
+    category: theme_color
   color_vermilion_darker:
     value: "hsla({!vermilion}, 33%, 1)"
     category: color_group_1

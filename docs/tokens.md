@@ -5,7 +5,19 @@ You’re looking at Vue Design System’s demo <code>design tokens</code>. Every
 ## Color Palette
 
 ```
-<color />
+<color category="theme_color"/>
+```
+
+## Social Brand Colors
+
+```
+<color category="social-brand-colors"/>
+```
+
+## Documentation Colors
+
+```
+<color :category="['theme_color','social-brand-colors']" :equality="false"/>
 ```
 
 ## Font Sizes

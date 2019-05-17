@@ -5,7 +5,7 @@
       :key="index"
       class="color"
       :class="prop.category"
-      v-if="prop.type === 'color'"
+      v-if="prop.type === 'color' && check(prop.category)"
     >
       <div class="swatch" :style="{ backgroundColor: prop.value }" />
       <h3>{{ prop.name.replace(/_/g, " ").replace(/color/g, "") }}</h3>
@@ -34,32 +34,39 @@ import orderBy from "lodash/orderBy"
  */
 export default {
   name: "Color",
-  computed: {
-    sections() {
-      const sections = [...new Set(this.tokens.map(item => item.name))]
-      let bySection = []
-      this.tokens.forEach(item => {
-        if (!bySection[item.category]) {
-          bySection[item.category] = []
-        }
-        bySection[item.category].push(item)
-      })
-      //return byCategoryAndName
-      console.log(bySection)
-    },
-  },
   methods: {
     orderData: function(data) {
       // let byValue = orderBy(data, "value", "asc")
       let byName = orderBy(data, "name", "asc")
       let byCategoryAndName = orderBy(byName, "category")
+      console.log(byCategoryAndName)
       return byCategoryAndName
+    },
+    check: function(category) {
+      if (Array.isArray(this.category)) {
+        return this.equality ? this.category.includes(category) : !this.category.includes(category)
+      }
+      return this.category.length === 0
+        ? true
+        : this.equality
+        ? category === this.category
+        : category !== this.category
     },
   },
   data() {
     return {
       tokens: this.orderData(designTokens.props),
     }
+  },
+  props: {
+    category: {
+      type: String,
+      default: "",
+    },
+    equality: {
+      type: Boolean,
+      default: true,
+    },
   },
 }
 </script>
