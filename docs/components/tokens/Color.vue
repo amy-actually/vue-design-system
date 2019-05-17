@@ -1,29 +1,55 @@
 <template>
-  <div class="colors">
-    <div
-      v-for="(prop, index) in tokens"
-      :key="index"
-      class="color"
-      :class="prop.category"
-      v-if="prop.type === 'color' && check(prop.category)"
+  <div class="colors__categories">
+    <section
+      v-for="section in sections"
+      :key="section"
+      :id="`color_${section.replace(/-|_/g, '')}`"
+      :ref="`color_${section.replace(/-|_/g, '')}`"
     >
-      <div class="swatch" :style="{ backgroundColor: prop.value }" />
-      <h3>{{ prop.name.replace(/_/g, " ").replace(/color/g, "") }}</h3>
-      <span>
-        <em>RGB:</em>
-        {{ prop.value }}
-      </span>
-      <span>
-        <em>SCSS:</em>
-        ${{ prop.name.replace(/_/g, "-") }}
-      </span>
-    </div>
+      <h3>
+        {{ section.replace(/_|-/g, " ") }}
+        <ul class="colors__categories--menu">
+          <li v-for="item in sections" :key="`list-${section}-${item}`" v-if="item !== section">
+            <a
+              href="javascript:void(0)"
+              @click.prevent="scrollIt(`color_${item.replace(/-|_/g, '')}`)"
+              >{{ item.replace(/_|-/g, " ") }}</a
+            >
+          </li>
+        </ul>
+      </h3>
+      <div class="colors">
+        <div
+          v-for="(prop, index) in tokens"
+          :key="index"
+          class="color"
+          :class="prop.category"
+          v-if="prop.type === 'color' && prop.category === section"
+        >
+          <div class="swatch" :style="{ backgroundColor: prop.value }" />
+          <h4>{{ prop.name.replace(/_/g, " ").replace(/color/g, "") }}</h4>
+          <span>
+            <em>RGB:</em>
+            {{ prop.value }}
+          </span>
+          <span>
+            <em>SCSS:</em>
+            ${{ prop.name.replace(/_/g, "-") }}
+          </span>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
 import designTokens from "@/assets/tokens/tokens.raw.json"
 import orderBy from "lodash/orderBy"
+function scrollFix(id) {
+  let element = document.getElementById(id)
+  let top = element.offsetTop
+  window.scrollTo(0, top)
+}
 
 /**
  * The color palette comes with 5 different weights for each hue. These hues
@@ -39,34 +65,24 @@ export default {
       // let byValue = orderBy(data, "value", "asc")
       let byName = orderBy(data, "name", "asc")
       let byCategoryAndName = orderBy(byName, "category")
-      console.log(byCategoryAndName)
+
       return byCategoryAndName
     },
-    check: function(category) {
-      if (Array.isArray(this.category)) {
-        return this.equality ? this.category.includes(category) : !this.category.includes(category)
-      }
-      return this.category.length === 0
-        ? true
-        : this.equality
-        ? category === this.category
-        : category !== this.category
+    getSections: function(data) {
+      let byCategoryAndName = orderBy(data, "category", "desc")
+      let colors = [...byCategoryAndName].filter(token => token.type === "color")
+      const sections = [...new Set(colors.map(item => item.category))]
+      return sections
+    },
+    scrollIt(id) {
+      scrollFix(id)
     },
   },
   data() {
     return {
       tokens: this.orderData(designTokens.props),
+      sections: this.getSections(designTokens.props),
     }
-  },
-  props: {
-    category: {
-      type: String,
-      default: "",
-    },
-    equality: {
-      type: Boolean,
-      default: true,
-    },
   },
 }
 </script>
@@ -78,7 +94,7 @@ export default {
 --------------------------------------------- */
 
 .colors {
-  margin-top: $space-l;
+  margin-top: $space-s;
   display: block;
   width: 100%;
   @supports (display: grid) {
@@ -125,7 +141,7 @@ export default {
   width: calc(100% + #{$space-l});
   float: left;
 }
-h3 {
+h4 {
   @include reset;
   @include stack-space($space-xs);
   text-transform: capitalize;
@@ -171,6 +187,36 @@ h3 {
     em {
       user-select: none;
       font-style: normal;
+    }
+  }
+}
+.colors__categories {
+  h3 {
+    text-transform: capitalize;
+    border-bottom: 1px solid #c4cdd5;
+    margin-bottom: $space-s;
+  }
+  > section:not(:first-child) {
+    h3 {
+      margin-top: $space-xxl;
+    }
+  }
+  .colors__categories--menu {
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 10px;
+    float: right;
+    display: flex;
+    li {
+      display: inline-block;
+      padding: 0 5px;
+      border-left: 1px solid #c4cdd5;
+      &:first-child {
+        border: none;
+      }
+      &:last-child {
+        padding-right: 0;
+      }
     }
   }
 }
