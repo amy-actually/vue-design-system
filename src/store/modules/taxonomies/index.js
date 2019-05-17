@@ -18,12 +18,18 @@ export default {
     taxonomies: [],
   },
   actions: {
-    async fetchCollectionTerms({ dispatch, commit }) {
-      return Promise.all([
-        dispatch("fetchTerms", { taxonomy: "audience" }),
-        dispatch("fetchTerms", { taxonomy: "genres" }),
-        dispatch("fetchTerms", { taxonomy: "featuredCollections" }),
-      ])
+    async fetchCollectionTerms({ state, rootState, commit, dispatch }) {
+      if (
+        state.audience.length == 0 &&
+        state.genres.length == 0 &&
+        state.featuredCollections.length == 0
+      ) {
+        return Promise.all([
+          dispatch("fetchTerms", { taxonomy: "audience" }),
+          dispatch("fetchTerms", { taxonomy: "genres" }),
+          dispatch("fetchTerms", { taxonomy: "featuredCollections" }),
+        ])
+      }
     },
     async fetchTerms({ commit }, { taxonomy, perPage = 100, pg = 1, params = {} }) {
       let tax = returnType(taxonomy)

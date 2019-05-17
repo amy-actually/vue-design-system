@@ -28,6 +28,7 @@
 
     <template v-slot:content>
       <filter-results
+        v-if="loaded"
         :total="Number(total)"
         :filter="filter"
         :location="locationDetails"
@@ -35,6 +36,9 @@
         contentName="collection item"
         :prefetchTotal="Number(apiTotal)"
       />
+
+      <spinner :dotSize="Number(20)" v-if="!loaded && total == 0" />
+
       <content-stream
         :key="`${network}-${slug}`"
         type="collection"
@@ -56,6 +60,7 @@ import ChannelHeader from "../patterns/ChannelHeader.vue"
 import ContentSearch from "../patterns/ContentSearch.vue"
 import ContentStream from "../patterns/ContentStream.vue"
 import FilterResults from "../elements/FilterResults.vue"
+import Spinner from "../elements/Spinner.vue"
 
 export default {
   name: "CollectionsExample",
@@ -67,6 +72,7 @@ export default {
     ContentSearch,
     ContentStream,
     FilterResults,
+    Spinner,
   },
 
   computed: {
@@ -114,10 +120,10 @@ export default {
         return null
       }
       let terms = []
-      for (const [taxonomy, value] of Object.entries(this.selected)) {
-        value.forEach(val => {
-          const t = this.getTerm(val, taxonomy)
-          if (!value.includes(t.parent)) {
+      for (const tax in this.selected) {
+        this.selected[tax].forEach(val => {
+          const t = this.$store.getters["taxonomies/getTermById"](tax, val)
+          if (!this.selected[tax].includes(t.parent)) {
             terms.push(t)
           }
         })
@@ -125,11 +131,19 @@ export default {
       return terms
     },
   },
+  mounted() {
+    this.$store.dispatch("taxonomies/fetchCollectionTerms").then(results => {
+      console.log("mounted and fetching...")
+      this.fetchContent()
+    })
+  },
   created() {
-    if (this.network && this.selected[this.network]) {
-      delete this.selected[this.network]
+    let verifiedType = this.$store.getters.verifyType(this.network)
+    this.verifiedType = verifiedType === "error" ? "new" : verifiedType
+
+    if (this.selected[this.verifiedType]) {
+      delete this.selected[this.verifiedType]
     }
-    this.fetchContent()
 
     console.log("CREATED: " + this.network)
     this.$root.$on("resetPage", data => {
@@ -145,8 +159,11 @@ export default {
       this.page = 1
     })
     this.$root.$on("loadmore", data => {
-      this.apiPage++
-      this.fetchContent()
+      if (this.network !== "new") {
+        this.apiPage++
+        console.log("loading more and fetching...")
+        this.fetchContent()
+      }
     })
 
     if (this.$route.query.search) {
@@ -179,6 +196,8 @@ export default {
         genres: [],
         audience: [],
       },
+      loaded: false,
+      verifiedType: null,
     }
   },
   methods: {
@@ -195,55 +214,60 @@ export default {
           (this.selected.audience && this.selected.audience.length > 0)) &&
         total < 100
       ) {
+        console.log("Calulcating total & fetching")
         this.apiPage = 1
         this.fetchContent()
       }
     },
 
     async fetchContent() {
-      this.$store.dispatch("taxonomies/fetchCollectionTerms").then(results => {
-        const term = this.term
-          ? this.term
-          : this.network !== "new"
-          ? this.$store.getters["taxonomies/getTermBySlug"](this.network, this.slug)
-          : null
+      this.loaded = false
+      const term = this.term
+        ? this.term
+        : this.network !== "new"
+        ? this.$store.getters["taxonomies/getTermBySlug"](this.network, this.slug)
+        : null
 
-        if (!this.network || this.network == "new") {
-          this.$store.dispatch("content/fetchContent", { type: "collection", perPage: 100, pg: 1 })
-          this.$store.dispatch("content/fetchContent", { type: "collection", perPage: 100, pg: 2 })
+      if (!this.network || this.network == "new") {
+        this.$store.dispatch("content/fetchContent", { type: "collection", perPage: 100, pg: 1 })
+        this.$store
+          .dispatch("content/fetchContent", { type: "collection", perPage: 100, pg: 2 })
+          .then(results => {
+            this.loaded = true
+          })
+      }
+      if (this.network && this.network !== "new" && this.slug !== "any") {
+        //&& this.term
+
+        let params = {}
+        params[this.verifiedType] = this.term ? term.id : ""
+        if (this.filter) {
+          params.search = this.filter
         }
-        if (this.network && this.network !== "new" && this.slug !== "any" && this.term) {
-          let params = {}
-          params[this.network] = term.id
-          if (this.filter) {
-            params.search = this.filter
-          }
-          if (this.location && this.location !== "all") {
-            const loc = this.$store.state.taxonomies.locations.find(
-              location => location.slug === this.location
-            )
-            params.locations = loc.id
-          }
-          if (this.selected.genres && this.selected.genres.length > 0) {
-            params.genres = this.selected.genres.join()
-          }
-          if (this.selected.audience && this.selected.audience.length > 0) {
-            params.audience = this.selected.audience.join()
-          }
-          this.$store
-            .dispatch("content/fetchContent", {
-              type: "collection",
-              perPage: 100,
-              pg: this.apiPage,
-              params: params,
-            })
-            .then(results => {
-              console.log("RESULTS TOTAL??")
-              console.log(results)
-              this.apiTotal = results
-            })
+        if (this.location && this.location !== "all") {
+          const loc = this.$store.state.taxonomies.locations.find(
+            location => location.slug === this.location
+          )
+          params.locations = loc.id
         }
-      })
+        if (this.selected.genres && this.selected.genres.length > 0) {
+          params.genres = this.selected.genres.join()
+        }
+        if (this.selected.audience && this.selected.audience.length > 0) {
+          params.audience = this.selected.audience.join()
+        }
+        this.$store
+          .dispatch("content/fetchContent", {
+            type: "collection",
+            perPage: 100,
+            pg: this.apiPage,
+            params: params,
+          })
+          .then(results => {
+            this.apiTotal = results
+            this.loaded = true
+          })
+      }
     },
 
     clearFilter() {

@@ -57,7 +57,6 @@ export default {
     locationName = "all",
     serviceName = "any"
   ) => {
-    console.log("getContentBy: " + contentType)
     const type = returnType(contentType)
     const content = [...state[type]]
 
@@ -178,7 +177,6 @@ export default {
       : relatedContent[index]
   },
   getCollection: state => (field, value, collection = "collection") => {
-    console.log("getCollection: " + collection)
     const type = returnType(collection)
 
     let content = [...state[type]]

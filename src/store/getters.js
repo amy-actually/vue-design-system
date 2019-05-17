@@ -53,7 +53,6 @@ export default {
   },
 
   verifyType: state => type => {
-    console.log("VERIFYING... " + type)
     return returnType(type)
   },
 }
