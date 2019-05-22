@@ -67,7 +67,7 @@
 
           <vue-link
             class="d-block text--dark text--underline"
-            :to="`/location/${eventObject.venue.slug}`"
+            :to="`/locations/${eventObject.venue.slug}`"
             >{{ eventObject.venue.venue }}</vue-link
           >
           <span class="d-block">{{ eventObject.venue.address }}</span>
