@@ -107,7 +107,15 @@
       <!-- pages card -->
       <template v-else>
         <card
-          :badge-label="item.type && item.type == 'resources' ? 'Resource' : ''"
+          :badge-label="
+            item.type && item.type == 'resources'
+              ? 'Resource'
+              : item.type && item.type === 'alert' && item.acf.notice_type === 'announcement'
+              ? item.acf.notice_type
+              : item.type && item.type === 'alert' && item.acf.notice_type !== 'announcement'
+              ? item.acf.notice_type + ' closing'
+              : ''
+          "
           :sub-explainer="
             item.type ? item.type.toUpperCase() : item.taxonomy ? item.taxonomy.toUpperCase() : ''
           "
@@ -118,11 +126,14 @@
               ? item.title
               : item.acf.name
           "
-          class="card--background-blue-dark text--white my-2"
-          content-type="resource"
+          :class="[
+            { 'card--background-blue-dark text--white my-2': item.type === 'resources' },
+            { 'border my-2': item.type === 'alert' },
+          ]"
+          :content-type="item.type && item.type === 'alert' ? 'notice' : 'resource'"
           :key="item.id"
         >
-          <div slot="copy">
+          <div slot="copy" class="mt-2">
             {{
               item.content && item.content.rendered
                 ? getExcerpt(item.content.rendered)
@@ -135,7 +146,18 @@
           </div>
 
           <template slot="action">
-            <vue-link class="button button--teal" :to="`resources/${item.slug}`">More</vue-link>
+            <router-link
+              class="button button--teal"
+              :to="`../resources/${item.slug}`"
+              v-if="item.type === 'resources'"
+              >More</router-link
+            >
+            <router-link
+              class="button button--pink-dark"
+              :to="`../notices/${item.slug}`"
+              v-if="item.type === 'alert'"
+              >More</router-link
+            >
           </template>
         </card>
       </template>
@@ -252,6 +274,8 @@ export default {
                 (item.modified.substring(0, 7) == this.selectedDate ||
                   item.date.substring(0, 7) == this.selectedDate.substring(0, 7)))
           )
+      console.log("1")
+      console.log(content)
 
       //Filter Events by library
       content =
@@ -260,10 +284,15 @@ export default {
           : content.filter(
               item =>
                 item.acf &&
-                item.acf.location &&
-                item.acf.location.some(location => location.slug === library)
+                ((item.acf.location &&
+                  item.acf.location.some(location => location.slug === library)) ||
+                  (item.acf.affected_location &&
+                    item.acf.affected_location.some(
+                      location => location === library || location === "all-locations"
+                    )))
             )
-
+      console.log("2")
+      console.log(content)
       //Filter by terms
       if (this.termFilter) {
         for (const [taxonomy, value] of Object.entries(this.termFilter)) {

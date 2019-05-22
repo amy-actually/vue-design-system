@@ -87,12 +87,7 @@ export default {
       if (this.network === "services" || this.network === "locations") {
         return this.$store.getters["content/getAllContentBy"]("collection", this.slug)
       }
-      if (this.$store.state.content[this.network]) {
-        this.total = this.$store.state.content[this.network].length
-          ? this.$store.state.content[this.network].length
-          : 0
-        return this.$store.state.content[this.network]
-      }
+      return this.$store.getters["content/getContentBy"](this.network)
     },
     locationDetails() {
       return this.location && this.location !== "all"
@@ -118,12 +113,7 @@ export default {
     if (this.network === "events") {
       this.$store.dispatch("content/fetchUpcomingEvents")
     } else {
-      if (
-        this.$store.state.content[this.network] &&
-        this.$store.state.content[this.network].length === 0
-      ) {
-        this.$store.dispatch("content/fetchAllContent", { type: this.network })
-      }
+      this.$store.dispatch("content/fetchInitalContent", this.network)
     }
   },
   data() {

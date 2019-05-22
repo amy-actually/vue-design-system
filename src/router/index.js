@@ -12,6 +12,7 @@ import Service from "../examples/Service.vue"
 import Terms from "../examples/Terms.vue"
 import TermExample from "../examples/Term.vue"
 import Blog from "../examples/Blog.vue"
+import Page from "../examples/Page.vue"
 //--------------
 //import routes from "./routes"
 
@@ -219,6 +220,40 @@ const router = new Router({
         `,
         network: "pages",
         slug: "pages/",
+      }),
+    },
+    {
+      component: ChannelExample,
+      meta: {
+        title: "Notices and Alerts",
+      },
+      path: "/notices",
+      name: "Notices",
+      props: route => ({
+        channelTitle: "Notices and Alerts",
+        channelDescription: `
+          Find announcements about library service interuptions, community notices, and more
+        `,
+        network: "alerts",
+        slug: "notices/",
+      }),
+    },
+    {
+      component: Page,
+      path: "/notices/:slug",
+      props: route => ({
+        slug: route.params.slug,
+        type: "alerts",
+        nav: [{ text: "Notices and Alerts", to: "/notices" }],
+      }),
+    },
+    {
+      component: Page,
+      path: "/pages/:slug",
+      props: route => ({
+        slug: route.params.slug,
+        type: "pages",
+        nav: [{ text: "Information Pages", to: "/pages" }],
       }),
     },
 

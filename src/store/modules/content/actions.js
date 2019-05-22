@@ -64,4 +64,10 @@ export default {
       commit("SET_STATE", { type: "eventsFetched", value: true })
     }
   },
+  fetchInitalContent({ dispatch, commit, state }, type) {
+    if (!state[`${type}Fetched`]) {
+      dispatch("fetchAllContent", { type: type })
+      commit("SET_STATE", { type: `${type}Fetched`, value: true })
+    }
+  },
 }
