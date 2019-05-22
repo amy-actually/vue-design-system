@@ -2,8 +2,8 @@
   <vue-link
     :to="url"
     itemprop="sameAs"
-    class="social__icon--link button"
-    :class="`social__icon--link--${name}`"
+    class="button social__icon--button mr-1"
+    :class="`social__icon--button--${name}`"
   >
     <Icon :name="name" class="social__icon" :fill="colorCode ? '#fff' : null" /> &nbsp;&nbsp;
   </vue-link>
@@ -19,31 +19,6 @@
 import VueLink from "vue-link"
 import Icon from "./Icon.vue"
 import CButton from "./Button.vue"
-const brandColors = {
-  facebook: "#3b5998",
-  messenger: "#0084FF",
-  instagram: "#E4405F",
-  twitter: "#1DA1F2",
-  tumblr: "#36465D",
-  youtube: "#FF0000",
-  wordpress: "#21759B",
-  goodreads: "#663300",
-  tiktok: "#000",
-  discord: "#7289DA",
-  pinterest: "#BD081C",
-  whatsapp: "#25D366",
-  snapchat: "#FFFC00",
-  wechat: "#7BB32E",
-  linkedin: "#0077B5",
-  reddit: "#FF4500",
-  twitch: "#6441A4",
-  medium: "#12100E",
-  skype: "#00AFF0",
-  blogger: "#FF5722",
-  viber: "#665CAC",
-  github: "#181717",
-  codepen: "#000",
-}
 /**
  * Icons are used to visually communicate core parts of the product and
  * available actions. They can act as wayfinding tools to help users more
@@ -92,11 +67,12 @@ export default {
 </script>
 
 <style lang="scss">
-/*  .social__icon--link {
-  
-    border: none;
-    position: relative;
-   
+.social__icon--button {
+  border: none;
+  position: relative;
+  width: 35px;
+  height: 35px;
+
   svg {
     position: absolute;
     max-height: 100%;
@@ -105,8 +81,36 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
   }
-}  */
-
+}
+$social-colors: ();
+$social-colors: map-merge(
+  (
+    "goodreads": $goodreads,
+    "snapchat": $snapchat,
+    "youtube": $youtube,
+    "github": $github,
+    "facebook": $facebook,
+    "wechat": $wechat,
+    "codepen": $codepen,
+    "discord": $discord,
+    "blogger": $blogger,
+    "whatsapp": $whatsapp,
+    "instagram": $instagram,
+    "twitter": $twitter,
+    "messenger": $messenger,
+    "twitch": $twitch,
+    "medium": $medium,
+    "skype": $skype,
+    "wordpress": $wordpress,
+    "tiktok": $tiktok,
+    "pinterest": $pinterest,
+    "viber": $viber,
+    "tumblr": $tumblr,
+    "linkedin": $linkedin,
+    "reddit": $reddit,
+  ),
+  $social-colors
+);
 @mixin social($background-color) {
   background-color: $background-color;
   border-color: $background-color;
@@ -128,6 +132,13 @@ export default {
     color: color-yiq($background-color);
     background-color: $background-color;
     border-color: $background-color;
+  }
+}
+.social__icon--button {
+  @each $color, $value in $social-colors {
+    &--#{$color} {
+      @include social($value);
+    }
   }
 }
 </style>
