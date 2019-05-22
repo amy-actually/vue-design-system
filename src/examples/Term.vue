@@ -34,6 +34,7 @@
         :filter="filter"
         :location="locationDetails"
         :contentName="active === 'all' ? 'result' : getTypeName()"
+        :prefetchTotal="contentTypes.reduce((a, b) => a + Number(b.count), 0)"
       />
       <content-stream
         :key="`${taxonomy}-${slug}`"
