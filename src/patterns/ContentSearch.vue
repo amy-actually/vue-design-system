@@ -52,7 +52,7 @@
           class="form-control"
           id="eventSidebarLocation"
           :value="library"
-          @input="$emit('filterlibrary', $event.target.value)"
+          @input="filterLibrary($event.target.value)"
         >
           <option selected hidden disabled value="">
             <em class="filter__default">All Libraries</em>
@@ -179,6 +179,10 @@ export default {
       // FIX @CLICK
       console.log(type)
       this.active = type
+    },
+    filterLibrary(library) {
+      this.$emit("filterlibrary", library)
+      this.backToOne()
     },
   },
 

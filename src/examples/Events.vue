@@ -120,15 +120,13 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch("content/fetchUpcomingEvents")
     this.$root.$on("inputData", data => {
       this.q = data
     })
     this.$root.$on("resetPage", data => {
       this.page = 1
     })
-  },
-  created() {
-    this.$store.dispatch("content/fetchAllContent", { type: "events" })
   },
   props: {
     filter: {

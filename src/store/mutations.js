@@ -53,4 +53,8 @@ export default {
   ADD_COUNT: (state, { type, count }) => {
     state.counts[type] = count
   },
+
+  SET_STATE: (state, { type, value }) => {
+    state[type] = value
+  },
 }

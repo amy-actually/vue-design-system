@@ -1,6 +1,10 @@
 <template>
   <main class="background--white event" role="main">
-    <breadcrumb :current="eventObject.title" :ancestors="[{ text: 'Events', to: '/events/' }]" />
+    <breadcrumb
+      :current="eventObject.title"
+      :ancestors="[{ text: 'Events', to: '/events/' }]"
+      v-if="eventObject"
+    />
     <article v-if="eventObject">
       <header class="col-11 col-md-10 col-lg-6 m-auto p-lg-4">
         <heading class="event__title text--dark text--serif">{{ eventObject.title }}</heading>
@@ -33,23 +37,16 @@
           </div>
         </add-to-calendar>
 
-        <div class="d-flex" v-if="author">
-          <div class="col-6">
-            <div class="align-items-center background--gray card d-flex row mb-3 person">
-              <div class="person__avatar">
-                <img class="rounded-circle" :src="author.avatar_urls['96']" alt="" />
-              </div>
-
-              <div class="person__content" v-if="author">
-                <p class="align-items-center mt-3">
-                  <span class="text--dark text--bold text--underlined person__name">{{
-                    author.name
-                  }}</span>
-                  <br />
-                  <span class="text--small text--dark">No Position Added Yet</span>
-                </p>
-              </div>
-            </div>
+        <div class="d-flex" v-if="authors">
+          <div class="col-6 mr-1" v-for="contact in authors" :key="contact.id">
+            <person
+              contentContainerClass="d-flex row mb-3 person"
+              :name="contact.organizer"
+              :title="contact.description"
+              type="organizer"
+              :personObject="contact"
+            >
+            </person>
           </div>
         </div>
       </header>
@@ -108,15 +105,48 @@ export default {
   },
 
   computed: {
-    author() {
-      return this.$store.getters.getAuthorById(Number(this.eventObject.author))
+    authors() {
+      return this.$store.getters["tribe/getOrganizers"](
+        this.eventObject.organizer.map(item => {
+          return item.id
+        })
+      )
+    },
+    eventObject() {
+      return this.$store.getters["content/getItemBySlug"]("events", this.slug)
+    },
+  },
+  props: {
+    slug: {
+      type: String,
     },
   },
 
-  props: {
-    eventObject: {
-      type: Object,
-    },
+  mounted() {
+    let event = this.$store.getters["content/getItemBySlug"]("events", this.slug)
+    if (!event) {
+      this.$store
+        .dispatch("content/fetchContentBySlug", { type: "events", slug: this.slug })
+        .then(() => {
+          let author = this.$store.getters["tribe/getOrganizers"](
+            this.eventObject.organizer.map(item => {
+              return item.id
+            })
+          )
+          if (!author || author.length < 1) {
+            this.$store.dispatch("tribe/fetchAllContent", { type: "organizers" })
+          }
+        })
+    } else {
+      let author = this.$store.getters["tribe/getOrganizers"](
+        this.eventObject.organizer.map(item => {
+          return item.id
+        })
+      )
+      if (!author || author.length < 1) {
+        this.$store.dispatch("tribe/fetchAllContent", { type: "organizers" })
+      }
+    }
   },
 }
 </script>

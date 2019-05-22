@@ -17,6 +17,10 @@ export default {
       console.log(contentType)
       return state[contentType].find(item => item[field] === value)
     },
+    getOrganizers: state => orgs => {
+      console.log(orgs)
+      return state.organizers.filter(item => orgs.includes(item.id))
+    },
   },
 
   mutations: {

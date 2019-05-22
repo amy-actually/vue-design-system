@@ -57,4 +57,11 @@ export default {
       commit("ADD_COUNT", { type: contentType, count: count })
     }
   },
+
+  fetchUpcomingEvents({ dispatch, commit, state }) {
+    if (!state.eventsFetched) {
+      dispatch("fetchAllContent", { type: "events" })
+      commit("SET_STATE", { type: "eventsFetched", value: true })
+    }
+  },
 }

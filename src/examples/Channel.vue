@@ -24,7 +24,7 @@
 
     <template v-slot:content>
       <filter-results
-        :total="total"
+        :total="Number(total)"
         :selectedDate="selectedDate"
         :filter="filter"
         :location="locationDetails"
@@ -115,11 +115,15 @@ export default {
       this.$route.query && (this.$route.query.filter || this.$route.query.search)
         ? this.$route.query.filter || this.$route.query.search
         : ""
-    if (
-      this.$store.state.content[this.network] &&
-      this.$store.state.content[this.network].length === 0
-    ) {
-      this.$store.dispatch("content/fetchAllContent", { type: this.network })
+    if (this.network === "events") {
+      this.$store.dispatch("content/fetchUpcomingEvents")
+    } else {
+      if (
+        this.$store.state.content[this.network] &&
+        this.$store.state.content[this.network].length === 0
+      ) {
+        this.$store.dispatch("content/fetchAllContent", { type: this.network })
+      }
     }
   },
   data() {

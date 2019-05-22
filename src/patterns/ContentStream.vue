@@ -192,6 +192,11 @@ export default {
       this.page = Number(this.$route.query.page)
     }
     this.$root.$on("resetpage", () => {
+      this.$router.push({
+        query: {
+          page: 1,
+        },
+      })
       this.page = 1
     })
   },
@@ -314,14 +319,9 @@ export default {
      * Add the page to the route query params
      */
     page() {
-      //this.$router.push({ query: { page: this.page } })
-      console.log(this.page)
-      console.log(this.resultTotal / this.perPage - 3)
-      let p = this.page > 1 ? this.page : undefined
-      this.$router.replace({
-        ...this.$router.currentRoute,
+      this.$router.push({
         query: {
-          page: p,
+          page: this.page,
         },
       })
 

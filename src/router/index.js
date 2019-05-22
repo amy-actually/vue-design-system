@@ -143,10 +143,7 @@ const router = new Router({
       component: EventExample,
       path: "/events/:slug",
       props: route => ({
-        eventObject: router.app.$store.getters["content/getItemBySlug"](
-          "events",
-          route.params.slug
-        ),
+        slug: route.params.slug,
       }),
     },
 

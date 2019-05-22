@@ -23,6 +23,7 @@ export default {
       posts: 0,
       resources: 0,
     },
+    eventsFetched: false,
   },
   actions,
   getters,
