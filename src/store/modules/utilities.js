@@ -297,7 +297,11 @@ const getName = type => {
   const checkType = type.toLowerCase()
   if (endpoint[checkType]) {
     //console.log("RETURNTYPE1 " + type)
-    return { name: endpoint[checkType].resultName, class: endpoint[checkType].colorCode }
+    return {
+      name: endpoint[checkType].resultName,
+      class: endpoint[checkType].colorCode,
+      type: checkType,
+    }
   }
   for (const name in endpoint) {
     if (endpoint[name].alts && endpoint[name].alts.includes(checkType)) {

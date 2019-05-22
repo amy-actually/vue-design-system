@@ -1,18 +1,27 @@
 <template>
   <component :is="wrapper" class="input" style="min-width:250px">
     <div v-if="contentFilter.length > 0" class="d-flex flex-column align-items-start">
-      <CButton
-        v-for="type in contentFilter"
-        :key="type.name"
-        class="my-1"
-        :class="type.class ? `button--${type.class}` : 'button--blue-alternate'"
-        @click="setActive(type.type)"
+      <div v-if="active !== 'all'" @click="setActive('all')">
+        <CButton class="my-1">
+          See All Results
+        </CButton>
+      </div>
+      <div
+        v-for="contentType in contentFilter"
+        :key="contentType.name"
+        @click="setActive(contentType.type)"
       >
-        See More {{ type.name }}s <span class="badge badge-light">{{ type.count }}</span>
-      </CButton>
-      <CButton v-if="active !== 'all'" class="my-1" @click="setActive('all')">
-        See All Results
-      </CButton>
+        <CButton
+          class="my-1"
+          :class="[
+            contentType.class ? `button--${contentType.class}` : 'button--blue-alternate',
+            { 'active-channel': isActive(contentType.type) },
+          ]"
+        >
+          See More {{ contentType.name }}s
+          <span class="badge badge-light">{{ contentType.count }}</span>
+        </CButton>
+      </div>
     </div>
     <input
       v-if="dateFilter"
@@ -175,10 +184,15 @@ export default {
     isSelected(tax, id) {
       return this.selected[tax].includes(id)
     },
+    isActive(type) {
+      return this.active === type
+    },
     setActive(type) {
       // FIX @CLICK
       console.log(type)
       this.active = type
+      this.$emit("setactive", type)
+      this.backToOne()
     },
     filterLibrary(library) {
       this.$emit("filterlibrary", library)
@@ -308,6 +322,10 @@ export default {
 .taglist__tag.selected:hover .taglist__tag--close {
   visibility: visible;
   color: rgba(255, 255, 255, 0.5);
+}
+.active-channel {
+  background-color: $color_gray_dark !important;
+  border-color: $color_gray !important;
 }
 
 .flatpickr-calendar {

@@ -24,11 +24,17 @@
         :library="location"
         @filterlibrary="location = $event"
         @clearcontentfilter="clearFilter()"
+        @setactive="active = $event"
       />
     </template>
 
     <template v-slot:content>
-      <filter-results :total="Number(total)" :filter="filter" :location="locationDetails" />
+      <filter-results
+        :total="Number(total)"
+        :filter="filter"
+        :location="locationDetails"
+        :contentName="active === 'all' ? 'result' : getTypeName()"
+      />
       <content-stream
         :key="`${taxonomy}-${slug}`"
         @totalresults="total = $event"
@@ -68,9 +74,13 @@ export default {
 
     contents() {
       if (this.taxonomy === "locations") {
-        return this.$store.getters["content/getAllContentBy"](this.slug)
+        return this.active === "all"
+          ? this.$store.getters["content/getAllContentBy"](this.slug)
+          : this.$store.getters["content/getContentBy"](this.active, this.slug)
       }
-      return this.$store.getters["content/getAllContentBy"](this.location, this.slug)
+      return this.active === "all"
+        ? this.$store.getters["content/getAllContentBy"](this.location, this.slug)
+        : this.$store.getters["content/getContentBy"](this.active, this.location, this.slug)
     },
     term() {
       return this.$store.getters["taxonomies/getTermBySlug"](this.taxonomy, this.slug)
@@ -84,6 +94,7 @@ export default {
         return []
       }
       let types = []
+      console.log("Content Types")
       for (var type in this.term.count_by_type) {
         let name = getName(type)
         console.log(name)
@@ -128,6 +139,7 @@ export default {
       selectedDate: "",
       page: 1,
       total: 0,
+      active: "all",
     }
   },
   methods: {
@@ -136,6 +148,13 @@ export default {
       this.filter = null
       this.location = this.taxonomy == "locations" ? this.slug : null
       this.page = 1
+    },
+    getTypeName() {
+      if (this.active === "all") {
+        return "result"
+      }
+      let content = this.contentTypes.find(item => item.type === this.active)
+      return content.name
     },
   },
   props: {
