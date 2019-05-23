@@ -3,16 +3,12 @@ import { returnType } from "./modules/utilities.js"
 
 export default {
   async loadHome({ dispatch, commit }) {
-    return Promise.all([
-      dispatch("content/loadHome"),
-      dispatch("taxonomies/fetchTerms", { taxonomy: "services", perPage: 100 }),
-    ])
+    dispatch("content/loadHome")
+    dispatch("taxonomies/fetchTerms", { taxonomy: "services", perPage: 100 })
   },
   async loadApp({ dispatch, commit }) {
-    return Promise.all([
-      dispatch("taxonomies/fetchTerms", { taxonomy: "locations" }),
-      dispatch("fetchMenus", { root: true }),
-    ])
+    dispatch("taxonomies/fetchTerms", { taxonomy: "locations" })
+    dispatch("fetchMenus", { root: true })
   },
 
   async fetchContent({ dispatch, commit, state }, { type, perPage = 100, pg = 1, params = {} }) {
@@ -38,30 +34,25 @@ export default {
   },
 
   async fetchAllContent({ commit, state }, { type, params = {} }) {
-    return new Promise((resolve, reject) => {
-      const contentType = returnType(type)
+    console.log("FECTHING ALL " + type)
+    const contentType = returnType(type)
+    console.log(contentType)
+    let args = { ...params, per_page: 100 }
 
-      if (contentType === "error") {
-        reject("error")
-      }
+    let results = await api.fetchContent(contentType, args)
+    if (contentType === "organizers") {
+      console.log(results)
+    }
+    let pages = results.pages
 
-      let args = { ...params, per_page: 100 }
+    commit(`${results.commit}`, { type: contentType, data: results.posts })
 
-      let results = api.fetchContent(contentType, args).then(results => {
-        console.log(results)
-        let pages = results.pages
-
-        commit(`${results.commit}`, { type: contentType, data: results.posts })
-
-        let page = 2
-        while (pages >= page) {
-          args.page = page
-          dispatch("fetchContent", { type: contentType, pg: page, params: args })
-          page++
-        }
-        resolve("fetched")
-      })
-    })
+    let page = 2
+    while (pages >= page) {
+      args.page = page
+      dispatch("fetchContent", { type: contentType, pg: page, params: args })
+      page++
+    }
   },
   async fetchMenus({ commit }) {
     let menus = await api.fetchContent("menus")
