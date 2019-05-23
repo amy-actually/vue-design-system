@@ -7,7 +7,7 @@
     />
     <article v-if="eventObject">
       <header class="col-11 col-md-10 col-lg-6 m-auto p-lg-4">
-        <heading class="event__title text--dark text--serif">{{ eventObject.title }}</heading>
+        <heading class="event__title text--dark text--serif" v-html="eventObject.title" />
 
         <span class="event__time text--dark">
           {{ eventObject.start_date | moment("dddd, MMMM Do YYYY h:mm a") }} &mdash;
@@ -23,7 +23,7 @@
           :location="eventObject.venue.venue"
           :start="new Date(`${eventObject.start_date}`)"
           :end="new Date(`${eventObject.end_date}`)"
-          :details="eventObject.description"
+          :details="eventObject.content"
           inline-template
         >
           <div class="mb-3">
@@ -57,7 +57,7 @@
 
           <heading class="text--dark" level="h2">About</heading>
 
-          <div v-html="eventObject.description"></div>
+          <div v-html="eventObject.content"></div>
 
           <heading class="text--dark" level="h3">When</heading>
           {{ eventObject.start_date | moment("dddd, MMMM Do YYYY h:mm a") }}
