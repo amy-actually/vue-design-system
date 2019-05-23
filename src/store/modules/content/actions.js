@@ -3,10 +3,12 @@ import { returnType } from "../utilities.js"
 
 export default {
   async loadHome({ dispatch, commit }) {
-    dispatch("fetchContent", { type: "callsToAction", perPage: 10 })
-    dispatch("fetchContent", { type: "events", perPage: 10 })
-    dispatch("fetchContent", { type: "collection", perPage: 10 })
-    dispatch("fetchContent", { type: "blogs", perPage: 5 })
+    return Promise.all([
+      dispatch("fetchContent", { type: "callsToAction", perPage: 10 }),
+      dispatch("fetchContent", { type: "events", perPage: 10 }),
+      dispatch("fetchContent", { type: "collection", perPage: 10 }),
+      dispatch("fetchContent", { type: "blogs", perPage: 5 }),
+    ])
   },
 
   async fetchContent({ dispatch, commit, state }, { type, perPage = 100, pg = 1, params = {} }) {
@@ -36,26 +38,36 @@ export default {
   },
 
   async fetchAllContent({ dispatch, commit }, { type, params = {}, number = 0 }) {
-    const contentType = returnType(type)
-    let count = 0
+    return new Promise((resolve, reject) => {
+      const contentType = returnType(type)
 
-    let args = contentType === "blog" ? { ...params, number: 100 } : { ...params, per_page: 100 }
+      if (contentType === "error") {
+        reject("error")
+      }
 
-    let results = await api.fetchContent(contentType, args)
-    let pages = number > 0 ? number : results.pages
-    count = results.count
+      let count = 0
 
-    commit(`${results.commit}`, { type: contentType, data: results.posts })
+      let args = contentType === "blog" ? { ...params, number: 100 } : { ...params, per_page: 100 }
 
-    let page = 2
-    while (pages >= page) {
-      args.page = page
-      dispatch("fetchContent", { type: contentType, pg: page, params: args })
-      page++
-    }
-    if (!params || params.length == 0) {
-      commit("ADD_COUNT", { type: contentType, count: count })
-    }
+      let results = api.fetchContent(contentType, args).then(results => {
+        console.log(results)
+        let pages = number > 0 ? number : results.pages
+        count = results.count
+
+        commit(`${results.commit}`, { type: contentType, data: results.posts })
+
+        let page = 2
+        while (pages >= page) {
+          args.page = page
+          dispatch("fetchContent", { type: contentType, pg: page, params: args })
+          page++
+        }
+        if (!params || params.length == 0) {
+          commit("ADD_COUNT", { type: contentType, count: count })
+        }
+        resolve("fetched")
+      })
+    })
   },
 
   fetchUpcomingEvents({ dispatch, commit, state }) {
