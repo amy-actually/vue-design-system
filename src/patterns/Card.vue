@@ -143,7 +143,7 @@ export default {
     type: {
       default: "default",
       type: String,
-      validator: value => value.match(/(default|deck)/),
+      validator: value => value.match(/(default|deck|collection)/),
     },
   },
 }
