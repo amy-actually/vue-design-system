@@ -2,13 +2,19 @@
   <div>
     <card class="collection-item mb-3" content-type="collection" v-if="isFeatured">
       <template slot="copy">
-        <div class="d-flex">
-          <div class="collection-item__cover col-3 pl-0">
-            <img :src="featuredImage" alt="" />
+        <div class="d-flex flex-wrap">
+          <div class="collection-item__cover col-12 col-md-3 pl-0 my-2">
+            <img class="d-block m-auto" :src="featuredImage" alt="" />
           </div>
 
-          <div class="col-9 mt-0 pl-0 pr-0">
-            <heading class="h2 mt-0 text--serif" :level="headingLevel" v-html="name"> </heading>
+          <div class="col-12 col-md-9 mt-0 pl-0 pr-0">
+            <heading
+              :class="!this.item.taxonomy ? 'h2' : 'h3'"
+              class="mt-0 text--serif"
+              :level="headingLevel"
+              v-html="name"
+            >
+            </heading>
 
             <heading class="h4 mt-0" :level="headingLevel" v-html="author"> </heading>
 
@@ -66,7 +72,7 @@ export default {
 
   computed: {
     action() {
-      return this.item && this.item.type === "collection-item" ? "More Info" : "More"
+      return this.item && this.item.type === "collection-item" ? "View in Catalog" : "More"
     },
 
     isFeatured() {
@@ -95,8 +101,12 @@ export default {
       if (this.item && this.item.featured_image) {
         return this.item.featured_image
       }
-      if (this.item && this.item.taxonomy) {
-        let item = this.$store.getters["content/getItemByField"](
+      return this.image
+      /**
+       * MOVE THIS OUT
+       */
+      /* if (this.item && this.item.taxonomy) {
+        let item = STORE.getters["content/getItemByField"](
           "collection",
           this.item.taxonomy,
           this.item.slug
@@ -108,7 +118,7 @@ export default {
           ? this.item.acf.sample_cover.sizes.large
           : null
       }
-      return null
+      return null */
     },
 
     name() {
@@ -139,9 +149,9 @@ export default {
         return this.item.acf.url
       }
       const collections = ["genres", "audience", "featured-collections"]
-      return this.item && this.item.taxonomy && collections.includes(taxonomy)
-        ? `/collection/${taxonomy}/${slug}`
-        : `/${taxonomy}/${slug}`
+      return this.item && this.item.taxonomy && this.$route.path.includes("collection")
+        ? `/collection/${this.item.taxonomy}/${this.item.slug}`
+        : `/${this.item.taxonomy}/${this.item.slug}`
     },
     excerpt() {
       return this.item && this.item.type === "collection-item"
@@ -155,7 +165,7 @@ export default {
   methods: {
     showcaseCreators(item) {
       const { creators } = item.acf
-      if (creators == false) {
+      if (!creators) {
         return ""
       }
       const { name: creatorName } = creators.find(creator => creator.name)
@@ -201,6 +211,11 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.collection-item__cover img {
+  max-height: 300px;
+}
+</style>
 <docs>
   ```jsx
   const mockData = require('../examples/mockData.js'); 

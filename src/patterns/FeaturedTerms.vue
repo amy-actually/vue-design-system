@@ -12,7 +12,6 @@
               :copy="item.description"
               :explainer="`Featured ` + getType(item.taxonomy)"
               :heading="item.name"
-              heading-class="sr-only"
               style="min-height: 197px;"
               ><!--:type="featuredObjects && featuredObjects.length > 2 ? 'default' : 'deck'"-->
               <template slot="action">
@@ -21,7 +20,16 @@
                 >
               </template>
             </card>
-            <collection-item v-if="collection" :item="item"> </collection-item>
+            <collection-item
+              class="card background--white flex-fill"
+              v-if="collection"
+              :item="item"
+              headingLevel="h4"
+              :image="getImage(item)"
+              :title="item.name"
+              variant="feature"
+            >
+            </collection-item>
           </div>
         </template>
       </div>
@@ -80,8 +88,12 @@ export default {
     getType(type) {
       return type.slice(-1) == "s" ? type.substring(0, type.length - 1) : type
     },
+    getContentType(type) {
+      return type.slice(-1) == "s" ? type.substring(0, type.length - 1) : type
+    },
     getImage(term) {
-      if (this.collection && term.taxonomy) {
+      const collections = ["genres", "audience", "featured-collections"]
+      if (term.taxonomy && collections.includes(term.taxonomy)) {
         let item = this.$store.getters["content/getItemByField"](
           "collection",
           term.taxonomy,
@@ -94,6 +106,7 @@ export default {
           ? term.acf.sample_cover.sizes.large
           : null
       }
+      return null
     },
   },
   props: {

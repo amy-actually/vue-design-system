@@ -3,10 +3,12 @@ import { returnType } from "./modules/utilities.js"
 
 export default {
   async loadHome({ dispatch, commit }) {
+    console.log("loadHome")
     dispatch("content/loadHome")
     dispatch("taxonomies/fetchTerms", { taxonomy: "services", perPage: 100 })
   },
   async loadApp({ dispatch, commit }) {
+    console.log("loadApp")
     dispatch("taxonomies/fetchTerms", { taxonomy: "locations" })
     dispatch("fetchMenus", { root: true })
   },

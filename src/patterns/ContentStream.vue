@@ -274,8 +274,6 @@ export default {
                 (item.modified.substring(0, 7) == this.selectedDate ||
                   item.date.substring(0, 7) == this.selectedDate.substring(0, 7)))
           )
-      console.log("1")
-      console.log(content)
 
       //Filter Events by library
       content =
@@ -291,8 +289,7 @@ export default {
                       location => location === library || location === "all-locations"
                     )))
             )
-      console.log("2")
-      console.log(content)
+
       //Filter by terms
       if (this.termFilter) {
         for (const [taxonomy, value] of Object.entries(this.termFilter)) {

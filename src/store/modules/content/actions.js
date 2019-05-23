@@ -3,6 +3,7 @@ import { returnType } from "../utilities.js"
 
 export default {
   async loadHome({ dispatch, commit }) {
+    console.log("CONTENT loadHome")
     dispatch("fetchContent", { type: "callsToAction", perPage: 10 })
     dispatch("fetchContent", { type: "events", perPage: 10 })
     dispatch("fetchContent", { type: "collection", perPage: 10 })

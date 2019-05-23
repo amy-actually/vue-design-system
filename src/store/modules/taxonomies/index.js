@@ -16,27 +16,40 @@ export default {
     services: [],
     subjects: [],
     taxonomies: [],
+    audienceLoading: false,
+    featuredCollectionsLoading: false,
+    genresLoading: false,
+    locationsLoading: false,
+    servicesLoading: false,
+    subjectsLoading: false,
   },
   actions: {
     async fetchCollectionTerms({ state, rootState, commit, dispatch }) {
-      if (
-        state.audience.length == 0 &&
-        state.genres.length == 0 &&
-        state.featuredCollections.length == 0
-      ) {
-        return Promise.all([
-          dispatch("fetchTerms", { taxonomy: "audience" }),
-          dispatch("fetchTerms", { taxonomy: "genres" }),
-          dispatch("fetchTerms", { taxonomy: "featuredCollections" }),
-        ])
+      if (state.audience.length == 0 && !state.audienceLoading) {
+        dispatch("fetchTerms", { taxonomy: "audience" })
+      }
+      if (state.genres.length == 0 && !state.genresLoading) {
+        dispatch("fetchTerms", { taxonomy: "genres" })
+      }
+      if (state.featuredCollections.length == 0 && !state.featuredCollectionsLoading) {
+        dispatch("fetchTerms", { taxonomy: "featuredCollections" })
       }
     },
-    async fetchTerms({ commit }, { taxonomy, perPage = 100, pg = 1, params = {} }) {
+    async fetchTerms(
+      { state, rootState, commit },
+      { taxonomy, perPage = 100, pg = 1, params = {} }
+    ) {
+      console.log("fetchTerms : " + taxonomy)
       let tax = returnType(taxonomy)
       let args = { ...params, per_page: perPage, page: pg }
-      return api.fetchContent(tax, args).then(results => {
-        commit("addTermsToState", { taxonomy: tax, data: results.posts })
-      })
+      if (!state[`${tax}Loading`]) {
+        commit("SET_LOADING", { taxonomy: tax, value: true })
+        return api.fetchContent(tax, args).then(results => {
+          commit("addTermsToState", { taxonomy: tax, data: results.posts })
+          commit("SET_LOADING", { taxonomy: tax, value: false })
+        })
+      }
+      return
     },
     async fetchTermContent(
       { state, rootState, commit, dispatch, getters, rootGetters },
@@ -109,6 +122,9 @@ export default {
         //state[taxonomy].push(data)
         state[taxonomy] = [...state[taxonomy], data]
       }
+    },
+    SET_LOADING(state, { taxonomy, value }) {
+      state[`${taxonomy}Loading`] = value
     },
   },
 }
