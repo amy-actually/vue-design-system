@@ -15,7 +15,7 @@
           </em>
         </template>
         <template v-slot:excerpt v-if="page.type === 'alert'">
-          <p class="event__excerpt" v-html="page.content.rendered"></p>
+          <div class="event__excerpt pb-3" v-html="page.content.rendered" />
         </template>
       </pageLead>
     </template>
