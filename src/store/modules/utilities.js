@@ -295,17 +295,27 @@ const sortByDate = (data, type = null) => {
 }
 const getName = type => {
   const checkType = type.toLowerCase()
-  if (endpoint[checkType]) {
+  if (endpoint[checkType] && endpoint[checkType].resultName) {
     //console.log("RETURNTYPE1 " + type)
     return {
       name: endpoint[checkType].resultName,
       class: endpoint[checkType].colorCode,
       type: checkType,
+      module: endpoint[checkType].module,
     }
   }
   for (const name in endpoint) {
-    if (endpoint[name].alts && endpoint[name].alts.includes(checkType)) {
-      return { name: endpoint[name].resultName, class: endpoint[name].colorCode, type: name }
+    if (
+      endpoint[name].alts &&
+      endpoint[name].alts.includes(checkType) &&
+      endpoint[name].resultName
+    ) {
+      return {
+        name: endpoint[name].resultName,
+        class: endpoint[name].colorCode,
+        type: name,
+        module: endpoint[name].module,
+      }
     }
   }
   return null

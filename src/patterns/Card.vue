@@ -143,7 +143,7 @@ export default {
     type: {
       default: "default",
       type: String,
-      validator: value => value.match(/(default|deck)/),
+      validator: value => value.match(/(default|deck|collection)/),
     },
   },
 }
@@ -167,6 +167,7 @@ export default {
   .card__copy,
   .card__heading {
     color: color-yiq($background-color);
+    word-wrap: break-word;
   }
   &__copy {
     font-family: $font-family-text;

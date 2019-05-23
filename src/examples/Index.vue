@@ -47,7 +47,7 @@
           </div>
 
           <collection-item
-            class="card--background-blue-dark col-md-6 col-xl-8 mb-xl-0"
+            class="card--background-blue-dark col-md-12 col-xl-8 mb-xl-0"
             :item="randomCollectionItem"
             heading-level="h3"
             subheading-class="mt-1 text--white"

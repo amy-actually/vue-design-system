@@ -101,6 +101,7 @@
           :key="item.id"
           subheading-class="mt-1"
           subheading-level="h4"
+          class="border my-2"
         />
       </template>
 
@@ -145,19 +146,11 @@
             }}
           </div>
 
-          <template slot="action">
-            <router-link
-              class="button button--teal"
-              :to="`../resources/${item.slug}`"
-              v-if="item.type === 'resources'"
-              >More</router-link
-            >
-            <router-link
-              class="button button--pink-dark"
-              :to="`../notices/${item.slug}`"
-              v-if="item.type === 'alert'"
-              >More</router-link
-            >
+          <template slot="action" v-if="item.type === 'resources'">
+            <vue-link class="button button--teal" :to="`/resources/${item.slug}`">More</vue-link>
+          </template>
+          <template slot="action" v-if="item.type === 'alert'">
+            <vue-link class="button button--pink-dark" :to="`/notices/${item.slug}`">More</vue-link>
           </template>
         </card>
       </template>
@@ -216,7 +209,7 @@ export default {
     this.$root.$on("resetpage", () => {
       this.$router.push({
         query: {
-          page: 1,
+          page: undefined,
         },
       })
       this.page = 1
@@ -274,8 +267,6 @@ export default {
                 (item.modified.substring(0, 7) == this.selectedDate ||
                   item.date.substring(0, 7) == this.selectedDate.substring(0, 7)))
           )
-      console.log("1")
-      console.log(content)
 
       //Filter Events by library
       content =
@@ -291,8 +282,7 @@ export default {
                       location => location === library || location === "all-locations"
                     )))
             )
-      console.log("2")
-      console.log(content)
+
       //Filter by terms
       if (this.termFilter) {
         for (const [taxonomy, value] of Object.entries(this.termFilter)) {
@@ -348,11 +338,19 @@ export default {
      * Add the page to the route query params
      */
     page() {
-      this.$router.push({
-        query: {
-          page: this.page,
-        },
-      })
+      if (this.page > 1) {
+        this.$router.push({
+          query: {
+            page: this.page,
+          },
+        })
+      } else {
+        this.$router.push({
+          query: {
+            page: undefined,
+          },
+        })
+      }
 
       if (this.apiTotal && this.page >= this.resultTotal / this.perPage - 5) {
         this.$root.$emit("loadmore")

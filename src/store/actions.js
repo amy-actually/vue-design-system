@@ -3,16 +3,12 @@ import { returnType } from "./modules/utilities.js"
 
 export default {
   async loadHome({ dispatch, commit }) {
-    return Promise.all([
-      dispatch("content/loadHome"),
-      dispatch("taxonomies/fetchTerms", { taxonomy: "services", perPage: 100 }),
-    ])
+    dispatch("content/loadHome")
+    dispatch("taxonomies/fetchTerms", { taxonomy: "services", perPage: 100 })
   },
   async loadApp({ dispatch, commit }) {
-    return Promise.all([
-      dispatch("taxonomies/fetchTerms", { taxonomy: "locations" }),
-      dispatch("fetchMenus", { root: true }),
-    ])
+    dispatch("taxonomies/fetchTerms", { taxonomy: "locations" })
+    dispatch("fetchMenus", { root: true })
   },
 
   async fetchContent({ dispatch, commit, state }, { type, perPage = 100, pg = 1, params = {} }) {

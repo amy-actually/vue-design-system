@@ -23,14 +23,19 @@
         </CButton>
       </div>
     </div>
-    <input
-      v-if="dateFilter"
-      class="d-none"
-      id="test"
-      type="text"
-      :value="selectedDate"
-      @input="$emit('selectdate', $event.target.value)"
-    />
+    <div v-if="dateFilter">
+      <label class="form-label text--bold text--sans text--dark" for="test">
+        Find results by date
+      </label>
+      <input
+        class="form-control"
+        id="test"
+        type="text"
+        :value="selectedDate"
+        @input="$emit('selectdate', $event.target.value)"
+      />
+      <em>Choose or enter a date in the YYYY-MM-DD format (e.g. 2020-01-31)</em>
+    </div>
 
     <div class="mt-3">
       <!--style="width: 307.875px"-->
@@ -203,7 +208,8 @@ export default {
   mounted() {
     if (this.dateFilter === true) {
       this.calendar = flatpickr("#test", {
-        inline: true,
+        inline: false,
+        allowInput: true,
       })
     }
   },
@@ -247,7 +253,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .clearfix {
   &::after {
     display: block;
@@ -255,9 +261,7 @@ export default {
     clear: both;
   }
 }
-.filter__default {
-  color: $color-orange;
-}
+
 .taglist {
   list-style-type: none;
   background-color: $color-blue-dark;

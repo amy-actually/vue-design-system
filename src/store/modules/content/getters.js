@@ -8,7 +8,6 @@ export default {
       ...state.resources,
       ...state.posts,
       ...state.blogs,
-      ...state.collection,
     ]
     let relatedContent
 
@@ -39,16 +38,23 @@ export default {
           )
         : relatedContent
 
+    let term
+    if (serviceName && serviceName !== "any") {
+      console.log("find the term...")
+      term = rootState.taxonomies.services.find(item => item.slug === serviceName)
+    }
+
     relatedContent =
       serviceName !== "any" && relatedContent.length > 0
         ? relatedContent.filter(
             page =>
-              page.acf &&
-              page.acf.services &&
-              page.acf.services.some(service => service.slug === serviceName)
+              (page.acf &&
+                page.acf.services &&
+                page.acf.services.some(service => service.slug === serviceName)) ||
+              (page.services && term && page.services.includes(term.id))
           )
         : relatedContent
-
+    console.log(relatedContent)
     return sortByDate(relatedContent)
   },
 

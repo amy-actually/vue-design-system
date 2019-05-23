@@ -76,9 +76,9 @@ export default {
       commit("SET_STATE", { type: "eventsFetched", value: true })
     }
   },
-  fetchInitalContent({ dispatch, commit, state }, type) {
+  fetchInitalContent({ dispatch, commit, state }, { type, params = {} }) {
     if (!state[`${type}Fetched`]) {
-      dispatch("fetchAllContent", { type: type })
+      dispatch("fetchAllContent", { type: type, params: params })
       commit("SET_STATE", { type: `${type}Fetched`, value: true })
     }
   },

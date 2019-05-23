@@ -256,6 +256,22 @@ const router = new Router({
         nav: [{ text: "Information Pages", to: "/pages" }],
       }),
     },
+    {
+      component: Terms,
+      meta: {
+        title: "Collections",
+      },
+      path: "/collection/:network",
+      props: route => ({
+        channelTitle: "Collections",
+        channelDescription: `
+        Find library materials by ${route.params.network}`,
+        taxonomy: route.params.network,
+        slug: "any",
+        sidebar: { search: { location: false } },
+        nav: [{ text: "Collection", to: "/collection" }],
+      }),
+    },
 
     {
       path: "*",

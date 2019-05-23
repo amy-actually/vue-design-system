@@ -21,7 +21,13 @@
                 >
               </template>
             </card>
-            <collection-item v-if="collection" :item="item"> </collection-item>
+            <collection-item
+              v-if="collection"
+              :item="item"
+              headingLevel="h3"
+              :image="getImage(item)"
+            >
+            </collection-item>
           </div>
         </template>
       </div>
@@ -56,11 +62,13 @@ export default {
     CollectionItem,
   },
   created() {
+    this.collection = false
     if (this.$route.path.includes("collection")) {
       this.collection = true
     }
   },
   updated() {
+    this.collection = false
     if (this.$route.path.includes("collection")) {
       this.collection = true
     }

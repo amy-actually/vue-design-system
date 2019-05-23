@@ -14,18 +14,14 @@
     <slot name="breadcrumb"> </slot>
     <slot name="header"> </slot>
 
-    <section class="background--white library__section p-3">
-      <div class="col-lg-10 m-lg-auto">
-        <div class="d-md-flex">
-          <div class="mr-4" v-if="sidebar">
-            <slot name="sidebar"></slot>
-          </div>
+    <section class="background--white library__section p-3 col-lg-10 m-lg-auto d-flex flex-wrap">
+      <div class="channel__sidebar mr-3" v-if="sidebar">
+        <slot name="sidebar"></slot>
+      </div>
 
-          <div class="flex-grow-1">
-            <!--:class="sidebar ? '' : ''"-->
-            <slot name="content"> </slot>
-          </div>
-        </div>
+      <div class="channel__content">
+        <!--:class="sidebar ? '' : ''"-->
+        <slot name="content"> </slot>
       </div>
     </section>
   </main>
@@ -57,3 +53,12 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.channel__sidebar {
+  flex: 1 0 250px;
+  max-width: 350px;
+}
+.channel__content {
+  flex: 1 1 50%;
+}
+</style>

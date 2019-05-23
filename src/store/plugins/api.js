@@ -44,7 +44,12 @@ export default {
               count: Number(res.headers["x-wp-total"]),
               posts: res.data,
             }
-          : { commit: "ADD_CONTENT", posts: res.data }
+          : {
+              commit: "addTermsToState",
+              posts: res.data,
+              pages: Number(res.headers["x-wp-totalpages"]),
+              count: Number(res.headers["x-wp-total"]),
+            }
       })
     }
 

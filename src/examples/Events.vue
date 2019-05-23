@@ -19,7 +19,7 @@
     <section class="background--white library__section p-3">
       <div class="col-lg-10 m-lg-auto">
         <div class="d-md-flex">
-          <div class="mr-4">
+          <div class="mr-4 flex-shrink-1">
             <content-search
               :date-filter="true"
               :selected-date="selectedDate"
@@ -33,13 +33,14 @@
             />
           </div>
 
-          <div class="">
+          <div class="flex-fill">
             <filter-results
               :total="total"
               :selectedDate="selectedDate"
               :filter="q"
               :location="locationDetails"
               contentName="event"
+              :prefetchTotal="eventCount"
             />
 
             <content-stream
@@ -127,6 +128,9 @@ export default {
     this.$root.$on("resetPage", data => {
       this.page = 1
     })
+  },
+  created() {
+    this.$store.dispatch("content/fetchUpcomingEvents")
   },
   props: {
     filter: {

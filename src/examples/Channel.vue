@@ -24,13 +24,16 @@
 
     <template v-slot:content>
       <filter-results
+        v-if="loaded"
         :total="Number(total)"
         :selectedDate="selectedDate"
         :filter="filter"
         :location="locationDetails"
         :contentName="network.slice(-1) == 's' ? network.substring(0, network.length - 1) : network"
       />
+      <spinner :dotSize="Number(20)" v-if="!loaded" />
       <content-stream
+        v-if="loaded"
         :key="`${network}-${filter}-${location}-${selectedDate}`"
         :type="network"
         @totalresults="total = $event"
@@ -50,6 +53,7 @@ import ChannelHeader from "../patterns/ChannelHeader.vue"
 import ContentSearch from "../patterns/ContentSearch.vue"
 import ContentStream from "../patterns/ContentStream.vue"
 import FilterResults from "../elements/FilterResults.vue"
+import Spinner from "../elements/Spinner.vue"
 
 export default {
   name: "ChannelExample",
@@ -61,6 +65,7 @@ export default {
     ContentSearch,
     ContentStream,
     FilterResults,
+    Spinner,
   },
 
   computed: {
@@ -82,21 +87,20 @@ export default {
         return this.$store.getters["content/getCtaByCategory"]("collection-services", "random")
       }
     },
-
+    locationDetails() {
+      return this.location && this.location !== "all"
+        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
+        : {}
+    },
     contents() {
       if (this.network === "services" || this.network === "locations") {
         return this.$store.getters["content/getAllContentBy"]("collection", this.slug)
       }
       return this.$store.getters["content/getContentBy"](this.network)
     },
-    locationDetails() {
-      return this.location && this.location !== "all"
-        ? this.$store.state.taxonomies.locations.find(location => location.slug === this.location)
-        : {}
-    },
   },
   created() {
-    console.log("CREATED: " + this.network)
+    this.loaded = false
     this.$root.$on("resetPage", data => {
       this.page = 1
     })
@@ -111,9 +115,13 @@ export default {
         ? this.$route.query.filter || this.$route.query.search
         : ""
     if (this.network === "events") {
-      this.$store.dispatch("content/fetchUpcomingEvents")
+      this.$store.dispatch("content/fetchUpcomingEvents").then(results => {
+        this.loaded = true
+      })
     } else {
-      this.$store.dispatch("content/fetchInitalContent", this.network)
+      this.$store.dispatch("content/fetchInitalContent", this.network).then(results => {
+        this.loaded = true
+      })
     }
   },
   data() {
@@ -123,6 +131,7 @@ export default {
       selectedDate: "",
       page: 1,
       total: 0,
+      loaded: false,
     }
   },
   methods: {

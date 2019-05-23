@@ -17,7 +17,7 @@
       />
 
       <content-search
-        :contentFilter="contentTypes"
+        :contentFilter="contentTypes.filter(item => item.type !== 'collection')"
         :location-filter="taxonomy !== 'locations' ? true : false"
         :filter="filter"
         @querycontent="filter = $event"
@@ -35,6 +35,17 @@
         :location="locationDetails"
         :contentName="active === 'all' ? 'result' : getTypeName()"
         :prefetchTotal="contentTypes.reduce((a, b) => a + Number(b.count), 0)"
+      />
+      <Showcase
+        v-if="active === 'all' && term && collection"
+        :collection-link="`/collection/${taxonomy}/${term.slug}`"
+        :collection-items="collection"
+        heading="Related Collections"
+        :collectionLinkLabel="
+          `See more of the ${new Intl.NumberFormat().format(
+            term.count_by_type['collection-item']
+          )} related collection items`
+        "
       />
       <content-stream
         :key="`${taxonomy}-${slug}`"
@@ -106,25 +117,20 @@ export default {
 
       return types
     },
+    collection() {
+      let collection =
+        this.taxonomy === "locations"
+          ? this.$store.getters["content/getContentBy"]("collection", this.slug)
+          : this.$store.getters["content/getContentBy"]("collection", this.location, this.slug)
+      return collection.slice(0, 10)
+    },
   },
   created() {
     console.log("CREATED: " + this.taxonomy)
     this.$root.$on("resetPage", data => {
       this.page = 1
     })
-    //this.location = this.taxonomy=="locations" ? this.slug : this.$store.state.currentLocation;
 
-    /* if (
-      this.$store.state.taxonomies[this.taxonomy] &&
-      this.$store.state.taxonomies[this.taxonomy].length === 0
-    ) {
-      this.$store.dispatch("taxonomies/fetchTerms", { taxonomy: this.taxonomy }).then(results => {
-        let term = this.$store.getters["taxonomies/getTermBySlug"](this.taxonomy, this.slug)
-        this.$store.dispat
-      })
-    } else {
-      let term = this.$store.getters["taxonomies/getTermBySlug"](this.taxonomy, this.slug)
-    } */
     this.$store.dispatch("taxonomies/fetchTermContent", {
       taxonomy: this.taxonomy,
       slug: this.slug,
@@ -141,6 +147,7 @@ export default {
       page: 1,
       total: 0,
       active: "all",
+      apiPage: 1,
     }
   },
   methods: {
@@ -155,6 +162,15 @@ export default {
         return "result"
       }
       let content = this.contentTypes.find(item => item.type === this.active)
+      let params = {}
+      params[this.taxonomy] = this.term.id
+
+      if (content.count > this.contents.length && content.type !== "collection") {
+        this.$store.dispatch(`${content.module}/fetchAllContent`, {
+          type: content.type,
+          params: params,
+        })
+      }
       return content.name
     },
   },
