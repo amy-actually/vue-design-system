@@ -46,10 +46,10 @@
 
           <div class="col-8 mt-0 pl-0 pr-0">
             <p class="mt-0" v-html="excerpt"></p>
+            <vue-link class="button button--pink" :to="`${path}`">
+              {{ action }}
+            </vue-link>
           </div>
-          <vue-link class="button button--pink" :to="`${path}`">
-            {{ action }}
-          </vue-link>
         </div>
       </template>
     </card>

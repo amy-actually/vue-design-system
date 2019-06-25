@@ -270,25 +270,29 @@ const sortByDate = (data, type = null) => {
     return [...data].sort(function(a, b) {
       let date1 = new Date(a.start_date)
       let date2 = new Date(b.start_date)
-      return date2.getTime() - date1.getTime()
+      return date1.getTime() - date2.getTime()
     })
   }
+  let $eventFilter = new Date()
+  $eventFilter.setDate($eventFilter.getDate() + 7)
 
   return [...data].sort(function(a, b) {
-    let date1 = !a.type
-      ? 0
-      : a.type === "event"
-      ? new Date(a.start_date)
-      : a.type === "collection-item"
-      ? new Date(a.acf.record_creation_date)
-      : new Date(a.date)
-    let date2 = !b.type
-      ? 0
-      : b.type === "event"
-      ? new Date(b.start_date)
-      : b.type === "collection-item"
-      ? new Date(b.acf.record_creation_date)
-      : new Date(b.date)
+    let date1 =
+      !a.type || (a.type === "event" && new Date(a.start_date) > $eventFilter)
+        ? 0
+        : a.type === "event"
+        ? new Date(a.start_date)
+        : a.type === "collection-item"
+        ? new Date(a.acf.record_creation_date)
+        : new Date(a.date)
+    let date2 =
+      !b.type || (b.type === "event" && new Date(b.start_date) > $eventFilter)
+        ? 0
+        : b.type === "event"
+        ? new Date(b.start_date)
+        : b.type === "collection-item"
+        ? new Date(b.acf.record_creation_date)
+        : new Date(b.date)
     return date2 - date1
     //return date1.getTime() - date2.getTime()
   })
