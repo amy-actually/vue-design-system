@@ -29,6 +29,22 @@
     </template>
 
     <template v-slot:content>
+      <Showcase
+        v-if="(!$route.query || $route.query.page < 2) && active == 'all'"
+        :collection-items="collection"
+        heading=""
+      />
+      <div
+        class="featured--events"
+        v-if="(!$route.query || $route.query.page < 2) && events && active == 'all'"
+      >
+        <event-card
+          class="card--background-gray my-2"
+          :event="event"
+          :key="event.id"
+          v-for="event in events"
+        />
+      </div>
       <filter-results
         :total="Number(total)"
         :filter="filter"
@@ -55,6 +71,8 @@ import ContentSearch from "../patterns/ContentSearch.vue"
 import ContentStream from "../patterns/ContentStream.vue"
 import FilterResults from "../elements/FilterResults.vue"
 import { getName } from "../store/modules/utilities.js"
+import Showcase from "../patterns/Showcase.vue"
+import EventCard from "../patterns/EventCard.vue"
 
 export default {
   name: "TermExample",
@@ -66,6 +84,8 @@ export default {
     ContentSearch,
     ContentStream,
     FilterResults,
+    Showcase,
+    EventCard,
   },
 
   computed: {
@@ -106,9 +126,21 @@ export default {
 
       return types
     },
+    collection() {
+      return this.$store.getters["content/getCollection"](this.taxonomy, this.slug).slice(0, 10)
+    },
+    events() {
+      return this.$store.getters["content/getCollection"](this.taxonomy, this.slug, "events").slice(
+        0,
+        4
+      )
+    },
   },
   created() {
     console.log("CREATED: " + this.taxonomy)
+    this.$root.$on("resetPage", data => {
+      this.page = 1
+    })
     this.$root.$on("resetPage", data => {
       this.page = 1
     })
@@ -227,5 +259,15 @@ export default {
   border: none;
   box-shadow: none;
   margin: 40px 0;
+}
+.featured--events {
+  @media #{$media-query-large} {
+    display: flex;
+    flex-flow: row wrap;
+    & > a {
+      flex: 1 1 48%;
+      margin: 1%;
+    }
+  }
 }
 </style>

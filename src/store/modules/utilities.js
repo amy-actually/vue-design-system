@@ -273,12 +273,12 @@ const sortByDate = (data, type = null) => {
       return date1.getTime() - date2.getTime()
     })
   }
-  let $eventFilter = new Date()
-  $eventFilter.setDate($eventFilter.getDate() + 7)
+  //let $eventFilter = new Date()
+  //$eventFilter.setDate($eventFilter.getDate() + 7)
 
   return [...data].sort(function(a, b) {
     let date1 =
-      !a.type || (a.type === "event" && new Date(a.start_date) > $eventFilter)
+      !a.type || a.type === "event" //( && new Date(a.start_date) > $eventFilter)
         ? 0
         : a.type === "event"
         ? new Date(a.start_date)
@@ -286,7 +286,7 @@ const sortByDate = (data, type = null) => {
         ? new Date(a.acf.record_creation_date)
         : new Date(a.date)
     let date2 =
-      !b.type || (b.type === "event" && new Date(b.start_date) > $eventFilter)
+      !b.type || b.type === "event" // ( && new Date(b.start_date) > $eventFilter)
         ? 0
         : b.type === "event"
         ? new Date(b.start_date)
