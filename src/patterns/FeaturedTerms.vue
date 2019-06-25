@@ -5,7 +5,7 @@
         <template v-for="item in featuredObjects">
           <div class="mb-4 col-md-6 d-flex align-items-stretch" :key="item.id + 'featured'">
             <card
-              v-if="!collection"
+              v-if="!collection && item.taxonomy != 'location'"
               badge-label=" "
               class="card--background-white flex-grow-1"
               :content-type="getType(item.taxonomy)"
@@ -20,6 +20,13 @@
                 >
               </template>
             </card>
+            <location-card
+              v-if="!collection && item.taxonomy === 'location'"
+              class="flex-grow-1"
+              :location="item"
+              :key="item.id"
+              variant="summary"
+            />
             <collection-item
               class="card background--white flex-fill"
               v-if="collection"

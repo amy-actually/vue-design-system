@@ -4,7 +4,7 @@
     class="card--background-gray my-2"
     :class="{ 'text--dark': isSidebar }"
     :explainer="isSidebar ? null : location.acf.city"
-    :heading="isSidebar ? 'Hours' : null"
+    :heading="isSidebar ? 'Hours' : location.name"
     :badge-label="isSidebar ? 'Location Information' : null"
     itemscope
     itemtype="http://schema.org/Library"
@@ -68,8 +68,12 @@
         />
       </template>
 
-      <div v-if="!isSidebar && !isSummary" class="row d-flex">
-        <div class="col-4 order-2 align-self-end d-flex flex-column">
+      <div v-if="!isSidebar" :class="{ 'row d-flex': !isSummary }">
+        <div
+          :class="[
+            `status-${status}` ? isSummary : 'col-4 order-2 align-self-end d-flex flex-column',
+          ]"
+        >
           <c-button
             :aria-label="'phone ' + location.name"
             type="button"
@@ -78,15 +82,17 @@
             <Icon name="phone" fill="#fff" size="small" class="location__phone--icon" />
             {{ location.acf.phone }}</c-button
           >
-          <img :src="location.acf.building_image.url" />
+          <img v-if="!isSummary" :src="location.acf.building_image.url" />
         </div>
 
         <div
+          v-if="!isSummary"
           class="col col-8 order-0 d-flex flex-column justify-content-around"
           :class="'status-' + status"
         >
-          <heading level="h3"> {{ location.name }} </heading>
+          <!--<heading level="h3"> {{ location.name }} </heading> -->
           <address-block
+            v-if="!isSummary"
             :location="location"
             :variant="variant"
             :address="location.acf.address"
@@ -101,7 +107,7 @@
           />
 
           <!-- ABOVE -->
-          <div class="location__social mt-3">
+          <div class="location__social mt-3" v-if="!isSummary">
             <!-- DIV 4 -->
             <social-icon
               v-for="(social, index) in location.acf.social"
