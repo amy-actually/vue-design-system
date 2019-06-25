@@ -6,7 +6,6 @@
     :explainer="isSidebar ? null : location.acf.city"
     :heading="isSidebar ? 'Hours' : null"
     :badge-label="isSidebar ? 'Location Information' : null"
-    v-bind:style="{ 'min-height': '197px' }"
     itemscope
     itemtype="http://schema.org/Library"
   >
@@ -150,6 +149,9 @@ export default {
   computed: {
     isSidebar() {
       return this.variant === "sidebar"
+    },
+    isSummary() {
+      return this.variant === "summary"
     },
 
     status() {
