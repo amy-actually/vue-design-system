@@ -12,11 +12,11 @@
   >
     <template v-slot:copy>
       <template v-if="isSidebar">
-        <div class="location__hours__wrap d-flex flex-column">
+        <div class="location__hours__wrap d-flex flex-column" :class="'status-' + status">
           <div
             v-for="(day, index) in location.acf.operating_hours"
             :key="index"
-            class="location__hours"
+            class="location__hours mt-1"
             :class="getOrder(index, day)"
             v-html="getOperatingHours(index, day)"
             itemprop="openingHoursSpecification"
@@ -24,7 +24,7 @@
           />
         </div>
 
-        <div class="d-flex flex-column">
+        <div class="d-flex flex-column mt-3">
           <c-button
             :aria-label="'phone ' + location.name"
             type="button"
@@ -69,7 +69,7 @@
         />
       </template>
 
-      <div v-if="!isSidebar" class="row d-flex">
+      <div v-if="!isSidebar && !isSummary" class="row d-flex">
         <div class="col-4 order-2 align-self-end d-flex flex-column">
           <c-button
             :aria-label="'phone ' + location.name"
@@ -82,7 +82,10 @@
           <img :src="location.acf.building_image.url" />
         </div>
 
-        <div class="col col-8 order-0 d-flex flex-column justify-content-around">
+        <div
+          class="col col-8 order-0 d-flex flex-column justify-content-around"
+          :class="'status-' + status"
+        >
           <heading level="h3"> {{ location.name }} </heading>
           <address-block
             :location="location"
@@ -97,14 +100,7 @@
             :zip="location.acf.zip"
             :fax="location.acf.fax"
           />
-          <!-- MOVE OUT OF CARD TO LOCATION PAGE -->
-          <div v-if="location.acf.newsletter">
-            <div
-              v-for="newsletter in location.acf.newsletter"
-              :key="newsletter.name"
-              v-html="newsletter.signup_widget"
-            />
-          </div>
+
           <!-- ABOVE -->
           <div class="location__social mt-3">
             <!-- DIV 4 -->
@@ -155,6 +151,7 @@ export default {
     isSidebar() {
       return this.variant === "sidebar"
     },
+
     status() {
       let today = moment()
         .format("dddd")
@@ -285,7 +282,6 @@ export default {
     variant: {
       type: String,
       default: "card",
-      validator: value => value.match(/(card|sidebar|featured)/),
     },
   },
 }
@@ -301,5 +297,27 @@ export default {
     margin-right: 0.2em;
     vertical-align: text-top;
   }
+}
+.location__hours {
+  display: flex;
+  justify-content: space-between;
+}
+.status-open:before {
+  content: "Currently Open";
+  display: block;
+  color: $color-teal;
+  font-style: italic;
+}
+.status-closed:before {
+  content: "Currently Closed";
+  display: block;
+  color: $color-pink-darker;
+  font-style: italic;
+}
+.status-closing-soon:before {
+  content: "Closing Soon";
+  display: block;
+  color: $color-orange;
+  font-style: italic;
 }
 </style>

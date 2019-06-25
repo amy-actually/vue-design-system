@@ -6,7 +6,7 @@
     >
       <Icon
         name="account"
-        aria-label="Make a Donation"
+        aria-label="Library Catalog and Account"
         fill="#fff"
         height="24"
         icon-class="menu__item__icon"

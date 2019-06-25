@@ -1,7 +1,10 @@
 import { returnType, endpoint, sortByDate } from "../utilities.js"
 
 export default {
-  getAllContentBy: (state, getters, rootState) => (locationName = "all", serviceName = "any") => {
+  getAllContentBy: (state, getters, rootState, rootGetters) => (
+    locationName = "all",
+    serviceName = "any"
+  ) => {
     const content = [
       ...state.events,
       ...state.pages,
@@ -11,6 +14,13 @@ export default {
       ...state.collection,
     ]
     let relatedContent
+    let serviceId
+    if (serviceName !== "any") {
+      let service = rootGetters["taxonomies/getTermBySlug"]("services", serviceName)
+      if (service && service.id) {
+        serviceId = service.id
+      }
+    }
 
     relatedContent =
       locationName !== "all"
@@ -40,19 +50,20 @@ export default {
         : relatedContent
 
     relatedContent =
-      serviceName !== "any" && relatedContent.length > 0
+      serviceName !== "any" || serviceId
         ? relatedContent.filter(
             page =>
-              page.acf &&
-              page.acf.services &&
-              page.acf.services.some(service => service.slug === serviceName)
+              (page.acf &&
+                page.acf.services &&
+                page.acf.services.some(service => service.slug === serviceName)) ||
+              (serviceId && page.services && page.services.includes(serviceId))
           )
         : relatedContent
 
     return sortByDate(relatedContent)
   },
 
-  getContentBy: (state, getters, rootState) => (
+  getContentBy: (state, getters, rootState, rootGetters) => (
     contentType,
     locationName = "all",
     serviceName = "any"
@@ -61,6 +72,13 @@ export default {
     const content = [...state[type]]
 
     let relatedContent
+    let serviceId
+    if (serviceName !== "any") {
+      let service = rootGetters["taxonomies/getTermBySlug"]("services", serviceName)
+      if (service && service.id) {
+        serviceId = service.id
+      }
+    }
 
     relatedContent =
       locationName !== "all"
@@ -80,12 +98,13 @@ export default {
         : content
 
     relatedContent =
-      serviceName !== "any" && relatedContent.length > 0
+      serviceName !== "any" || serviceId
         ? relatedContent.filter(
             page =>
-              page.acf &&
-              page.acf.services &&
-              page.acf.services.some(service => service.slug === serviceName)
+              (page.acf &&
+                page.acf.services &&
+                page.acf.services.some(service => service.slug === serviceName)) ||
+              (serviceId && page.services && page.services.includes(serviceId))
           )
         : relatedContent
 

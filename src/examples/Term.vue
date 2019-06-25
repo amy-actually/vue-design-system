@@ -26,6 +26,16 @@
         @clearcontentfilter="clearFilter()"
         @setactive="active = $event"
       />
+      <aside v-if="taxonomy === 'locations' && term.acf.newsletter">
+        <div
+          class="border p-1 mt-4"
+          v-for="newsletter in term.acf.newsletter"
+          :key="newsletter.name"
+        >
+          <h4 v-html="newsletter.name" />
+          <div v-html="newsletter.signup_widget"></div>
+        </div>
+      </aside>
     </template>
 
     <template v-slot:content>

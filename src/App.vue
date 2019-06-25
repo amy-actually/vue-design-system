@@ -6,6 +6,12 @@
       <vue-link to="/">
         <Logo fill="white" />
       </vue-link>
+      <location-card
+        v-if="location && location.slug != 'headquarters'"
+        :location="location"
+        :key="location.id"
+        variant="summary"
+      />
 
       <Menu
         :key="currentLocation"
@@ -30,6 +36,7 @@ import Menu from "./patterns/Menu.vue"
 import Search from "./patterns/Search.vue"
 import { mapState } from "vuex"
 import VueLink from "vue-link"
+import LocationCard from "./patterns/LocationCard.vue"
 
 export default {
   name: "app",
@@ -40,6 +47,7 @@ export default {
     Menu,
     Search,
     VueLink,
+    LocationCard,
   },
   computed: {
     ...mapState(["currentLocation", "menus"]),
