@@ -1,17 +1,17 @@
 <template>
   <div class="library" id="app">
+    <div
+      class="location--nav d-flex flex-grow-1 flex-md-grow-0 flex-shrink-1"
+      v-if="location && location.slug != 'headquarters'"
+    >
+      <location-card :location="location" :key="location.id" variant="summary" />
+    </div>
     <header
-      class="align-items-center d-flex justify-content-center justify-content-md-between library__header p-3"
+      class="align-items-center d-flex flex-wrap align-content-between justify-content-center justify-content-md-between library__header p-3"
     >
       <vue-link to="/">
         <Logo fill="white" />
       </vue-link>
-      <location-card
-        v-if="location && location.slug != 'headquarters'"
-        :location="location"
-        :key="location.id"
-        variant="summary"
-      />
 
       <Menu
         :key="currentLocation"
@@ -70,4 +70,29 @@ export default {
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css?family=Open+Sans|PT+Serif|Lato");
+.location--nav {
+}
+.location--nav .card .card__color-code,
+.location--nav .card .card__badge {
+  display: none !important;
+}
+.location--nav .card h2 {
+  font-size: 1em;
+  margin: 0;
+  flex: 1 1 100% !important;
+  /* color: $color-gray; */
+}
+.location--nav .card {
+  background-color: $color-gray !important;
+  /*color: $color-gray; */
+  & .card__copy {
+    margin-bottom: 0 !important;
+  }
+  & > .p-4 {
+    padding: 10px !important;
+  }
+  & > div > div > a {
+    display: none;
+  }
+}
 </style>

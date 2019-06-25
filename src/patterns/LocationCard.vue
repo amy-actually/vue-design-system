@@ -68,19 +68,15 @@
         />
       </template>
 
-      <div v-if="!isSidebar" :class="{ 'row d-flex': !isSummary }">
-        <p v-if="isSummary" :class="'status-' + status">{{ hours }}</p>
+      <div v-if="!isSidebar" :class="{ 'row d-flex': !isSummary, 'd-flex flex-grow-1': isSummary }">
         <div
           :class="{
             'col-6 col-xl-4 order-2 align-self-end d-flex flex-column': !isSummary,
-            'd-flex flex-column': isSummary,
+            'flex-grow-1 d-flex flex-column flex-sm-row justify-content-between': isSummary,
           }"
         >
-          <c-button
-            :aria-label="'phone ' + location.name"
-            type="button"
-            class="location__phone flex-grow-1"
-          >
+          <p v-if="isSummary" :class="'status-' + status">{{ hours }}</p>
+          <c-button :aria-label="'phone ' + location.name" type="button" class="location__phone">
             <Icon name="phone" fill="#fff" size="small" class="location__phone--icon" />
             {{ location.acf.phone }}</c-button
           >
@@ -180,7 +176,7 @@ export default {
       const current = time.isBetween(open, close) ? "open" : "closed"
 
       if (current === "open" && close.diff(time, "minutes") < 46) {
-        this.hours = time.isBefore(close)
+        this.hours = time.isAfter(close)
           ? "Opens at: " + this.location.acf.operating_hours[today].open
           : !this.location.acf.operating_hours[tomorrow].closed
           ? "Opens Tomorrow: " + this.location.acf.operating_hours[tomorrow].open
