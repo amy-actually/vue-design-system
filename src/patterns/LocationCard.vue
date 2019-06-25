@@ -69,10 +69,12 @@
       </template>
 
       <div v-if="!isSidebar" :class="{ 'row d-flex': !isSummary }">
+        <p v-if="isSummary" :class="'status-' + status">{{ hours }}</p>
         <div
-          :class="[
-            `status-${status}` ? isSummary : 'col-4 order-2 align-self-end d-flex flex-column',
-          ]"
+          :class="{
+            'col-6 col-xl-4 order-2 align-self-end d-flex flex-column': !isSummary,
+            'd-flex flex-column': isSummary,
+          }"
         >
           <c-button
             :aria-label="'phone ' + location.name"
@@ -87,7 +89,7 @@
 
         <div
           v-if="!isSummary"
-          class="col col-8 order-0 d-flex flex-column justify-content-around"
+          class="col col-6 col-xl-8 order-0 d-flex flex-column justify-content-around"
           :class="'status-' + status"
         >
           <!--<heading level="h3"> {{ location.name }} </heading> -->
@@ -164,7 +166,10 @@ export default {
       let today = moment()
         .format("dddd")
         .toLowerCase()
-
+      let tomorrow = moment()
+        .add(1, "d")
+        .format("dddd")
+        .toLowerCase()
       if (this.location.acf.operating_hours[today].closed) {
         return "closed"
       }
@@ -175,15 +180,28 @@ export default {
       const current = time.isBetween(open, close) ? "open" : "closed"
 
       if (current === "open" && close.diff(time, "minutes") < 46) {
+        this.hours = time.isBefore(close)
+          ? "Opens at: " + this.location.acf.operating_hours[today].open
+          : !this.location.acf.operating_hours[tomorrow].closed
+          ? "Opens Tomorrow: " + this.location.acf.operating_hours[tomorrow].open
+          : "Closed Tomorrow"
         return "closing-soon"
       }
-
+      this.hours =
+        current === "open"
+          ? "Open until: " + this.location.acf.operating_hours[today].close
+          : time.isBefore(close) && !this.location.acf.operating_hours[today].closed
+          ? "Opens at: " + this.location.acf.operating_hours[today].open
+          : !this.location.acf.operating_hours[tomorrow].closed
+          ? "Tomorrow's Hours: " + this.location.acf.operating_hours[tomorrow].open
+          : "Closed Tomorrow"
       return current
     },
   },
   data() {
     return {
       format: "hh:mm a",
+      hours: null,
     }
   },
 
@@ -302,9 +320,9 @@ export default {
     display: inline-block;
     width: 1em;
     height: 1em;
-    margin-right: 0.2em;
     vertical-align: text-top;
   }
+  white-space: unset;
 }
 .location__hours {
   display: flex;
