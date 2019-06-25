@@ -6,8 +6,8 @@
           <div class="mb-4 col-md-6 d-flex align-items-stretch" :key="item.id + 'featured'">
             <card
               v-if="!collection"
-              :badge-label="item.name"
-              class="card--background-white"
+              badge-label=" "
+              class="card--background-white flex-grow-1"
               :content-type="getType(item.taxonomy)"
               :copy="item.description"
               :explainer="`Featured ` + getType(item.taxonomy)"
@@ -83,7 +83,9 @@ export default {
       const collections = ["genres", "audience", "featured-collections"]
       return collections.includes(taxonomy)
         ? `/collection/${taxonomy}/${slug}`
-        : `/${taxonomy}/${slug}`
+        : taxonomy.slice(-1) == "s"
+        ? `/${taxonomy}/${slug}`
+        : `/${taxonomy}s/${slug}`
     },
     getType(type) {
       return type.slice(-1) == "s" ? type.substring(0, type.length - 1) : type
