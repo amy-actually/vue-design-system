@@ -14,6 +14,7 @@
         :location="term"
         :key="term.id"
         variant="sidebar"
+        :people="people"
       />
 
       <content-search
@@ -145,6 +146,13 @@ export default {
         4
       )
     },
+    people() {
+      let people = []
+      this.term.acf.contact.forEach(contact => {
+        people.push(this.getLibrarian(contact.person.ID))
+      })
+      return people
+    },
   },
   created() {
     console.log("CREATED: " + this.taxonomy)
@@ -198,6 +206,17 @@ export default {
       }
       let content = this.contentTypes.find(item => item.type === this.active)
       return content.name
+    },
+    getLibrarian(id) {
+      if (this.$store.state.tribe.organizers.length == 0) {
+        let results = this.$store
+          .dispatch("tribe/fetchAllContent", { type: "organizers" })
+          .then(() => {
+            return this.$store.getters["tribe/getTribeByField"]("organizers", "id", Number(id))
+          })
+      } else {
+        return this.$store.getters["tribe/getTribeByField"]("organizers", "id", Number(id))
+      }
     },
   },
   props: {

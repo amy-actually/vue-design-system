@@ -37,6 +37,7 @@
 
           <template v-for="contact in location.acf.contact">
             <person
+              v-if="people.length > 0"
               :key="contact.person.ID"
               :name="contact.person.post_title"
               :title="contact.title"
@@ -245,16 +246,7 @@ export default {
      * Returns Organizer Profile
      */
     getLibrarian(id) {
-      console.log(id)
-      if (this.$store.state.tribe.organizers.length == 0) {
-        let results = this.$store
-          .dispatch("tribe/fetchAllContent", { type: "organizers" })
-          .then(() => {
-            return this.$store.getters["tribe/getTribeByField"]("organizers", "id", Number(id))
-          })
-      } else {
-        return this.$store.getters["tribe/getTribeByField"]("organizers", "id", Number(id))
-      }
+      return this.people.find(person => person.id === id)
     },
 
     buildFormFromWidget(widget) {
@@ -313,6 +305,10 @@ export default {
     variant: {
       type: String,
       default: "card",
+    },
+
+    people: {
+      type: Array,
     },
   },
 }
