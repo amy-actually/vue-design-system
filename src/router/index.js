@@ -148,13 +148,30 @@ const router = new Router({
       }),
     },
 
-    {
-      component: SearchResults,
-      name: "Search",
+    /* {
+      component: ChannelExample,
       path: "/search",
       props: route => ({
         filter: route.query.filter,
         location: route.query.location,
+      }),
+    }, */
+    {
+      component: SearchResults,
+      meta: {
+        title: "Search",
+      },
+      path: "/search",
+      name: "Search",
+      props: route => ({
+        channelTitle: "Search",
+        channelDescription: `
+        Through partnerships in the community, we are able to bring you art and historical
+        exhibits, teach workshops, invite performers and speakers, provide nationally recognized
+        children's programming, and more.
+        `,
+        network: "search",
+        slug: "",
       }),
     },
 
