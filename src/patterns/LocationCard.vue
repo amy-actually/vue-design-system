@@ -76,18 +76,27 @@
           }"
         >
           <p v-if="isSummary" :class="'status-' + status">{{ hours }}</p>
-          <c-button :aria-label="'phone ' + location.name" type="button" class="location__phone">
-            <Icon name="phone" fill="#fff" size="small" class="location__phone--icon" />
-            {{ location.acf.phone }}</c-button
-          >
+          <div v-if="isSummary" class="ml-1 text--right">
+            <social-icon
+              class="mb-1"
+              v-for="(social, index) in location.acf.social"
+              :key="index"
+              :url="social.address"
+              :name="social.name"
+            />
+            <c-button :aria-label="'phone ' + location.name" type="button" class="location__phone">
+              <Icon name="phone" fill="#fff" size="small" class="location__phone--icon" />
+              {{ location.acf.phone }}</c-button
+            >
+          </div>
           <img v-if="!isSummary" :src="location.acf.building_image.url" />
         </div>
 
         <div
           v-if="!isSummary"
           class="col col-6 col-xl-8 order-0 d-flex flex-column justify-content-around"
-          :class="'status-' + status"
         >
+          <p :class="'status-' + status">{{ hours }}</p>
           <!--<heading level="h3"> {{ location.name }} </heading> -->
           <address-block
             v-if="!isSummary"

@@ -1,9 +1,6 @@
 <template>
   <div class="library" id="app">
-    <div
-      class="location--nav d-flex flex-grow-1 flex-md-grow-0 flex-shrink-1"
-      v-if="location && location.slug != 'headquarters'"
-    >
+    <div class="location--nav d-flex" v-if="location && location.slug != 'headquarters'">
       <location-card :location="location" :key="location.id" variant="summary" />
     </div>
     <header
@@ -71,6 +68,7 @@ export default {
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css?family=Open+Sans|PT+Serif|Lato");
 .location--nav {
+  width: 100%;
 }
 .location--nav .card .card__color-code,
 .location--nav .card .card__badge {
@@ -83,10 +81,14 @@ export default {
   /* color: $color-gray; */
 }
 .location--nav .card {
-  background-color: $color-gray !important;
+  width: 100%;
+  margin: 0 !important;
   /*color: $color-gray; */
   & .card__copy {
     margin-bottom: 0 !important;
+    & p {
+      margin: 10px 0 0 0;
+    }
   }
   & > .p-4 {
     padding: 10px !important;
