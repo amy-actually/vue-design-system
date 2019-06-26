@@ -132,7 +132,6 @@ export default {
         return null
       }
       let array = Object.keys(this.selected)
-      console.log(array)
       return array && array.length > 0
         ? this.$store.getters["taxonomies/getTermFilters"](array)
         : null
@@ -173,13 +172,6 @@ export default {
       this.$emit("selectedterms", select)
       this.backToOne()
     },
-    /* getTerms(){
-      let terms = [];
-
-      Object.keys(this.selected).forEach(tax => {
-        terms[tax] = this.taxonomies[tax].hierarchical === true ? this.getChildren(tax): this.$store.state[tax] })
-        return terms;
-    }, */
 
     isSelected(tax, id) {
       return this.selected[tax].includes(id)
@@ -188,7 +180,6 @@ export default {
       return this.active === type
     },
     setActive(type) {
-      // FIX @CLICK
       console.log(type)
       this.active = type
       this.$emit("setactive", type)

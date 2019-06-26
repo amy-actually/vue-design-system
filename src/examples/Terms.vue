@@ -94,9 +94,20 @@ export default {
       featured: 6,
     }
   },
+  watch: {
+    "$route.query.filter"() {
+      this.filter = this.$route.query.filter
+    },
+    "$route.query.search"() {
+      this.filter = this.$route.query.search
+    },
+  },
   created() {
     this.$store.dispatch("content/fetchContent", { type: "callsToAction" })
     this.$store.dispatch("taxonomies/fetchTerms", { taxonomy: this.taxonomy })
+    if (this.$route.query && (this.$route.query.filter || this.$route.query.search)) {
+      this.filter = this.$route.query.filter || this.$route.query.search
+    }
     if (
       this.channelTitle.toLowerCase().includes("collection") &&
       this.$store.state.content.collection.length < 10
